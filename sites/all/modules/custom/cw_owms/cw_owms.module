@@ -1,0 +1,160 @@
+<?php
+
+/**
+ * Implementation of hook_init().
+ */
+function cw_owms_init() {
+  //add css to fix a bug in drupal core that hides fieldsets on edit node page
+  drupal_add_css(drupal_get_path('module', 'cw_owms') . '/verticaltabs-fieldset-fix.css', array('group' => CSS_DEFAULT, 'type' => 'file'));
+}
+
+
+/**
+ * Implements hook_preprocess_html().
+ */
+function cw_owms_preprocess_html(&$variables) {
+}
+
+/**
+ * Implements hook_ctools_plugin_api().
+ */
+function cw_owms_ctools_plugin_api($owner, $api) {
+  if ($owner == 'metatag' && $api == 'metatag') {
+    return array('version' => 1);
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function cw_owms_theme() {
+  $info['cw_owms'] = array(
+    'render element' => 'element',
+  );
+
+  return $info;
+}
+
+/**
+ * Theme callback for a meta tag.
+ *
+ * Creates the HTML metatags which are inserted in the source of the pages.
+ */
+function theme_cw_owms($variables) {
+  static $dcterms_temporal; //retain values over calls to this function
+  $element = &$variables['element'];
+  $values = array('#name' => 'name', '#value' => 'content');
+  //the name of this metatag
+  $key = str_replace('metatag_', '' , $variables['element']['#id']);
+  //combined start/end date fields
+  $temporal_key = 'dcterms.temporal';
+  if (strpos($key, $temporal_key) !== FALSE) { //is this one of the temporal fields?
+    $dcterms_temporal[$key] = $element['#value']; //store the value in a static array
+    if (count($dcterms_temporal) == 2) {
+      //if both values are available, create the combined metatag
+      list($start_d, $start_m, $start_y) = explode('-', $dcterms_temporal['dcterms.temporal.start']);
+      list($end_d, $end_m, $end_y) = explode('-', $dcterms_temporal['dcterms.temporal.einde']);
+      $element['#value'] = "start=$start_y-$start_m-$start_d;end=$end_y-$end_m-$end_d;";
+      $element['#name'] = $temporal_key;
+    }
+    elseif (count($dcterms_temporal) == 1) { 
+      //if we've only got one value, do nothing
+      return;
+    }
+  }
+  
+  //is there a schema value defined for this metatag
+  if ($schema = _cw_owms_get_schemas($key)) {
+    
+    //process date fields
+    if ($schema == 'xsd.date') { //rewrite dutch date to english date
+      list($d, $m, $y) = explode('-', $element['#value']);
+      $element['#value'] = "$y-$m-$d";
+    }
+    if ($key == 'available') {
+      $schema = '';
+    } //do not use xsd.date for this metatag
+
+    //add the value of the schema to the #schema index of $element
+    $element['#schema'] = $schema;
+    //tell the theme funcion to use the value of the #schema index of $element as the value of the html metatag
+    //and the string 'schema' as the name of the html metatag
+    $values['#schema'] = 'schema'; 
+  }
+  element_set_attributes($element, $values);
+  unset($element['#value']);
+  return theme('html_tag', $variables);
+}
+
+
+/**
+ * Get the name of the schema for a metatag.
+ */
+function _cw_owms_get_schemas($metatag_name) {
+  $schema = _cw_owms_schemas();
+  if (isset($schema[$metatag_name])) {
+    return $schema[$metatag_name];
+  }
+  else {
+    return '';
+  }
+}
+
+
+/**
+ * Define the value of the 'schema' attribute for the metatag.
+ *
+ * @Return: array with key/values.
+ *   Key   : Name of the metatag.
+ *   Value : Name of the schema.
+ */
+function _cw_owms_schemas() {
+  return array('dcterms.identifier' => 'xsd.anyuri',
+               'dcterms.language'   => 'xsd.language',
+               'dcterms.modified'   => 'xsd.date',
+               'dcterms.available'  => 'xsd.date',
+               'available'          => 'xsd.date', //only for date process, schema is not added to HTML
+               'dcterms.created'    => 'xsd.date',
+               'overheid.authority' => 'overheid.ministerie', //TODO: make this dynamic
+               'dcterms.creator'    => 'overheid:ministerie', //TODO: make this dynamic
+               'dcterms.temporal'   => 'dcterms.period',
+               'dcterms.spatial'    => 'overheid.koninkrijksdeel', //TODO: other values, dynamic
+              );
+}
+
+
+/**
+ * Implementation of hook_validate.
+ *
+ * We need to validate some fields when editing a node.
+ */
+function cw_owms_node_validate($node, $form, &$form_state) {
+  //check to see if the dcterms.modified field is in the dd-mm-yyyy format and holds a valid date
+  cw_owms_node_validate_datefield('dcterms.modified', 'Datum laatste wijziging', $form_state, '[node:changed:custom:d-m-Y]');
+  //check both temporal values when both are present and valid
+  if ($form_state['values']['metatags']['dcterms.temporal.start']['value'] && $form_state['values']['metatags']['dcterms.temporal.einde']['value']) {
+    cw_owms_node_validate_datefield('dcterms.temporal.start', 'Start geldigheid', $form_state);
+    cw_owms_node_validate_datefield('dcterms.temporal.einde', 'Einde geldigheid', $form_state);
+  } //display error when only one date has been specified
+  elseif ($form_state['values']['metatags']['dcterms.temporal.start']['value'] || $form_state['values']['metatags']['dcterms.temporal.einde']['value']) {
+    form_set_error('', t('Voer beide geldigheiddatums in.'));
+  } //check the value if one is specified, this field is not required
+  elseif ($form_state['values']['metatags']['available']['value']) {
+    cw_owms_node_validate_datefield('available', 'Publicatiedatum', $form_state, '[node:changed:custom:d-m-Y]');
+  }
+  
+}
+
+/**
+ * Check the format of date values.
+ */
+function cw_owms_node_validate_datefield($field, $title, $form_state, $default = NULL) {
+  $value = $form_state['values']['metatags'][$field]['value'];
+  //if the default token isn't specified we check the custom date
+  if ($value != $default) {
+   @list($d, $m, $y) = explode('-', $value); //extract the values
+   if (!@mktime(0, 0, 0, $m, $d, $y)) { //create a timestamp
+      form_set_error($field, t('Voer een geldige datum in voor "@title".', array('@title' => $title)));
+    }
+  }
+}

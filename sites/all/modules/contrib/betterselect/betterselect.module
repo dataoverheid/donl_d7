@@ -1,0 +1,242 @@
+<?php
+
+/**
+ * @file
+ * Use stylized checkboxes instead of the default multiple select HTML element.
+ *
+ * @todo: Fix bug with required elements; values don't seem to "take".
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function betterselect_menu() {
+  $items = array();
+  $items['admin/config/content/betterselect'] = array(
+    'title' => 'Better select',
+    'description' => 'Configure better select settings.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('betterselect_admin_settings'),
+    'access arguments' => array('administer site configuration'),
+    'file' => 'betterselect.admin.inc',
+    'type' => MENU_NORMAL_ITEM,
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_element_info().
+ */
+function betterselect_element_info() {
+  $type = array();
+  $type['select']['#process'] = array('betterselect_process_element');
+
+  return $type;
+}
+
+/**
+ * Returns true if the content type is enabled for Better Select.
+ */
+function betterselect_is_type_enabled($type) {
+  $enabled_types = variable_get('betterselect_content_types', array());
+
+  // If the key isn't in the array, the default setting is "ON".
+  return (!array_key_exists($type, $enabled_types) || ($enabled_types[$type] === $type));
+}
+
+/**
+ * @param $elment
+ *  The element to be checked.
+ * @param $form
+ *  The form the element is part of.
+ * @return TRUE if the element should be altered to use Better Select 
+ */
+function betterselect_should_format_element($element, $form) {
+  // Skip any elements that are not select elements or are not set #multiple
+  if ($element['#type'] != 'select' || empty($element['#multiple'])) {
+    return FALSE;
+  }
+
+  // Do elements explictly set for better select.
+  if (!empty($element['#betterselect'])) {
+    return TRUE;
+  }
+
+  // Do node forms if the type is enabled.
+  if ($form['#id'] == 'node-form') {
+    return betterselect_is_type_enabled($form['type']['#value']);
+  }
+
+  // Remove other forms that may be incompatible.
+  // See https://drupal.org/node/362746 for details.
+  foreach($element['#options'] as $key => $val) {
+    if (!is_numeric($key) || !is_string($val)) {
+      return $element;
+    }
+  }
+
+  // This is not a node form, nor is it explictly enabled.  It falls under "other".  
+  // Do it if the settings ask for all forms to be done.
+  return variable_get('betterselect_node_form_only', FALSE);
+}
+
+/**
+ * Form process callback; translates multiselect fields into checkboxes.
+ */
+function betterselect_process_element($element, &$form_state, $complete_form) {
+  if (!betterselect_should_format_element($element, $complete_form)) {
+    return $element;
+  }
+
+  // If we're dealing with taxonomy, fix the option titles.
+  if (isset($element['#options'][0]) && is_object($element['#options'][0])) {
+    // Build new array of options in format that theme_checkboxes expects.
+    $options = array();
+    $defaults = array();
+    foreach ($element['#options'] as $option) {
+      if (is_array($option->option)) {
+        foreach ($option->option as $tid => $name) {
+          $options[$tid] = check_plain($name);
+        }
+      }
+    }
+    $element['#options'] = $options;
+  }
+
+  // The default value should be an array, if it isn't form_process_checkboxes()
+  // will make it one.
+  if (isset($element['#default_value']) && is_array($element['#default_value']) && count($element['#default_value'])) {
+    // Fix the value arrays; checkboxes are the exact inverse of multiselect,
+    // apparently for vindictive fun.
+
+    // First make sure there's at least 1 non-blank array element
+    $temp = $element['#default_value'];
+    $temp = array_shift($element['#default_value']);
+    if (!empty($temp)) {
+      $element['#default_value'] = array_flip($element['#default_value']);
+      $element['#value'] = array_flip($element['#value']);
+    }
+  }
+
+  // Place options in a scrollable or non-scrollable div
+  $div_class = variable_get('betterselect_scroll', FALSE) ? 'form-checkboxes-scroll' : 'form-checkboxes-noscroll';
+  $element['#attributes']['class'][] = $div_class;
+
+  if (variable_get('betterselect_scroll', FALSE) && variable_get('betterselect_scroll_to_first_checked', FALSE)) {
+    $element['#attributes']['class'][] = ' better-select-scroll-to-first';
+  } 
+
+  // Switch display to checkboxes instead.
+  $element['#type'] = 'checkboxes';
+  // Enable Checkall, if it's installed
+  $element['#checkall'] = TRUE;
+  unset($element['#theme']);
+  $element = form_process_checkboxes($element);
+
+  // Hide the silly "None" option. (assumes array element with a blank key is the "None" option)
+  if (empty($element['#required']) && is_array($element['_none'])) {
+    $element['_none']['#prefix'] = '<div style="display:none">';
+    $element['_none']['#suffix'] = '</div>';
+  }
+
+  // Include the JS and CSS files.
+  drupal_add_css(drupal_get_path('module', 'betterselect') . '/css/betterselect.css');
+  drupal_add_js(drupal_get_path('module', 'betterselect') . '/js/betterselect.js');
+
+  // Add classes to items that indicate depth, for taxonomy, useful for
+  // styling parent terms differently.
+  if (variable_get('betterselect_add_depth_classes', FALSE)) {
+    $prev = NULL;
+    $prev_depth = 0;
+    foreach (element_children($element) as $key) {
+      $title = $element[$key]['#title'];
+      $trim_title = ltrim($title, '-');
+      $depth = strlen($title) - strlen($trim_title);
+      $extra_class = 'checkbox-depth-' . $depth;
+
+      $element[$key]['#prefix'] = '<div class="' . $extra_class . '">';
+      $element[$key]['#suffix'] = '</div>';
+
+      // Put a class on each element that contains children. We do this
+      // retroactively, in other words, we operate on the previous element.
+      if ($prev != NULL) {
+        if ($depth > $prev_depth) {
+          // Gone down a level, so previous must get 'has-children' class
+          $alt_classes = 'checkbox-depth-' . $prev_depth . ' has-children';
+          $prev['#prefix'] = '<div class="' . $alt_classes . '">';
+          $prev['#suffix'] = '</div>';
+        }
+      }
+      $prev = &$element[$key];
+      $prev_depth = $depth;
+    }
+  }
+
+  // Add the necessary prefix/suffix to make JS/CSS work.
+  $size   = isset($element['#size']) ? $element['#size'] : 10;
+  $prefix = isset($element['#prefix']) ? $element['#prefix'] : '';
+  $suffix = isset($element['#suffix']) ? $element['#suffix'] : '';
+  $fixheight = count($element['#options']) > $size ? ' betterfixed' : '';
+  $id = 'better-select-' . $element['#id'];
+  $element['#prefix'] = '<div id="' . $id . '" class="better-select' . $fixheight . ' ' . $div_class . '">' . $prefix;
+  $element['#suffix'] = $suffix . '</div>';
+
+  return $element;
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function betterselect_form_alter(&$form, $form_state, $form_id) {
+  // Taxonomy stores its #options in a weird way; we need to move it back once we're done.
+  if (($form['#id'] == 'node-form' && isset($form['taxonomy']))) {
+    $form['#submit'][] = 'betterselect_taxonomy_from_checkboxes';
+  }
+  elseif ($form_id == 'taxonomy_form_term' && !(variable_get('betterselect_node_form_only', FALSE))) {
+    // This is the form that appears on the edit/term/xx page. Betterselect
+    // has to process it before taxonomy module.
+    array_unshift($form['#submit'], 'betterselect_taxonomy_form_term_from_checkboxes');
+  }
+}
+
+/**
+ * Additional submit handler for the taxonomy term form.
+ */
+function betterselect_taxonomy_form_term_from_checkboxes($form, &$form_state) {
+  $fix = array('parent', 'relations');
+  foreach ($fix as $select) {
+    $options = array();
+    if (isset($form_state['values'][$select])) {
+      foreach ($form_state['values'][$select] as $tid => $selected) {
+        if ($selected) {
+          $options[$tid] = $tid;
+        }
+      }
+      $form_state['values'][$select] = $options;
+    }
+  }
+}
+
+/**
+ * Restore submitted checkbox values back to format Taxonomy module expects.
+ */
+function betterselect_taxonomy_from_checkboxes($form, &$form_state) {
+  foreach ($form_state['values']['taxonomy'] as $index => $properties) {
+    if (is_numeric($index) && $form['taxonomy'][$index]['#multiple']) {
+      $options = array();
+      foreach ($form_state['values']['taxonomy'][$index] as $tid => $selected) {
+        if ($selected) {
+          $options[$tid] = $tid;
+          // Save lineage - automatically select all parents.
+          if (variable_get('betterselect_save_lineage', FALSE)) {
+            $parents = taxonomy_get_parents_all($tid);
+            foreach ($parents as $key => $val) {
+              $options[$val->tid] = $val->tid;
+            }
+          }
+        }
+      }
+      $form_state['values']['taxonomy'][$index] = $options;
+    }
+  }
+}

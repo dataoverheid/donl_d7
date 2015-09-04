@@ -1,0 +1,10 @@
+name = Custom Reactie dataset
+description = A custom module that will take care of some settings for the "reactie dataset" function
+package = Custom
+core = 7.x
+
+version = "7.x-1.0"
+core = "7.x"
+project = "Custom"
+
+dependencies[] = features_content_type_feedback_dataset

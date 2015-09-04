@@ -1,0 +1,32 @@
+name = Koop2
+description = Thema voor data.overheid.nl
+package = Core
+version = 7.x-1.0
+core = 7.x
+
+
+
+stylesheets[all][]        = css/main.css
+stylesheets[all][]        = css/custom_theme_addons.css
+
+
+
+scripts[]                 = js/jquery-1.11.1.min.js
+scripts[]                 = js/modernizr.custom.js
+scripts[]                 = js/KOOP_webapp.js
+
+
+
+regions[menu]             = Menu
+;regions[breadcrumb]       = Breadcrumb
+regions[secondary_menu]   = Secondary Menu
+regions[sub_form]         = Sidebar first
+regions[content]          = Content
+;regions[content_right]   = Sidebar second (homepage only)
+regions[clearfix1]        = Clearfix1
+regions[clearfix2]        = Clearfix2
+regions[clearfix3]        = Clearfix3
+regions[footer_clearfix1] = Footer Clearfix1
+regions[footer_clearfix2] = Footer Clearfix2
+regions[footer_clearfix3] = Footer Clearfix3
+regions[footer]           = Footer

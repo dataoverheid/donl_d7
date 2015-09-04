@@ -1,0 +1,9 @@
+<?php
+function custom_user_redirect_user_login(&$edit, $account) {
+  if(isset($_POST['form_id']) && $_POST['form_id'] == 'user_pass_reset') {
+    // do nothing.
+  }
+  elseif(!isset($_GET['destination']) || empty($_GET['destination'])) {
+    $_GET['destination'] = '';
+  }
+}

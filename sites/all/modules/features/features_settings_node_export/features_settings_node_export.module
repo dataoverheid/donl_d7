@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the features_settings_node_export feature.
+ */
+
+include_once 'features_settings_node_export.features.inc';

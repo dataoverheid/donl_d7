@@ -1,0 +1,10 @@
+name = Koop Waardelijsten
+description = A custom module that will import the required Koop waardelijsten from standaarden.overheid.nl
+package = Custom
+core = 7.x
+
+version = "7.x-1.0"
+core = "7.x"
+project = "Custom"
+
+dependencies[] = taxonomy

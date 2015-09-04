@@ -1,0 +1,76 @@
+<?php
+/**
+ * Implements hook_install().
+ *
+ * Perform actions to set up the site for this profile.
+ */
+function data_overheid_install() {
+  $full_html_format = array(
+    'format' => 'full_html',
+    'name' => 'Full HTML',
+    'weight' => 1,
+    'filters' => array(
+      // URL filter.
+      'filter_url' => array(
+        'weight' => 0,
+        'status' => 1,
+      ),
+      // Line break filter.
+      'filter_autop' => array(
+        'weight' => 1,
+        'status' => 1,
+      ),
+      // HTML corrector filter.
+      'filter_htmlcorrector' => array(
+        'weight' => 10,
+        'status' => 1,
+      ),
+      // Lexicon filter.
+      'filter_lexicon' => array(
+        'weight' => 11,
+        'status' => 1,
+      ),
+    ),
+  );
+  $full_html_format = (object) $full_html_format;
+  filter_format_save($full_html_format);
+
+  
+  
+  // Include the array witch contains the blocks that should be enabled during the install.
+  /* SELECT `module`, `delta`, `theme`, `status`, `weight`, `region`, `custom`, `visibility`, `pages`, `title`, `cache`, `css_class` FROM `block` WHERE `theme` LIKE 'koop2' AND `status` = 1 LIMIT 0, 300; */
+  require_once('includes/block.php');
+  $query = db_insert('block')->fields(array('module', 'delta', 'theme', 'status', 'weight', 'region', 'custom', 'visibility', 'pages', 'title', 'cache', 'css_class'));
+  foreach ($block as $record) {
+    $query->values($record);
+  }
+  $query->execute();
+  
+  
+  require_once('includes/block_custom.php');
+  $query = db_insert('block_custom')->fields(array('bid', 'body', 'info', 'format'));
+  foreach ($block_custom as $record) {
+    $query->values($record);
+  }
+  $query->execute();
+  
+  
+  require_once('includes/block_node_type.php');
+  $query = db_insert('block_node_type')->fields(array('module', 'delta', 'type'));
+  foreach ($block_node_type as $record) {
+    $query->values($record);
+  }
+  $query->execute();
+
+  require_once('includes/block_role.php');
+  $query = db_insert('block_role')->fields(array('module', 'delta', 'rid'));
+  foreach ($block_role as $record) {
+    $query->values($record);
+  }
+  $query->execute();  
+  
+
+  // Create default file folders.
+  $directory = 'public://images';
+  file_prepare_directory($directory, FILE_CREATE_DIRECTORY);
+}

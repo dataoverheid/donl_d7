@@ -1,0 +1,11 @@
+name = Better Select
+description = Use stylized checkboxes instead of the default multiple select HTML element in forms.
+configure = admin/config/content/betterselect
+core = 7.x
+
+; Information added by drupal.org packaging script on 2013-09-15
+version = "7.x-1.0-beta3"
+core = "7.x"
+project = "betterselect"
+datestamp = "1379275282"
+

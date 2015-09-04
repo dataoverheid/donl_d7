@@ -1,0 +1,11 @@
+<?php
+
+function koop_update_update_7001() {
+  $modules = array('content_taxonomy', 'content_taxonomy_autocomplete');
+  module_enable($modules, TRUE);
+}
+
+function koop_update_update_7002() {
+  $modules = array('custom_reactie_dataset', 'features_content_type_feedback_dataset');
+  module_enable($modules, TRUE);
+}

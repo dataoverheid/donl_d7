@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the Content Type: Feedback dataset feature.
+ */
+
+include_once 'features_content_type_feedback_dataset.features.inc';

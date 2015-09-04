@@ -1,0 +1,48 @@
+<?php
+function custom_data_verzoek_install() {
+  // We need to be sure we're behind some other modules
+  db_update('system')
+    ->fields(array('weight' => 10))
+    ->condition('name', 'custom_data_verzoek', '=')
+    ->execute();
+
+
+  if (!(drupal_lookup_path('source', 'data_verzoek/aanvragen'))) {
+    $path = array(
+      'source' => 'node/add/dataverzoek',
+      'alias' => 'data_verzoek/aanvragen'
+    );
+    path_save($path);
+  }
+}
+
+
+function custom_data_verzoek_admin_paths_alter(&$paths) {
+  $paths['node/add/dataverzoek'] = FALSE;
+}
+
+
+function custom_data_verzoek_form_dataverzoek_node_form_alter(&$form, &$form_state) {
+
+  if(isset($_GET['gevraagde_data'])) {
+    $form['field_dv_gevraagde_data'][LANGUAGE_NONE][0]['value']['#default_value'] = check_plain($_GET['gevraagde_data']);
+  }
+
+  unset($form['author']);
+  unset($form['revision_information']);
+  unset($form['additional_settings']);
+  unset($form['options']);
+  unset($form['path']);
+}
+
+
+function custom_data_verzoek_node_presave($node) {
+  if ($node->type == 'dataverzoek') {
+    if(isset($node->field_gepubliceerd[LANGUAGE_NONE][0]['value']) && $node->field_gepubliceerd[LANGUAGE_NONE][0]['value']) {
+      $node->status = 1;
+    }
+    else {
+      $node->status = 0;
+    }
+  }
+}

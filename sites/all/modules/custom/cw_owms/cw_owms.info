@@ -1,0 +1,7 @@
+name = CW OWMS
+description = "Adds OWMS core fields."
+package = ConsuWijzer
+dependencies[] = metatag
+core = 7.x
+version = "7.x-0.1"
+

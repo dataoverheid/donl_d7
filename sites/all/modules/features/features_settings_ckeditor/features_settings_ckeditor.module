@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the Settings: CKEditor feature.
+ */
+
+include_once 'features_settings_ckeditor.features.inc';

@@ -1,0 +1,166 @@
+<?php
+function custom_pages_install() {
+  variable_set('site_frontpage', 'home');
+}
+
+
+
+function custom_pages_menu() {
+  $items['home'] = array(
+    'title' => 'Home',
+    'page callback' => 'custom_pages_home',
+    'access arguments' => array('access content'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+  
+  $items['data'] = array(
+    'title' => 'Datasets',
+    'page callback' => 'custom_pages',
+    'access arguments' => array('access content'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+  
+  $items['data/%'] = array(
+    'title' => 'Datasets',
+    'page callback' => 'custom_pages',
+    'access arguments' => array('access content'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  $items['foutievelink'] = array(
+    'title' => 'Foutievelink',
+    'page callback' => 'custom_pages_non_working_link',
+    'access arguments' => array('access content'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  $items['webservice'] = array(
+    'title' => 'Webservice',
+    'page callback' => 'custom_pages_webservice',
+    'access arguments' => array('access content'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+  
+  $items['admin/config/custom_pages'] = array(
+    'title' => 'Custom pages',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('custom_pages_system_form'),
+    'access arguments' => array('edit custom_pages'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  return $items;
+}
+
+
+
+function custom_pages_permission() {
+  return array(
+    'edit custom_pages' => array(
+      'title' => t('Edit titles for custom pages'),
+      'description' => t('Allow user to edit the titles for custom pages.'),
+    ),
+  );
+}
+
+
+
+function custom_pages() {
+  return '';
+}
+
+
+
+function custom_pages_home() {
+  drupal_set_title(variable_get('custom_pages_homepage', ''));
+  return '';
+}
+
+
+
+function custom_pages_system_form() {
+  $form = array();
+
+  $form['homepage'] = array(
+    '#title' => 'Homepage',
+    '#type' => 'fieldset',
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+  );
+
+  $form['homepage']['custom_pages_homepage'] = array(
+    '#title' => t('Title'),
+    '#type' => 'textfield',
+    '#default_value' => variable_get('custom_pages_homepage', ''),
+  );
+
+  $form['custom_pages_non_working_link'] = array(
+    '#title' => 'Foutievelink pagina',
+    '#type' => 'fieldset',
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+  );
+
+  $form['custom_pages_non_working_link']['custom_pages_non_working_link_title'] = array(
+    '#title' => t('Title'),
+    '#type' => 'textfield',
+    '#default_value' => variable_get('custom_pages_non_working_link_title', ''),
+  );
+
+  $custom_pages_non_working_link_body = variable_get('custom_pages_non_working_link_body', array('format' => 'full_html', 'value' => ''));
+  $form['custom_pages_non_working_link']['custom_pages_non_working_link_body'] = array(
+    '#title' => 'text pagina',
+    '#type' => 'text_format',
+    '#format' => $custom_pages_non_working_link_body['format'],
+    '#default_value' => $custom_pages_non_working_link_body['value'],
+    '#description' => 'De token "@link" wordt omgezet in de oorspronkelijke link',
+  );
+
+  $form['custom_pages_webservice'] = array(
+    '#title' => 'Webservicelink pagina',
+    '#type' => 'fieldset',
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+  );
+
+  $form['custom_pages_webservice']['custom_pages_webservice_title'] = array(
+    '#title' => t('Title'),
+    '#type' => 'textfield',
+    '#default_value' => variable_get('custom_pages_webservice_title', ''),
+  );
+
+  $custom_pages_webservice_body = variable_get('custom_pages_webservice_body', array('format' => 'full_html', 'value' => ''));
+  $form['custom_pages_webservice']['custom_pages_webservice_body'] = array(
+    '#title' => 'text pagina',
+    '#type' => 'text_format',
+    '#format' => $custom_pages_webservice_body['format'],
+    '#default_value' => $custom_pages_webservice_body['value'],
+    '#description' => 'De token "@link" wordt omgezet in de oorspronkelijke link',
+  );
+  
+  return system_settings_form($form);
+}
+
+
+function custom_pages_non_working_link() {
+  drupal_set_title(variable_get('custom_pages_non_working_link_title', ''));
+
+  $link = $_GET['link'];
+  $link = check_plain($link);
+
+  $markup = variable_get('custom_pages_non_working_link_body', array('format' => 'full_html', 'value' => ''));
+
+  return check_markup(str_replace('@link', $link, $markup['value']), $markup['format']);
+}
+
+
+function custom_pages_webservice() {
+  drupal_set_title(variable_get('custom_pages_webservice_title', ''));
+
+  $link = $_GET['link'];
+  $link = check_plain($link);
+
+  $markup = variable_get('custom_pages_webservice_body', array('format' => 'full_html', 'value' => ''));
+
+  return check_markup(str_replace('@link', $link, $markup['value']), $markup['format']);
+}

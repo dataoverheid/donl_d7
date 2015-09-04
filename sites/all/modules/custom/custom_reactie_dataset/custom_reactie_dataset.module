@@ -1,0 +1,50 @@
+<?php
+function custom_reactie_dataset_install() {
+  // We need to be sure we're behind some other modules
+  if (!(drupal_lookup_path('source', 'feedback_dataset/aanmaken'))) {
+    $path = array(
+      'source' => 'node/add/feedback-dataset',
+      'alias' => 'feedback_dataset/aanmaken'
+    );
+    path_save($path);
+  }
+}
+
+
+function custom_reactie_dataset_admin_paths_alter(&$paths) {
+  $paths['node/add/feedback-dataset'] = FALSE;
+}
+
+
+function custom_reactie_dataset_form_feedback_dataset_node_form_alter(&$form, &$form_state) {
+  if(isset($_GET['titel_dataset'])) {
+    $form['field_fd_titel_dataset'][LANGUAGE_NONE][0]['value']['#value'] = check_plain($_GET['titel_dataset']);
+    $form['field_fd_titel_dataset'][LANGUAGE_NONE][0]['value']['#disabled'] = TRUE;
+  }
+  if(isset($_GET['link_dataset'])) {
+    $form['field_fd_link_dataset'][LANGUAGE_NONE][0]['#value']['url'] = check_plain($_GET['link_dataset']);
+    $form['field_fd_link_dataset'][LANGUAGE_NONE][0]['#disabled'] = TRUE;
+  }
+  if(isset($_GET['data_eigenaar'])) {
+    $form['field_fd_data_eigenaar'][LANGUAGE_NONE][0]['value']['#value'] = check_plain($_GET['data_eigenaar']);
+    $form['field_fd_data_eigenaar'][LANGUAGE_NONE][0]['value']['#disabled'] = TRUE;
+  }
+
+  unset($form['author']);
+  unset($form['revision_information']);
+  unset($form['additional_settings']);
+  unset($form['options']);
+  unset($form['path']);
+}
+
+
+function custom_reactie_dataset_node_presave($node) {
+  if ($node->type == 'dataverzoek') {
+    if(isset($node->field_gepubliceerd[LANGUAGE_NONE][0]['value']) && $node->field_gepubliceerd[LANGUAGE_NONE][0]['value']) {
+      $node->status = 1;
+    }
+    else {
+      $node->status = 0;
+    }
+  }
+}

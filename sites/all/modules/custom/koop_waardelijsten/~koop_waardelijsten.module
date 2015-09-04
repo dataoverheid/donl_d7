@@ -1,0 +1,151 @@
+<?php
+require_once('includes/koop_waardelijsten.xml_to_array.inc');
+
+
+
+function koop_waardelijsten_menu() {
+  $items['admin/koop_waardelijsten/import/taxonomiebeleidsagenda'] = array(
+    'page callback' => 'koop_waardelijsten_import',
+    'page arguments' => array(3),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+  
+  $items['admin/koop_waardelijsten/import/overheidsorganisatie'] = array(
+    'page callback' => 'koop_waardelijsten_import',
+    'page arguments' => array(3),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+  
+  $items['service/waardelijsten/taxonomiebeleidsagenda'] = array(
+    'page callback' => 'koop_waardelijsten_service',
+    'page arguments' => array(2),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['service/waardelijsten/overheidsorganisatie'] = array(
+    'page callback' => 'koop_waardelijsten_service',
+    'page arguments' => array(2),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+  
+  return $items;
+}
+
+
+
+function koop_waardelijsten_import($type) {
+
+  switch($type) {
+    /**
+     * TaxonomieBeleidsagenda
+     * Deze lijst bestaat uit 2 niveau's
+     */
+    case 'taxonomiebeleidsagenda': 
+
+      $values = koop_waardelijsten_get_lijst('http://standaarden.overheid.nl/owms/terms/TaxonomieBeleidsagenda.xml');
+      $vocabulary = taxonomy_vocabulary_machine_name_load('taxonomiebeleidsagenda');
+
+      foreach($values['value'] as $value) {
+        $result = db_select('taxonomy_term_data', 'ttd')
+          ->fields('ttd', array('tid'))
+          ->condition('description', $value['@attributes']['resourceIdentifier'], '=')
+          ->condition('vid', $vocabulary->vid, '=')
+          ->execute()
+          ->fetchAssoc();
+
+        if(empty($result['tid'])) {
+          $parent = new stdClass();
+          $parent->vid = $vocabulary->vid;
+          $parent->name = $value['@attributes']['prefLabel'];
+          taxonomy_term_save($parent);
+        }
+        else {
+          $parent = taxonomy_term_load($result['tid']);
+        }
+
+        foreach($value['value'] as $v) {
+          $result = db_select('taxonomy_term_data', 'ttd')
+            ->fields('ttd', array('tid'))
+            ->condition('description', $v['@attributes']['resourceIdentifier'], '=')
+            ->condition('vid', $vocabulary->vid, '=')
+            ->execute()
+            ->fetchAssoc();
+
+          if(empty($result['tid'])) {
+            $term = new stdClass();
+            $term->vid = $vocabulary->vid;
+            $term->name = $v['@attributes']['prefLabel'];
+            $term->description = $v['@attributes']['resourceIdentifier'];
+            $term->parent = $parent->tid;
+            taxonomy_term_save($term);
+          }
+        }
+      }
+
+      break;
+
+
+    /**
+     * TaxonomieBeleidsagenda
+     * Deze lijst bestaat uit 1 niveau
+     */
+    case 'overheidsorganisatie': 
+
+      $values = koop_waardelijsten_get_lijst('http://standaarden.overheid.nl/owms/terms/Overheidsorganisatie.xml');
+      $vocabulary = taxonomy_vocabulary_machine_name_load('overheidsorganisatie');
+   
+      foreach($values['value'] as $v) {
+        $result = db_select('taxonomy_term_data', 'ttd')
+          ->fields('ttd', array('tid'))
+          ->condition('description', $v['resourceIdentifier'], '=')
+          ->condition('vid', $vocabulary->vid, '=')
+          ->execute()
+          ->fetchAssoc();
+
+        if(empty($result['tid'])) {
+          $term = new stdClass();
+          $term->vid = $vocabulary->vid;
+          $term->name = $v['prefLabel'];
+          $term->description = $v['resourceIdentifier'];
+          taxonomy_term_save($term);
+        }
+      }
+
+      break;
+
+  }
+  return '';
+}
+
+
+
+function koop_waardelijsten_get_lijst($url) {
+  $ch = curl_init();
+  $curlConfig = array(
+    CURLOPT_URL => $url,
+    CURLOPT_RETURNTRANSFER => TRUE,
+  );
+  curl_setopt_array($ch, $curlConfig);
+  $result = curl_exec($ch);  
+  curl_close($ch);
+
+  return xml_to_array($result);
+}
+
+
+
+function koop_waardelijsten_service($vocabulary) {
+  $tmp = taxonomy_vocabulary_machine_name_load($vocabulary);
+  $taxonomy = taxonomy_get_tree($tmp->vid);
+  
+  $return = array();  
+  foreach($taxonomy as $v) {
+    $return[] = $v->name;
+  }
+  
+  echo drupal_json_encode($return);
+}

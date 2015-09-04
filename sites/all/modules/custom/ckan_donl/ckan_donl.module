@@ -1,0 +1,259 @@
+<?PHP
+/**
+ * Implements hook_block_info().
+ */
+function ckan_donl_block_info() {
+  $blocks = array();
+
+  $blocks['ckan_donl_themes'] = array(
+    'info' => 'CKAN: Themes',
+  );
+  
+  $blocks['ckan_donl_search'] = array(
+    'info' => 'CKAN: Search',
+  );
+  
+  $blocks['ckan_donl_statistics'] = array(
+    'info' => 'CKAN: Statistics',
+  );
+  
+  $blocks['ckan_donl_datasets_ra'] = array(
+    'info' => 'CKAN: Datasets with most Recent Activity',
+  );
+  return $blocks;
+}
+
+
+
+/**
+ * Implements hook_block_view().
+ */
+function ckan_donl_block_view($delta = '') {
+  $block = array();
+
+  switch ($delta) {
+    case 'ckan_donl_themes' :
+      $block['subject'] = 'Thema\'s';
+      $block['content'] = ckan_donl_themes_content();
+      break;
+      
+    case 'ckan_donl_search' :    
+      $block['subject'] = 'Zoeken';
+      $block['content'] = ckan_donl_search_content();
+      break;
+
+    case 'ckan_donl_statistics' :
+      $block['subject'] = '<none>';
+      $block['content'] = ckan_donl_statistics_content();
+      break;
+
+    case 'ckan_donl_datasets_ra' :
+      $block['subject'] = 'Meest bekeken datasets';
+      $block['content'] = ckan_donl_datasets_ra_content();
+      break;
+  }
+
+  return $block;
+}
+
+
+
+/**
+ * Content callback for the block ckan_donl_themes
+ */
+function ckan_donl_themes_content() {
+  $html = '';
+  if($cached = cache_get('ckan_donl_themes_content_cahce')) {
+    $html = $cached->data;
+  }
+  if(empty($html)) {
+    $html = '<div class="ckan-themes">';
+
+    $themes = ckan_donl_make_call('service/waardelijsten/taxonomiebeleidsagenda', 'drupal');  
+    foreach($themes as $theme) {
+      $count = 0;
+      if($result = ckan_donl_make_call('package_search?fq=theme_facet:"' . urlencode($theme->uri) . '"')) {
+        $count = $result->result->count;     
+      }
+      $classes = explode(' | ', $theme->name);
+      $class = str_replace(' ', '_', strtolower($classes[0]));
+      $html .= '<a class="theme-wrapper" href="/data/dataset?theme_facet=' . $theme->uri . '"><div class="theme ' . $class . '">' . $theme->name . ' (' . $count . ')</div></a>';
+    }
+
+    $html .= '</div>';
+    cache_set('ckan_donl_themes_content_cahce', $html, 'cache', CACHE_TEMPORARY);
+  }
+  
+  return $html;
+}
+
+
+
+/**
+ * Content callback for the block ckan_donl_search
+ */
+function ckan_donl_search_content() {
+  $search_url = substr(variable_get('ckan_url', ''), 0, -4) . 'dataset';
+  
+  $html = '<fieldset>';
+  $html .= '<legend>Zoeken binnen de datasets</legend>';
+  $html .= '<form class="search-form" action="' . $search_url . '" method="get">';
+  $html .= '<label for="search-datasets" class="hidden">Zoekterm</label>';
+  $html .= '<input id="search-datasets" type="text" class="search" name="q" value="" autocomplete="off" />';
+  $html .= '<div class="buttons">';
+  $html .= '<input type="submit" value="Zoeken" />';
+  $html .= '</div>';
+  $html .= '</form>';
+  $html .= '</fieldset>';
+
+  return $html;
+}
+
+
+
+
+/**
+ * Content callback for the block ckan_donl_datasets_ra
+ * We've added a cache to the call to prevent this block from constantly polling the ckan api.
+ */
+function ckan_donl_datasets_ra_content() {
+  $html = '';
+  if($cached = cache_get('ckan_donl_datasets_ra_content_cache')) {
+    $html = $cached->data;
+  }
+  if(empty($html)) {
+    // Get the 3 rows with the most recent activity.
+    $result = ckan_donl_make_call('package_search?sort=tracking_summary.recent%20desc&rows=3');
+    $html = '<div class="home-block-padding"><ul class="search_result">'; //document_tree">';
+    if($result->success) {
+      foreach($result->result->results as $dataset) {
+        $tags = array();
+        foreach($dataset->tags as $tag) {
+          $tags[] = '<a href="/data/dataset?tags=' . $tag->name . '">' . $tag->name . '</a>';
+        }
+        
+        $tmp = explode('T', $dataset->metadata_created);
+        $metadata_created = explode('-', $tmp[0]);
+      
+        $html .= '<li>';
+        $html .= '<a href="/data/dataset/' . $dataset->name . '">' . $dataset->title . '</a>';
+        $html .= '<span>' . $metadata_created[2] . '-' . $metadata_created[1] . '-' . $metadata_created[0] . '</span>';
+        $html .= '<span>Organisatie: <a href="/data/dataset?maintainer_facet=' . $dataset->maintainer . '">' . $dataset->maintainer_displayname . ' </a></span>';
+        $html .= '<span>Onderwerpen: ' . implode(', ', $tags) . '</span>';
+        $html .= '</li>';
+      }
+    }
+    $html .= '</ul>';
+    $html .= '<a href="/data/dataset"><strong>Bekijk alle datasets</strong></a></div>';
+    cache_set('ckan_donl_datasets_ra_content_cache', $html, 'cache', CACHE_TEMPORARY);
+  }
+  
+  return $html;
+}
+
+
+
+/**
+ * Content callback for the block ckan_donl_statistics
+ * We've added a cache to the call to prevent this block from constantly polling the ckan api.
+ */
+function ckan_donl_statistics_content() {
+  $html = '';
+  if($cached = cache_get('ckan_donl_statistics_content_cache')) {
+    $html = $cached->data;
+  }
+  if(empty($html)) {
+    $statistics = array();
+    
+    // Retreive the total amount of datasets available.
+    $result = ckan_donl_make_call('package_search?fq=state:active&facet=false');
+    if($result->success) {
+      $statistics['total_datasets'] = $result->result->count;
+    }
+
+    // Retreive the last modification date on a dataset.
+    $result = ckan_donl_make_call('package_search?sort=metadata_modified%20desc&facet=false&rows=1');
+    if($result->success) {
+      $tmp = explode('T', $result->result->results[0]->metadata_modified);
+      $tmp = explode('-', $tmp[0]);
+      $statistics['last_modification_date'] = $tmp[2] . '-' . $tmp[1] . '-' . $tmp[0];
+    }
+    
+    // Retreive the datasets with an open license (either cc-Zero or Public Domain)
+    $statistics['datasets_with_open_licence'] = 0;
+    $result = ckan_donl_make_call('package_search?fq=license_id:cc-by3');
+    if($result->success) {
+      $statistics['datasets_with_open_licence'] += $result->result->count;
+    }
+    $result = ckan_donl_make_call('package_search?fq=license_id:cc-by');
+    if($result->success) {
+      $statistics['datasets_with_open_licence'] += $result->result->count;
+    }
+    $result = ckan_donl_make_call('package_search?fq=license_id:cc-zero');
+    if($result->success) {
+      $statistics['datasets_with_open_licence'] += $result->result->count;
+    }
+    $result = ckan_donl_make_call('package_search?fq=license_id:cc-0');
+    if($result->success) {
+      $statistics['datasets_with_open_licence'] += $result->result->count;
+    }
+    $result = ckan_donl_make_call('package_search?fq=license_id:publiek-domein');
+    if($result->success) {
+      $statistics['datasets_with_open_licence'] += $result->result->count;
+    }
+    // If we know the total amount we can calculate the amount of datasets withouth cc-zero as well
+    if(isset($statistics['total_datasets']) && isset($statistics['datasets_with_open_licence'])) {
+        $statistics['datasets_without_open_licence'] = $statistics['total_datasets'] - $statistics['datasets_with_open_licence'];
+      }
+    
+    
+    $html = '<div class="home-block-padding" style="overflow: hidden">';
+    $html .= '<div style="float:left; width: 45%;">';
+    if(isset($statistics['total_datasets'])) {
+      $html .= '<strong>Totaal aantal datasets: ' . $statistics['total_datasets'] . '</strong><br/>';
+      if(isset($statistics['datasets_with_open_licence'])) {
+        $html .= 'met open data licentie ' . $statistics['datasets_with_open_licence'] . '<br />';
+      }
+      if(isset($statistics['datasets_without_open_licence'])) {
+        $html .= 'met andere licentie ' . $statistics['datasets_without_open_licence'] . '<br />';
+      }
+    }
+    $html .= '</div>';
+    $html .= '<div style="float:right; width: 45%;">';
+    $html .= '<strong>Kwaliteit</strong><br />';
+    if(isset($statistics['last_modification_date'])) {
+      $html .= 'Laatste aanpassing ' . $statistics['last_modification_date'] . '<br />';
+    }
+    $html .= '</div>';
+    $html .= '</div>';
+    
+    cache_set('ckan_donl_statistics_content_cache', $html, 'cache', CACHE_TEMPORARY);
+   }
+  
+  return $html;
+}
+
+
+
+/**
+ * Helper function that will make an CKAN api call and give back the json object as php object.
+ */
+function ckan_donl_make_call($action, $site = 'ckan') {
+  if($site == 'drupal') {
+    global $base_url;
+    $url = $base_url . '/' . $action;
+  }
+  else {
+    $url = variable_get('ckan_url', '') . '3/action/' . $action;
+  }
+  $ch = curl_init();
+  $curlConfig = array(
+    CURLOPT_URL => $url,
+    CURLOPT_RETURNTRANSFER => TRUE,
+  );
+  curl_setopt_array($ch, $curlConfig);
+  $result = curl_exec($ch);  
+  curl_close($ch);
+
+  return json_decode($result);
+}

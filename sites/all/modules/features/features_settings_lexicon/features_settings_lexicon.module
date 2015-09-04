@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the Settings: Lexicon feature.
+ */
+
+include_once 'features_settings_lexicon.features.inc';

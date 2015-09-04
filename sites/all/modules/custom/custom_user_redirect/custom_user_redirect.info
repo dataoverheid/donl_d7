@@ -1,0 +1,8 @@
+name = Custom User Redirect
+description = A custom module that will redirect users upon login.
+package = Custom
+core = 7.x
+
+version = "7.x-1.0"
+core = "7.x"
+project = "Custom"

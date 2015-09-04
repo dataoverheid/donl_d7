@@ -1,0 +1,8 @@
+.content_section .column {
+  width: 180px;
+}
+
+select {
+  font-size: .95em;
+    height: auto;    
+}

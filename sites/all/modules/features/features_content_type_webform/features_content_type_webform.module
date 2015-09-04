@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the Content Type: Webform feature.
+ */
+
+include_once 'features_content_type_webform.features.inc';

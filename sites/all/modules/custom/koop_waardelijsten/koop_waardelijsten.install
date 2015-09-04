@@ -1,0 +1,10 @@
+<?php
+function koop_waardelijsten_install() {
+  // Create the vocabulary if it doesn't already exists
+  if(!$vocabulary = taxonomy_vocabulary_machine_name_load('taxonomiebeleidsagenda')) {
+    $vocabulary = new stdClass;
+    $vocabulary->name = 'Taxonomiebeleidsagenda';
+    $vocabulary->machine_name = 'taxonomiebeleidsagenda';
+    taxonomy_vocabulary_save($vocabulary);
+  }
+}

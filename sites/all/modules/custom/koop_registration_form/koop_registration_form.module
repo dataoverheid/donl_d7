@@ -1,0 +1,171 @@
+<?PHP
+/**
+ *
+ */
+function koop_registration_form_form_user_login_alter(&$form, &$form_state) {
+  $form['actions']['links'] = array('#type' => 'container', '#prefix' => '<ul>', '#suffix' => '</ul>');
+  $form['actions']['links']['register'] = array('#markup' => '<li>' . l(t('Create new account'), 'user/register') . '</li>');
+  $form['actions']['links']['forgot_password'] = array('#markup' => '<li>' . l(t('Forgot username or password'), 'user/password') . '</li>');
+}
+
+
+
+/**
+ * We'll have to alter the registration form to meet up with the requirements of being able to
+ * fill in different fields depending on the type off user account.
+ */
+function koop_registration_form_form_user_register_form_alter(&$form, &$form_state) {
+  if(current_path() != 'admin/people/create') {
+    if (!empty($form_state['step']) && $form_state['step'] == 2) {
+      koop_registration_form_form_user_register_form_alter_step_2($form, $form_state);
+    }
+    else {
+      koop_registration_form_form_user_register_form_alter_step_1($form, $form_state);
+    }
+  }
+  else {
+    //for the admin create user we only limit the amount of required fields.
+    foreach($form as $key => $value) {
+      if(is_string($key)) {
+        if(substr($key, 0, 9) == 'field_pr_') {
+          // Why does this form has to be this annoying >_>
+          $form[$key][LANGUAGE_NONE]['#required'] = FALSE;
+          $form[$key][LANGUAGE_NONE][0]['value']['#required'] = FALSE;
+          $form[$key][LANGUAGE_NONE][0]['email']['#required'] = FALSE;
+        }
+      }
+    }
+  }
+}
+
+
+
+/**
+ * On this step we'll only show a box where the user can select the type of account he needs
+ */
+function koop_registration_form_form_user_register_form_alter_step_1(&$form, &$form_state) {
+  $form_state['step'] = 1;
+
+  $form['select_account_type'] = array(
+    '#type' => 'select',
+    '#title' => 'Wilt u een account voor',
+    '#required' => TRUE,
+    '#options' => array(
+      'Data-eigenaar' => 'Data-eigenaar',
+      'Beheerder' => 'Beheerder',
+      'Gebruiker' => 'Gebruiker',
+    ),
+    '#default_value' => 'Data-eigenaar',
+  );
+
+  unset($form['account']);
+  unset($form['field_pr_organisatienaam']);
+  unset($form['field_pr_organisatienaam_plat']);
+  unset($form['field_pr_afdeling']);
+  unset($form['field_pr_adres_organisatie']);
+  unset($form['field_pr_functie']);
+  unset($form['field_pr_telefoonnummer']);
+  unset($form['field_pr_registratiehouder']);
+  unset($form['field_pr_verstrekker']);
+  unset($form['field_pr_catalogusbeheerder']);
+  unset($form['field_pr_persoonlijke_email']);
+  unset($form['field_pr_foto']);
+  unset($form['field_pr_algemeen_email']);
+
+  unset($form['actions']['submit']);
+  unset($form['#submit']);
+  unset($form['#validate']);
+
+  $form['actions']['next'] = array(
+    '#type' => 'submit',
+    '#value' => 'Volgende',
+    '#submit' => array('koop_registration_form_form_user_register_form_next'),
+    '#limit_validation_errors' => array(),
+  );
+
+  $form_state['submit'] = array('koop_registration_form_form_user_register_form_next');
+
+  $form_state['rebuild'] = TRUE;
+  unset($form_state['redirect']);
+}
+
+
+
+/**
+ * On this page the user has to fill in all the fields. Depending on the choice he made in the 
+ * first step we'll disable some of the fields as they aren't needed.
+ */
+function koop_registration_form_form_user_register_form_alter_step_2(&$form, &$form_state) {  
+  if($form_state['account_type'] == 'Data-eigenaar') {
+    unset($form['field_pr_organisatienaam_plat']);
+  }
+  elseif($form_state['account_type'] == 'Beheerder') {
+    unset($form['field_pr_organisatienaam']);
+    unset($form['field_pr_registratiehouder']);
+    unset($form['field_pr_verstrekker']);
+    unset($form['field_pr_catalogusbeheerder']);
+  }
+  elseif($form_state['account_type'] == 'Gebruiker') {
+    unset($form['field_pr_organisatienaam']);
+    unset($form['field_pr_afdeling']);
+    unset($form['field_pr_adres_organisatie']);
+    unset($form['field_pr_functie']);
+    unset($form['field_pr_registratiehouder']);
+    unset($form['field_pr_verstrekker']);
+    unset($form['field_pr_catalogusbeheerder']);
+    unset($form['field_pr_foto']);
+    unset($form['field_pr_algemeen_email']);
+  }
+
+  // Load the selected role and give this user that role.
+  $role = user_role_load_by_name($form_state['account_type']);
+  $form['account']['roles']['#default_value'] = array($role->rid);
+}
+
+
+
+/**
+ * Function that will set the the multistep form to the next step
+ */
+function koop_registration_form_form_user_register_form_next($form, &$form_state) {
+  $form_state['account_type'] = $form_state['input']['select_account_type'];
+  $form_state['step'] = 2;
+  $form_state['rebuild'] = TRUE;
+}
+
+
+/**
+ * We must also alter the user profile page.
+ */
+function koop_registration_form_form_user_profile_form_alter(&$form, &$form_state, $form_id) {
+  if(in_array('Data-eigenaar', $form_state['user']->roles)) {
+    unset($form['field_pr_organisatienaam']);
+  }
+  elseif(in_array('Beheerder', $form_state['user']->roles)) {
+    unset($form['field_pr_organisatienaam_plat']);
+    unset($form['field_pr_registratiehouder']);
+    unset($form['field_pr_verstrekker']);
+    unset($form['field_pr_catalogusbeheerder']);
+  }
+  elseif(in_array('Gebruiker', $form_state['user']->roles)) {
+    unset($form['field_pr_organisatienaam_plat']);
+    unset($form['field_pr_afdeling']);
+    unset($form['field_pr_adres_organisatie']);
+    unset($form['field_pr_functie']);
+    unset($form['field_pr_registratiehouder']);
+    unset($form['field_pr_verstrekker']);
+    unset($form['field_pr_catalogusbeheerder']);
+    unset($form['field_pr_foto']);
+    unset($form['field_pr_algemeen_email']);
+  }
+  else {
+    unset($form['field_pr_afdeling']);
+    unset($form['field_pr_adres_organisatie']);
+    unset($form['field_pr_functie']);
+    unset($form['field_pr_registratiehouder']);
+    unset($form['field_pr_verstrekker']);
+    unset($form['field_pr_catalogusbeheerder']);
+    unset($form['field_pr_foto']);
+    unset($form['field_pr_algemeen_email']);
+  }
+}

@@ -1,0 +1,4 @@
+nl-NL:Nederlands
+en-GB:Engels
+de-DE:Duits
+fr-FR:Frans

@@ -1,0 +1,220 @@
+<?PHP
+/**
+ * Create the directory where we'll store the files.
+ */
+function koop_theme_install() {
+  if(!file_exists('public://koop_theme')) {
+    drupal_mkdir('public://koop_theme', 0755);
+  }
+}
+
+
+
+/**
+ * Remove the directory where we've stored the files.
+ */
+function koop_theme_uninstall() {
+  if(file_exists('public://koop_theme')) {
+    drupal_rmdir('public://koop_theme');
+  }
+}
+
+
+
+/**
+ * Implementation of hook_menu();
+ */
+function koop_theme_menu() {
+  $items['koop_theme/get/header'] = array(
+    'page callback' => 'koop_theme_get_header',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+  
+  $items['koop_theme/get/secondary_header'] = array(
+    'page callback' => 'koop_theme_get_secondary_header',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+  
+  $items['koop_theme/get/footer'] = array(
+    'page callback' => 'koop_theme_get_footer',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+  
+  return $items;
+}
+
+
+
+/**
+ * Function that returns a renderd header.
+ */
+function koop_theme_get_header() {
+  $output = '';
+
+  $header = fopen('public://koop_theme/header.html', 'r');
+  $output .= fread($header, filesize('public://koop_theme/header.html'));
+  fclose($header);
+
+  $result = db_select('block', 'b')
+    ->fields('b', array('module', 'delta'))
+    ->condition('region', 'menu', '=')
+    ->condition('theme', variable_get('theme_default', ''), '=')
+    ->orderBy('weight', 'ASC')
+    ->execute();
+  $output .= '<div id="navigation">';
+  while($record = $result->fetchAssoc()) {
+    $block = block_load($record['module'], $record['delta']);
+    $blocks = array($block);
+    $render = _block_get_renderable_array(_block_render_blocks($blocks));
+    $output .= render($render);
+  }
+  $output .= '</div>';
+  print $output;
+}
+
+
+
+/**
+ * Function that returns a renderd header.
+ */
+function koop_theme_get_secondary_header() {
+  $output = '';
+
+  $result = db_select('block', 'b')
+    ->fields('b', array('module', 'delta'))
+    ->condition('region', 'secondary_menu', '=')
+    ->condition('theme', variable_get('theme_default', ''), '=')
+    ->orderBy('weight', 'ASC')
+    ->execute();
+  $output .= '';
+  while($record = $result->fetchAssoc()) {
+    $block = block_load($record['module'], $record['delta']);
+    $render = _block_get_renderable_array(_block_render_blocks(array($block)));
+    $output .= render($render);
+  }
+  print $output;
+}
+
+
+
+
+/**
+ * Function that returns a renderd footer.
+ */
+function koop_theme_get_footer() {
+  $output = '<div class="clearfix">';
+
+  $result = db_select('block', 'b')
+    ->fields('b', array('module', 'delta'))
+    ->condition('region', 'footer_clearfix1', '=')
+    ->condition('theme', variable_get('theme_default', ''), '=')
+    ->orderBy('weight', 'ASC')
+    ->execute();
+  $output .= '<div class="column first_column">';
+  while($record = $result->fetchAssoc()) {
+    $block = block_load($record['module'], $record['delta']);
+    $render = _block_get_renderable_array(_block_render_blocks(array($block)));
+    $output .= render($render);
+  }
+  $output .= '</div>';
+  
+  $result = db_select('block', 'b')
+    ->fields('b', array('module', 'delta'))
+    ->condition('region', 'footer_clearfix2', '=')
+    ->condition('theme', variable_get('theme_default', ''), '=')
+    ->orderBy('weight', 'ASC')
+    ->execute();
+  $output .= '<div class="column">';
+  while($record = $result->fetchAssoc()) {
+    $block = block_load($record['module'], $record['delta']);
+    $render = _block_get_renderable_array(_block_render_blocks(array($block)));
+    $output .= render($render);
+  }
+  $output .= '</div>';
+  
+  $result = db_select('block', 'b')
+    ->fields('b', array('module', 'delta'))
+    ->condition('region', 'footer_clearfix3', '=')
+    ->condition('theme', variable_get('theme_default', ''), '=')
+    ->orderBy('weight', 'ASC')
+    ->execute();
+  $output .= '<div class="column">';
+  while($record = $result->fetchAssoc()) {
+    $block = block_load($record['module'], $record['delta']);
+    $render = _block_get_renderable_array(_block_render_blocks(array($block)));
+    $output .= render($render);
+  }
+  $output .= '</div>';
+  
+  $output .= '</div>';
+  
+  $result = db_select('block', 'b')
+    ->fields('b', array('module', 'delta'))
+    ->condition('region', 'footer', '=')
+    ->condition('theme', variable_get('theme_default', ''), '=')
+    ->orderBy('weight', 'ASC')
+    ->execute();
+  while($record = $result->fetchAssoc()) {
+    $block = block_load($record['module'], $record['delta']);
+    $render = _block_get_renderable_array(_block_render_blocks(array($block)));
+    $output .= render($render);
+  }
+
+  print $output;
+}
+
+
+
+/**
+ * Cron function to create the theme files which ckan can use.
+ */
+function koop_theme_cron() {
+  global $base_url;
+  $correct_status = array(200, 201, 202, 301, 302, 303, 304, 305, 307);
+
+  $curl = curl_init($base_url);
+  curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+  $html = curl_exec($curl);
+  if (curl_error($curl)) {
+    die(curl_error($curl));
+  }
+  $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+  curl_close($curl);
+
+  if(in_array($status, $correct_status)) {
+    $dom = new DOMDocument;
+    $dom->loadHTML($html);
+
+    $tmp = $dom->getElementById('header');
+    $head = new DOMDocument;
+    foreach($tmp->childNodes as $x) {
+      $head->appendChild($head->importNode($x, TRUE));
+    }
+    $head->removeChild($head->getElementById('navigation'));
+    file_put_contents('public://koop_theme/header.html', $head->saveHTML());
+  } else {
+    watchdog('koop_theme', 'Couldn\'t refresh theme files', array(), WATCHDOG_WARNING);
+  }
+}
+
+
+
+/**
+ * Hook on the settings page so we can add our additional theme settings.
+ */
+function koop_theme_form_system_site_information_settings_alter(&$form, &$form_state) {
+  $form['site_information']['site_name2'] = array(
+    '#type' => 'textfield',
+    '#title' => 'Subnaam van de website',
+    '#default_value' => variable_get('site_name2', ''),
+    '#size' => 60,
+  );
+  
+  $form['site_information']['site_name']['#weight'] = 1;
+  $form['site_information']['site_name2']['#weight'] = 11;
+  $form['site_information']['site_slogan']['#weight'] = 21;
+  $form['site_information']['site_mail']['#weight'] = 31;
+}
