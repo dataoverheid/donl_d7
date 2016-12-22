@@ -1,0 +1,292 @@
+<?php
+
+/**
+ * Implements hook_schema().
+ */
+function donl_dashboard_datasets_schema() {
+  $schema = array();
+
+  $schema['donl_dashboard_stats_datasets'] = array(
+    'fields' => array(
+      'timestamp' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+      'catalogus_id' => array(
+        'type' => 'varchar',
+        'length' => 36,
+        'not null' => TRUE,
+      ),
+      'theme' => array(
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => FALSE,
+      ),
+      'open' => array(
+        'type' => 'int',
+        'size' => 'normal',
+        'not null' => FALSE,
+        'default_value' => 0,
+      ),
+      'closed' => array(
+        'type' => 'int',
+        'size' => 'normal',
+        'not null' => FALSE,
+        'default_value' => 0,
+      ),
+    ),
+    'primary key' => array('timestamp', 'catalogus_id', 'theme'),
+  );
+
+  $schema['donl_dashboard_catalogus'] = array(
+    'fields' => array(
+      'catalogus_id' => array(
+        'type' => 'varchar',
+        'length' => 36,
+        'not null' => TRUE,
+      ),
+      'catalogus_name' => array(
+        'type' => 'varchar',
+        'length' => 256,
+        'not null' => TRUE,
+      ),
+      'catalogus_name_human' => array(
+        'type' => 'varchar',
+        'length' => 256,
+        'not null' => TRUE,
+      ),
+    ),
+    'primary key' => array('catalogus_id'),
+  );
+
+  return $schema;
+}
+
+
+/**
+ * Set some nice default values from a year ago.
+ */
+function donl_dashboard_datasets_install() {
+  $result = db_truncate('donl_dashboard_stats_datasets')
+    ->execute();
+
+  $query = db_insert('donl_dashboard_stats_datasets');
+  $query->fields(array('timestamp', 'catalogus_id', 'theme', 'open', 'closed'));
+  $query->values(array(
+    'timestamp' => '1420070400', // Jan
+    'catalogus_id' => 'ccb3699d-dc60-4496-8eb9-9e2e4e6fab48',
+    'theme' => '',
+    'open' => 373,
+    'closed' => 0,
+  ));
+  $query->values(array(
+    'timestamp' => '1420070400', // Jan
+    'catalogus_id' => '2626da12-7657-460e-9217-92ec439e1c6c',
+    'theme' => '',
+    'open' => 2885,
+    'closed' => 0,
+  ));
+  $query->values(array(
+    'timestamp' => '1422748800', // Feb
+    'catalogus_id' => 'ccb3699d-dc60-4496-8eb9-9e2e4e6fab48',
+    'theme' => '',
+    'open' => 373,
+    'closed' => 0,
+  ));
+  $query->values(array(
+    'timestamp' => '1422748800', // Feb
+    'catalogus_id' => '2626da12-7657-460e-9217-92ec439e1c6c',
+    'theme' => '',
+    'open' => 2877,
+    'closed' => 0,
+  ));
+  $query->values(array(
+    'timestamp' => '1425168000', // Mar
+    'catalogus_id' => 'ccb3699d-dc60-4496-8eb9-9e2e4e6fab48',
+    'theme' => '',
+    'open' => 373,
+    'closed' => 0,
+  ));
+  $query->values(array(
+    'timestamp' => '1425168000', // Mar
+    'catalogus_id' => '2626da12-7657-460e-9217-92ec439e1c6c',
+    'theme' => '',
+    'open' => 2810,
+    'closed' => 0,
+  ));
+  $query->values(array(
+    'timestamp' => '1427846400', // Apr
+    'catalogus_id' => 'ccb3699d-dc60-4496-8eb9-9e2e4e6fab48',
+    'theme' => '',
+    'open' => 334,
+    'closed' => 0,
+  ));
+  $query->values(array(
+    'timestamp' => '1427846400', // Apr
+    'catalogus_id' => '2626da12-7657-460e-9217-92ec439e1c6c',
+    'theme' => '',
+    'open' => 2200,
+    'closed' => 0,
+  ));
+  $query->values(array(
+    'timestamp' => '1427846400', // Apr
+    'catalogus_id' => '845f2cf5-6f46-4e16-b3b8-eca77d63c74b',
+    'theme' => '',
+    'open' => 3664,
+    'closed' => 0,
+  ));
+  $query->values(array(
+    'timestamp' => '1430438400', // Mei
+    'catalogus_id' => 'ccb3699d-dc60-4496-8eb9-9e2e4e6fab48',
+    'theme' => '',
+    'open' => 335,
+    'closed' => 0,
+  ));
+  $query->values(array(
+    'timestamp' => '1430438400', // Mei
+    'catalogus_id' => '2626da12-7657-460e-9217-92ec439e1c6c',
+    'theme' => '',
+    'open' => 2565,
+    'closed' => 0,
+  ));
+  $query->values(array(
+    'timestamp' => '1430438400', // Mei
+    'catalogus_id' => '845f2cf5-6f46-4e16-b3b8-eca77d63c74b',
+    'theme' => '',
+    'open' => 3665,
+    'closed' => 0,
+  ));
+  $query->values(array(
+    'timestamp' => '1433116800', // Jun
+    'catalogus_id' => 'ccb3699d-dc60-4496-8eb9-9e2e4e6fab48',
+    'theme' => '',
+    'open' => 329,
+    'closed' => 0,
+  ));
+  $query->values(array(
+    'timestamp' => '1433116800', // Jun
+    'catalogus_id' => '2626da12-7657-460e-9217-92ec439e1c6c',
+    'theme' => '',
+    'open' => 2500,
+    'closed' => 0,
+  ));
+  $query->values(array(
+    'timestamp' => '1433116800', // Jun
+    'catalogus_id' => '845f2cf5-6f46-4e16-b3b8-eca77d63c74b',
+    'theme' => '',
+    'open' => 3663,
+    'closed' => 0,
+  ));
+  $query->values(array(
+    'timestamp' => '1435708800', // Jul
+    'catalogus_id' => 'ccb3699d-dc60-4496-8eb9-9e2e4e6fab48',
+    'theme' => '',
+    'open' => 338,
+    'closed' => 0,
+  ));
+  $query->values(array(
+    'timestamp' => '1435708800', // Jul
+    'catalogus_id' => '2626da12-7657-460e-9217-92ec439e1c6c',
+    'theme' => '',
+    'open' => 2849,
+    'closed' => 0,
+  ));
+  $query->values(array(
+    'timestamp' => '1435708800', // Jul
+    'catalogus_id' => '845f2cf5-6f46-4e16-b3b8-eca77d63c74b',
+    'theme' => '',
+    'open' => 3762,
+    'closed' => 0,
+  ));
+  $query->values(array(
+    'timestamp' => '1441065600', // Sep
+    'catalogus_id' => 'ccb3699d-dc60-4496-8eb9-9e2e4e6fab48',
+    'theme' => '',
+    'open' => 343,
+    'closed' => 0,
+  ));
+  $query->values(array(
+    'timestamp' => '1441065600', // Sep
+    'catalogus_id' => '2626da12-7657-460e-9217-92ec439e1c6c',
+    'theme' => '',
+    'open' => 2940,
+    'closed' => 0,
+  ));
+  $query->values(array(
+    'timestamp' => '1441065600', // Sep
+    'catalogus_id' => '845f2cf5-6f46-4e16-b3b8-eca77d63c74b',
+    'theme' => '',
+    'open' => 3851,
+    'closed' => 0,
+  ));
+  $query->values(array(
+    'timestamp' => '1443657600', // Okt
+    'catalogus_id' => 'ccb3699d-dc60-4496-8eb9-9e2e4e6fab48',
+    'theme' => '',
+    'open' => 339,
+    'closed' => 0,
+  ));
+  $query->values(array(
+    'timestamp' => '1443657600', // Okt
+    'catalogus_id' => '2626da12-7657-460e-9217-92ec439e1c6c',
+    'theme' => '',
+    'open' => 2740,
+    'closed' => 0,
+  ));
+  $query->values(array(
+    'timestamp' => '1443657600', // Okt
+    'catalogus_id' => '845f2cf5-6f46-4e16-b3b8-eca77d63c74b',
+    'theme' => '',
+    'open' => 3892,
+    'closed' => 0,
+  ));
+  $query->values(array(
+    'timestamp' => '1446336000', // Nov
+    'catalogus_id' => 'ccb3699d-dc60-4496-8eb9-9e2e4e6fab48',
+    'theme' => '',
+    'open' => 352,
+    'closed' => 0,
+  ));
+  $query->values(array(
+    'timestamp' => '1446336000', // Nov
+    'catalogus_id' => '2626da12-7657-460e-9217-92ec439e1c6c',
+    'theme' => '',
+    'open' => 3017,
+    'closed' => 0,
+  ));
+  $query->values(array(
+    'timestamp' => '1446336000', // Nov
+    'catalogus_id' => '845f2cf5-6f46-4e16-b3b8-eca77d63c74b',
+    'theme' => '',
+    'open' => 3946,
+    'closed' => 0,
+  ));
+  $query->values(array(
+    'timestamp' => '1448928000', // Dec
+    'catalogus_id' => 'ccb3699d-dc60-4496-8eb9-9e2e4e6fab48',
+    'theme' => '',
+    'open' => 378,
+    'closed' => 0,
+  ));
+  $query->values(array(
+    'timestamp' => '1448928000', // Dec
+    'catalogus_id' => '2626da12-7657-460e-9217-92ec439e1c6c',
+    'theme' => '',
+    'open' => 3020,
+    'closed' => 0,
+  ));
+  $query->values(array(
+    'timestamp' => '1448928000', // Dec
+    'catalogus_id' => '845f2cf5-6f46-4e16-b3b8-eca77d63c74b',
+    'theme' => '',
+    'open' => 3855,
+    'closed' => 0,
+  ));
+  $query->execute();
+}
+
+
+function donl_dashboard_datasets_update_7001() {
+  $result = db_truncate('donl_dashboard_stats_datasets')
+    ->execute();
+}

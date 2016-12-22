@@ -1,0 +1,161 @@
+<?php
+
+function donl_widget_menu() {
+  $items['widget'] = array(
+    'title' => 'Generate widget',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('donl_widget_form'),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+
+  return $items;
+}
+
+
+function donl_widget_form($form, &$form_state) {
+  $form['organisation'] = array(
+    '#type' => 'select',
+    '#title' => t('Organisation'),
+    '#options' => array('' => t('Select') . ' ' . t('Organisation')) + donl_widget_get_organisations(),
+    '#default_value' => (isset($form_state['values']['organisation']) && !empty($form_state['values']['organisation']) ? $form_state['values']['organisation'] : ''),
+  );
+
+  $form['theme'] = array(
+    '#type' => 'select',
+    '#title' => t('Theme'),
+    '#options' => array('' => t('Select') . ' ' . t('Theme')) + donl_widget_get_themes(),
+    '#default_value' => (isset($form_state['values']['theme']) && !empty($form_state['values']['theme']) ? $form_state['values']['theme'] : ''),
+  );
+
+  $form['license'] = array(
+    '#type' => 'select',
+    '#title' => t('License'),
+    '#options' => array('' => t('Select') . ' ' . t('license')) + donl_widget_get_licenses(),
+    '#default_value' => (isset($form_state['values']['license']) && !empty($form_state['values']['license']) ? $form_state['values']['license'] : ''),
+  );
+
+  $form['limit'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Amount of results'),
+    '#description' => t('Must be between 1 and 50 results'),
+    '#size' => 2,
+    '#required' => TRUE,
+    '#default_value' => (isset($form_state['values']['limit']) && !empty($form_state['values']['limit']) ? $form_state['values']['limit'] : 5),
+  );
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Generate code'),
+    '#suffix' => '<div class="form-spacing"></div>',
+  );
+
+  $ckan_url = substr(variable_get('ckan_url', ''), 0, -4);
+
+  if (isset($form_state['values']['url'])) {
+    $form['markup-url']['#markup'] = '<div class="code-block">';
+    $form['markup-url']['#markup'] .= t('You can use the code below to create a widget on your own site.');
+    $form['markup-url']['#markup'] .= '<pre>';
+    $form['markup-url']['#markup'] .= '&lt;script type="text/css src="donl_widget.css"&gt;&lt;/script&gt;' . '<br />';
+    $form['markup-url']['#markup'] .= '&lt;script type="text/javascript" src="donl_widget.js"&gt;&lt;/script&gt;' . '<br />';
+    $form['markup-url']['#markup'] .= '&lt;div id="donl-dataset-widget"&gt;&lt;script type="text/javascript"&gt;generate_donl_widget(\'' . $ckan_url . '\',\'' . $form_state['values']['url'] . '\');&lt;/script&gt;&lt;/div&gt;';
+    $form['markup-url']['#markup'] .= '</pre>';
+    $form['markup-url']['#markup'] .= t('Requirements') . ': <ul>';
+    $form['markup-url']['#markup'] .= '<li>' . t('Download') . ' <a href="' . drupal_get_path('module', 'donl_widget') . '/files/donl_widget.css">donl_widget.css</a></li>';
+    $form['markup-url']['#markup'] .= '<li>' . t('Download') . ' <a href="' . drupal_get_path('module', 'donl_widget') . '/files/donl_widget.js">donl_widget.js</a></li>';
+    $form['markup-url']['#markup'] .= '<li><a href="https://jquery.com/">Jquery</a></li>';
+    $form['markup-url']['#markup'] .= '</ul></div>';
+  }
+
+  $form['#attached']['css'][] = drupal_get_path('module', 'donl_widget') . '/files/donl_widget.css';
+  $form['#attached']['js'][] = drupal_get_path('module', 'donl_widget') . '/files/donl_widget.js';
+
+  $form['markup-example']['#markup'] = '<h2>' . t('Example') . '</h2><fieldset class="example-widget">';
+  $form['markup-example']['#markup'] .= '<div id="donl-dataset-widget">';
+  $form['markup-example']['#markup'] .= '<script type="text/javascript">generate_donl_widget(\'' . $ckan_url . '\',\'' . $form_state['values']['url'] . '\');</script>';
+  $form['markup-example']['#markup'] .= '</div></fieldset>';
+
+  return $form;
+}
+
+
+function donl_widget_form_validate($form, &$form_state) {
+  // @todo add validation
+}
+
+
+function donl_widget_form_submit($form, &$form_state) {
+  $form_state['rebuild'] = TRUE;
+
+  $query = array(
+    'start' => 0,
+    'rows' => 5,
+    'fq' => 'state:active',
+  );
+
+  if (isset($form_state['values']['organisation']) && !empty($form_state['values']['organisation'])) {
+    $query['fq'] .= '+maintainer_displayname:"' . urlencode($form_state['values']['organisation']) . '"';
+  }
+  if (isset($form_state['values']['license']) && !empty($form_state['values']['license'])) {
+    $query['fq'] .= '+license_id:"' . $form_state['values']['license'] . '"';
+  }
+  if (isset($form_state['values']['theme']) && !empty($form_state['values']['theme'])) {
+    $query['fq'] .= '+theme_facet:"' . $form_state['values']['theme'] . '"';
+  }
+  if (isset($form_state['values']['limit']) && !empty($form_state['values']['limit'])) {
+    if ($form_state['values']['limit'] >= 1 && $form_state['values']['limit'] <= 50) {
+      $query['rows'] = $form_state['values']['limit'];
+    }
+  }
+
+  $url = 'api/3/action/package_search?' .  urldecode(http_build_query($query));
+  $form_state['values']['url'] = $url;
+}
+
+
+function donl_widget_get_licenses() {
+  $organisations = array();
+  $result = ckan_donl_make_call('package_search?fq=state:active&facet.field=["license_id"]&facet.limit=-1&rows=0');
+  if ($result->success) {
+    if (isset($result->result->search_facets->license_id->items)) {
+      foreach ($result->result->search_facets->license_id->items as $record) {
+        $organisations[$record->name] = $record->display_name;
+      }
+    }
+  }
+
+  ksort($organisations);
+  return $organisations;
+}
+
+
+function donl_widget_get_organisations() {
+  $organisations = array();
+  $result = ckan_donl_make_call('package_search?fq=state:active&facet.field=["maintainer_displayname"]&facet.limit=-1&rows=0');
+  if ($result->success) {
+    if (isset($result->result->search_facets->maintainer_displayname->items)) {
+      foreach ($result->result->search_facets->maintainer_displayname->items as $record) {
+        $organisations[$record->name] = $record->display_name;
+      }
+    }
+  }
+
+  ksort($organisations);
+  return $organisations;
+}
+
+
+function donl_widget_get_themes() {
+  $organisations = array();
+  $result = ckan_donl_make_call('package_search?fq=state:active&facet.field=["theme_facet"]&facet.limit=-1&rows=0');
+  if ($result->success) {
+    if (isset($result->result->search_facets->theme_facet->items)) {
+      foreach ($result->result->search_facets->theme_facet->items as $record) {
+        $organisations[$record->name] = $record->display_name;
+      }
+    }
+  }
+
+  ksort($organisations);
+  return $organisations;
+}

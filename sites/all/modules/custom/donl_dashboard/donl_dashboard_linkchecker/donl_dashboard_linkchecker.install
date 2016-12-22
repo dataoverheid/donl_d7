@@ -1,0 +1,335 @@
+<?php
+
+/**
+ * Implements hook_schema().
+ */
+function donl_dashboard_linkchecker_schema() {
+  $schema = array();
+
+  $schema['donl_dashboard_link_check_datasets'] = array(
+    'description' => 'Drupal table with the status of each CKAN dataset',
+    'fields' => array(
+      'dataset_id' => array(
+        'type' => 'varchar',
+        'length' => 36,
+        'not null' => TRUE,
+      ),
+      'dataset_name' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+      ),
+      'dataset_maintainer' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+      ),
+      'dataset_catalog' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+      ),
+      'dataset_theme' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+      ),
+      'dataset_sub_theme' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+      ),
+      'dataset_state' => array(
+        'type' => 'int',
+        'size' => 'small',
+        'not null' => FALSE,
+        'default_value' => 0,
+        'description' => '1 => OK, 2 => Partially broken, 3 => Broken',
+      ),
+      'dataset_organization_type' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+      ),
+      'dataset_organization_part_of' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+      ),
+      'dataset_total_resources' => array(
+        'type' => 'int',
+        'size' => 'normal',
+        'not null' => FALSE,
+        'default_value' => 0,
+      ),
+      'dataset_working_resources' => array(
+        'type' => 'int',
+        'size' => 'normal',
+        'not null' => FALSE,
+        'default_value' => 0,
+      ),
+      'dataset_broken_resources' => array(
+        'type' => 'int',
+        'size' => 'normal',
+        'not null' => FALSE,
+        'default_value' => 0,
+      ),
+      'dataset_percentage_broken_resources' => array(
+        'type' => 'numeric',
+        'precision' => '5',
+        'scale' => '2',
+        'not null' => FALSE,
+        'default_value' => 0,
+      ),
+      'dataset_percentage_working_resources' => array(
+        'type' => 'numeric',
+        'precision' => '5',
+        'scale' => '2',
+        'not null' => FALSE,
+        'default_value' => 0,
+      ),
+      'dataset_calendar_state' => array(
+        'type' => 'varchar',
+        'length' => 64,
+        'not null' => FALSE,
+      ),
+      'dataset_date_planned' => array(
+        'type' => 'int',
+        'not null' => FALSE,
+      ),
+      'timestamp' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+    ),
+    'primary key' => array('dataset_id'),
+    'indexes' => array(
+      'donl_dashboard_link_check_datasets_dataset_id' => array('dataset_id'),
+      'donl_dashboard_link_check_datasets_dataset_eigenaar' => array('dataset_maintainer'),
+      'donl_dashboard_link_check_datasets_dataset_catalog' => array('dataset_catalog'),
+      'donl_dashboard_link_check_datasets_dataset_thema' => array('dataset_theme'),
+      'donl_dashboard_link_check_datasets_dataset_state' => array('dataset_state'),
+      'donl_dashboard_link_check_datasets_dataset_sub_thema' => array('dataset_sub_theme'),
+      'donl_dashboard_link_check_datasets_organization_type',
+      array('dataset_organization_type'),
+      'donl_dashboard_link_check_datasets_organization_part_of',
+      array('dataset_organization_part_of'),
+    ),
+  );
+
+  $schema['donl_dashboard_link_check_resources'] = array(
+    'description' => 'Drupal table with the status of each CKAN resource',
+    'fields' => array(
+      'resource_id' => array(
+        'type' => 'varchar',
+        'length' => 36,
+        'not null' => TRUE,
+      ),
+      'dataset_id' => array(
+        'type' => 'varchar',
+        'length' => 36,
+        'not null' => TRUE,
+      ),
+      'resource_name' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+      ),
+      'state' => array(
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'description' => '1 => OK, 2 => Partially broken, 3 => Broken',
+      ),
+      'state_code' => array(
+        'type' => 'varchar',
+        'length' => 8,
+        'not null' => FALSE,
+      ),
+      'state_report' => array(
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => FALSE,
+      ),
+    ),
+    'primary key' => array('resource_id', 'dataset_id'),
+    'indexes' => array(
+      'donl_dashboard_link_check_resources_resource_id' => array('resource_id'),
+      'donl_dashboard_link_check_resources_dataset_id' => array('dataset_id'),
+      'donl_dashboard_link_check_resources_status' => array('state'),
+      'donl_dashboard_link_check_resources_report' => array('state_report'),
+    ),
+  );
+
+  return $schema;
+}
+
+
+function donl_dashboard_linkchecker_update_7001() {
+  $schema = array(
+    'type' => 'int',
+    'size' => 'normal',
+    'not null' => FALSE,
+    'default_value' => 0,
+  );
+  db_add_field('donl_dashboard_link_check_datasets', 'dataset_working_resources', $schema);
+
+  $schema = array(
+    'type' => 'int',
+    'size' => 'normal',
+    'not null' => FALSE,
+    'default_value' => 0,
+  );
+  db_add_field('donl_dashboard_link_check_datasets', 'dataset_broken_resources', $schema);
+
+  $schema = array(
+    'type' => 'numeric',
+    'precision' => '5',
+    'scale' => '2',
+    'not null' => FALSE,
+    'default_value' => 0,
+  );
+  db_add_field('donl_dashboard_link_check_datasets', 'dataset_percentage_broken_resources', $schema);
+}
+
+function donl_dashboard_linkchecker_update_7003() {
+  $schema = array(
+    'type' => 'varchar',
+    'length' => 255,
+    'not null' => FALSE,
+  );
+  db_add_field('donl_dashboard_link_check_datasets', 'dataset_organization_type', $schema);
+  db_add_index('donl_dashboard_link_check_datasets', 'donl_dashboard_link_check_datasets_organization_type', array('dataset_organization_type'));
+
+  $schema = array(
+    'type' => 'varchar',
+    'length' => 255,
+    'not null' => FALSE,
+  );
+  db_add_field('donl_dashboard_link_check_datasets', 'dataset_organization_part_of', $schema);
+  db_add_index('donl_dashboard_link_check_datasets', 'donl_dashboard_link_check_datasets_organization_part_of', array('dataset_organization_part_of'));
+}
+
+function donl_dashboard_linkchecker_update_7004() {
+  $schema = array(
+    'type' => 'numeric',
+    'precision' => '5',
+    'scale' => '2',
+    'not null' => FALSE,
+    'default_value' => 0,
+  );
+  db_add_field('donl_dashboard_link_check_datasets', 'dataset_percentage_working_resources', $schema);
+}
+
+function donl_dashboard_linkchecker_update_7005() {
+  $schema = array(
+    'type' => 'int',
+    'size' => 'normal',
+    'not null' => FALSE,
+    'default_value' => 0,
+  );
+  db_add_field('donl_dashboard_link_check_datasets', 'dataset_total_resources', $schema);
+}
+
+function donl_dashboard_linkchecker_update_7007() {
+  $schema = array(
+    'type' => 'varchar',
+    'length' => 64,
+    'not null' => FALSE,
+  );
+  db_add_field('donl_dashboard_link_check_datasets', 'dataset_calendar_state', $schema);
+}
+
+function donl_dashboard_linkchecker_update_7008() {
+  $schema = array(
+    'type' => 'int',
+    'not null' => FALSE,
+  );
+  db_add_field('donl_dashboard_link_check_datasets', 'dataset_date_planned', $schema);
+}
+
+/**
+ * Fix the broken database on pre-PROD
+ */
+function donl_dashboard_linkchecker_update_7010() {
+  if (!db_field_exists('donl_dashboard_link_check_datasets', 'dataset_total_resources')) {
+    $schema = array(
+      'type' => 'int',
+      'size' => 'normal',
+      'not null' => FALSE,
+      'default_value' => 0,
+    );
+    db_add_field('donl_dashboard_link_check_datasets', 'dataset_total_resources', $schema);
+  }
+
+  if (!db_field_exists('donl_dashboard_link_check_datasets', 'dataset_percentage_working_resources')) {
+    $schema = array(
+      'type' => 'numeric',
+      'precision' => '5',
+      'scale' => '2',
+      'not null' => FALSE,
+      'default_value' => 0,
+    );
+    db_add_field('donl_dashboard_link_check_datasets', 'dataset_percentage_working_resources', $schema);
+  }
+
+  if (!db_field_exists('donl_dashboard_link_check_datasets', 'dataset_organization_type')) {
+    $schema = array(
+      'type' => 'varchar',
+      'length' => 255,
+      'not null' => FALSE,
+    );
+    db_add_field('donl_dashboard_link_check_datasets', 'dataset_organization_type', $schema);
+    db_add_index('donl_dashboard_link_check_datasets', 'donl_dashboard_link_check_datasets_organization_type', array('dataset_organization_type'));
+  }
+
+  if (!db_field_exists('donl_dashboard_link_check_datasets', 'dataset_organization_part_of')) {
+    $schema = array(
+      'type' => 'varchar',
+      'length' => 255,
+      'not null' => FALSE,
+    );
+    db_add_field('donl_dashboard_link_check_datasets', 'dataset_organization_part_of', $schema);
+    db_add_index('donl_dashboard_link_check_datasets', 'donl_dashboard_link_check_datasets_organization_part_of', array('dataset_organization_part_of'));
+  }
+
+  if (!db_field_exists('donl_dashboard_link_check_datasets', 'dataset_calendar_state')) {
+    $schema = array(
+      'type' => 'varchar',
+      'length' => 64,
+      'not null' => FALSE,
+    );
+    db_add_field('donl_dashboard_link_check_datasets', 'dataset_calendar_state', $schema);
+  }
+
+  if (!db_field_exists('donl_dashboard_link_check_datasets', 'dataset_date_planned')) {
+    $schema = array(
+      'type' => 'int',
+      'not null' => FALSE,
+    );
+    db_add_field('donl_dashboard_link_check_datasets', 'dataset_date_planned', $schema);
+  }
+}
+
+function donl_dashboard_linkchecker_update_7011() {
+  $spec = array(
+    'type' => 'varchar',
+    'length' => 8,
+    'not null' => FALSE,
+  );
+  db_change_field('donl_dashboard_link_check_resources', 'state_code', 'state_code', $spec);
+
+  $spec = array(
+    'type' => 'varchar',
+    'length' => 32,
+    'not null' => FALSE,
+  );
+  db_change_field('donl_dashboard_link_check_resources', 'state_report', 'state_report', $spec);
+}
+
+function donl_dashboard_linkchecker_update_7012() {
+  // Drop all primary keys.
+  db_drop_primary_key('donl_dashboard_link_check_resources');
+  // Add all primary keys including your edits.
+  db_add_primary_key('donl_dashboard_link_check_resources', array('resource_id', 'dataset_id'));
+}

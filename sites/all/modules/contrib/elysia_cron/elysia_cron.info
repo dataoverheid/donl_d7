@@ -4,9 +4,9 @@ core = 7.x
 files[] = elysia_cron_update.php
 files[] = elysia_drupalconv.php
 configure = admin/config/system/cron
-; Information added by drupal.org packaging script on 2012-03-13
-version = "7.x-2.1"
+; Information added by drupal.org packaging script on 2013-09-30
+version = "7.x-2.1+9-dev"
 core = "7.x"
 project = "elysia_cron"
-datestamp = "1331658045"
+datestamp = "1380576625"
 

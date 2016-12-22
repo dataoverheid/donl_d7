@@ -150,7 +150,7 @@ function loadFormEvents() {
  -----------------------------------------------*/
 $(window).scroll(function(){
     if($(this).scrollTop() !== 0) {
-        $('#toTop').fadeIn();	
+        $('#toTop').fadeIn();
     } else {
         $('#toTop').fadeOut();
     }
@@ -167,7 +167,7 @@ $.fn.collapsable = function () {
         var navigatie = $(knopje.attr('href'));
         var smallMenu = function () {
             return (document.body.clientWidth < 500);
-        }; 
+        };
         if (smallMenu()) {
             navigatie.hide();
         }
@@ -535,4 +535,4 @@ function chapTreeUnfoldAll() {
             $(this).addClass("folding");
             $(this).nextAll("span:first").addClass("hidden");
 		});
-}        
+}

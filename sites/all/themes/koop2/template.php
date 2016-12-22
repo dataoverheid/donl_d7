@@ -4,10 +4,12 @@
  */
 function koop2_process_page(&$variables) {
   $variables['site_name2'] = variable_get('site_name2', '');
- 
-  drupal_add_js("$(document).ready(function () {
-    loadPageEventsAndPresentation();
-  });", array('type' => 'inline', 'group' => JS_THEME, 'scope' => 'header'));
+
+  drupal_add_js('(function ($) {
+    $(document).ready(function () {
+      loadPageEventsAndPresentation();
+    });
+  })(jQuery);', array('type' => 'inline', 'group' => JS_THEME, 'scope' => 'header'));
      
 //  drupal_add_js("Modernizr.load([{test : Modernizr.mq('only all'),nope : 'js/respond.min.js'},{test: Modernizr.touch,yep: 'js/KOOP_webapp_touch.js'},,]);", array('type' => 'inline', 'group' => JS_THEME, 'scope' => 'header'));
 }
@@ -98,4 +100,20 @@ function koop2_breadcrumb($variables) {
     $output .= '<div class="breadcrumb">' . implode(' ', $breadcrumb) . '</div>';
     return $output;
   }
+}
+
+function koop2_preprocess_html($variables) {
+
+  $meta_ie_edge= array(
+      '#type' => 'html_tag',
+      '#tag' => 'meta',
+      '#attributes' => array(
+          'http-equiv' => 'X-UA-Compatible',
+          'content' =>  'IE=edge,chrome=1',
+      ),
+      '#weight' => -99999,
+  );
+  // Add header meta tag for IE to head
+  drupal_add_html_head($meta_ie_edge, 'meta_ie_edge');
+
 }

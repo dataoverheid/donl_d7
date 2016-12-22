@@ -10,7 +10,7 @@
 function features_content_type_evenementen_field_default_field_instances() {
   $field_instances = array();
 
-  // Exported field_instance: 'node-evenement-body'
+  // Exported field_instance: 'node-evenement-body'.
   $field_instances['node-evenement-body'] = array(
     'bundle' => 'evenement',
     'default_value' => NULL,
@@ -33,7 +33,7 @@ function features_content_type_evenementen_field_default_field_instances() {
     ),
     'entity_type' => 'node',
     'field_name' => 'body',
-    'label' => 'Body',
+    'label' => 'Beschrijving',
     'required' => 0,
     'settings' => array(
       'display_summary' => 0,
@@ -52,7 +52,64 @@ function features_content_type_evenementen_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-evenement-field_ev_aanmelden'
+  // Exported field_instance: 'node-evenement-field_aanmeldlink'.
+  $field_instances['node-evenement-field_aanmeldlink'] = array(
+    'bundle' => 'evenement',
+    'default_value' => NULL,
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'module' => 'link',
+        'settings' => array(),
+        'type' => 'link_default',
+        'weight' => 5,
+      ),
+      'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+    ),
+    'entity_type' => 'node',
+    'field_name' => 'field_aanmeldlink',
+    'label' => 'Meer informatie link',
+    'required' => 0,
+    'settings' => array(
+      'absolute_url' => 1,
+      'attributes' => array(
+        'class' => '',
+        'configurable_class' => 0,
+        'configurable_title' => 0,
+        'rel' => '',
+        'target' => 'default',
+        'title' => '',
+      ),
+      'display' => array(
+        'url_cutoff' => 80,
+      ),
+      'enable_tokens' => 1,
+      'rel_remove' => 'default',
+      'title' => 'optional',
+      'title_label_use_field_label' => 0,
+      'title_maxlength' => 128,
+      'title_value' => '',
+      'url' => 0,
+      'user_register_form' => FALSE,
+      'validate_url' => 1,
+    ),
+    'widget' => array(
+      'active' => 0,
+      'module' => 'link',
+      'settings' => array(),
+      'type' => 'link_field',
+      'weight' => 7,
+    ),
+  );
+
+  // Exported field_instance: 'node-evenement-field_ev_aanmelden'.
   $field_instances['node-evenement-field_ev_aanmelden'] = array(
     'bundle' => 'evenement',
     'default_value' => NULL,
@@ -92,7 +149,7 @@ function features_content_type_evenementen_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-evenement-field_ev_datum'
+  // Exported field_instance: 'node-evenement-field_ev_datum'.
   $field_instances['node-evenement-field_ev_datum'] = array(
     'bundle' => 'evenement',
     'deleted' => 0,
@@ -107,6 +164,7 @@ function features_content_type_evenementen_field_default_field_instances() {
           'multiple_from' => '',
           'multiple_number' => '',
           'multiple_to' => '',
+          'show_remaining_days' => FALSE,
         ),
         'type' => 'date_default',
         'weight' => 5,
@@ -145,7 +203,7 @@ function features_content_type_evenementen_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-evenement-field_ev_locatie'
+  // Exported field_instance: 'node-evenement-field_ev_locatie'.
   $field_instances['node-evenement-field_ev_locatie'] = array(
     'bundle' => 'evenement',
     'default_value' => NULL,
@@ -185,7 +243,7 @@ function features_content_type_evenementen_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-evenement-field_ev_organisator'
+  // Exported field_instance: 'node-evenement-field_ev_organisator'.
   $field_instances['node-evenement-field_ev_organisator'] = array(
     'bundle' => 'evenement',
     'default_value' => NULL,
@@ -228,9 +286,10 @@ function features_content_type_evenementen_field_default_field_instances() {
   // Translatables
   // Included for use with string extractors like potx.
   t('Aanmelden');
-  t('Body');
+  t('Beschrijving');
   t('Datum');
   t('Locatie');
+  t('Meer informatie link');
   t('Organisator');
 
   return $field_instances;

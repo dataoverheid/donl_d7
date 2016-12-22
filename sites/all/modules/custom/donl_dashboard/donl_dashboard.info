@@ -1,0 +1,13 @@
+name = DONL Dashboard
+description = A module which manages the dashboard for Drupal
+package = Custom
+
+version = "7.x-1.0"
+core = "7.x"
+project = "Custom"
+
+
+dependencies[] = ckan_donl
+dependencies[] = indicia_chart
+dependencies[] = donl_dashboard_datasets
+dependencies[] = donl_dashboard_linkchecker

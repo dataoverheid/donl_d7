@@ -1,0 +1,39 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"POT-Creation-Date: 2015-06-16 13:20+0200\n"
+"PO-Revision-Date: 2015-06-16 13:20+0200\n"
+"Last-Translator: NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Dutch <EMAIL@ADDRESS>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+
+
+msgid "Generate widget"
+msgstr "Bouw je eigen widget"
+
+msgid "Organisation"
+msgstr "Organisatie"
+
+msgid "Theme"
+msgstr "Thema"
+
+msgid "License"
+msgstr "Licentie"
+
+msgid "Amount of results"
+msgstr "Aantal resultaten"
+
+msgid "Must be between 1 and 50 results"
+msgstr "Aantal moet tussen de 1 en de 50 liggen"
+
+msgid "Generate code"
+msgstr "Genereer de code"
+
+msgid "You can use the code below to create a widget on your own site."
+msgstr "U kunt de onterstaande code gebruiken om de resultaten op uw eigen site te zetten."
+
+msgid "Example"
+msgstr "Voorbeeld"

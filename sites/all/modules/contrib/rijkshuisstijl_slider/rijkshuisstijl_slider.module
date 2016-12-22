@@ -1,0 +1,128 @@
+<?php
+/**
+ * @file
+ * Module including functionality for rijkshuisstijl formatted sliders.
+ */
+
+/**
+ * Implements hook_bean_types().
+ */
+function rijkshuisstijl_slider_bean_types() {
+  $plugins = array();
+
+  $plugins['rijkshuisstijl_slider'] = array(
+    'label' => t('Rijkshuisstijl Slider'),
+    'handler' => array(
+      'class' => 'RijkshuisstijlSliderBean',
+      'parent' => 'bean',
+    ),
+    'path' => drupal_get_path('module', 'rijkshuisstijl_slider') . '/plugins/bean',
+    'file' => 'RijkshuisstijlSliderBean.class.php',
+  );
+
+  return $plugins;
+}
+
+/**
+ * Implements hook_ctools_plugin_api().
+ */
+function rijkshuisstijl_slider_ctools_plugin_api() {
+  list($module, $api) = func_get_args();
+  if ($module == "bean_admin_ui" && $api == "bean") {
+    return array("version" => "5");
+  }
+}
+
+/**
+ * Implements hook_bean_types_api_info().
+ */
+function rijkshuisstijl_slider_bean_types_api_info() {
+  return array('api' => 4);
+}
+
+/**
+ * Implements hook_entity_info_alter().
+ *
+ * We add a custom view mode to field_collection_items.
+ */
+function rijkshuisstijl_slider_entity_info_alter(&$entity_info) {
+  $entity_info['field_collection_item']['view modes']['rijkshuisstijl_slider'] = array(
+    'label' => t('Rijkshuisstijl Slider'),
+    'custom settings' => TRUE,
+  );
+}
+
+/**
+ * Implements hook_preprocess_block().
+ *
+ * Add the correct classes to blocks that are rijkshuisstijl sliders.
+ * Add the required stylesheets and javascripts to the template.
+ */
+function rijkshuisstijl_slider_preprocess_block(&$variables) {
+  if ('bean' === $variables['block']->module) {
+    // Load the bean on the given delta.
+    $bean = bean_load_delta($variables['block']->delta);
+    // Check if the bean object is of the correct type (our slider).
+    if ('rijkshuisstijl_slider' === $bean->type) {
+      // Add a custom class so the styling recognize the block as a slider.
+      $variables['classes_array'][] = 'block-bean-rijkshuisstijl-slider';
+
+      // Add the CSS that is needed for styling our slider.
+      drupal_add_css(drupal_get_path('module', 'rijkshuisstijl_slider') . '/rijkshuisstijl_slider.css', array(
+        'group' => CSS_DEFAULT,
+      ));
+      // Add the JS file containing the Javascript functionality of our slider.
+      drupal_add_js(drupal_get_path('module', 'rijkshuisstijl_slider') . '/rijkshuisstijl_slider.js', array(
+        'group' => JS_DEFAULT,
+      ));
+    }
+  }
+}
+
+/**
+ * Implements hook_theme().
+ *
+ * We override the custom field_collection_item slide theming.
+ */
+function rijkshuisstijl_slider_theme($existing, $type, $theme, $path) {
+  return array(
+    'field_collection_item__field_rhs_slider_slide' => array(
+      'render element' => 'elements',
+      'template' => 'field-collection-item--field-rhs-slider-slide',
+      'path' => drupal_get_path('module', 'rijkshuisstijl_slider') . '/theme',
+    ),
+  );
+}
+
+
+/**
+ * Implements hook_image_default_styles().
+ */
+function rijkshuisstijl_slider_image_default_styles() {
+  $styles = array();
+
+  // Create image style: rijkshuisstijl_slider_slide_image.
+  $styles['rijkshuisstijl_slider_slide_image'] = array(
+    'name' => 'rijkshuisstijl_slider_slide_image',
+    'effects' => array(
+      1 => array(
+        'label' => 'Scale',
+        'help' => 'Scaling will maintain the aspect-ratio of the original image. If only a single dimension is specified, the other dimension will be calculated.',
+        'effect callback' => 'image_scale_effect',
+        'dimensions callback' => 'image_scale_dimensions',
+        'form callback' => 'image_scale_form',
+        'summary theme' => 'image_scale_summary',
+        'module' => 'image',
+        'name' => 'image_scale',
+        'data' => array(
+          'width' => '',
+          'height' => '328',
+          'upscale' => 1,
+        ),
+        'weight' => '1',
+      ),
+    ),
+  );
+
+  return $styles;
+}

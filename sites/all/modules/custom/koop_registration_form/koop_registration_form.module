@@ -8,7 +8,27 @@ function koop_registration_form_form_user_login_alter(&$form, &$form_state) {
   $form['actions']['links']['forgot_password'] = array('#markup' => '<li>' . l(t('Forgot username or password'), 'user/password') . '</li>');
 }
 
+/**
+ * implements hook_taxonomy_term_presave
+ * Send a notification mail to admin if a new organization term is added
+ */
+function koop_registration_form_taxonomy_term_presave($term){
+  if($term->vocabulary_machine_name == 'overheidsorganisatie'){
+    $site_mail=variable_get('site_mail', '');
+    $language = language_default();
+    $params = array('term'=>($term->name));
+    $from = NULL;
+    $send = FALSE;
+    drupal_mail('koop_registration_form','key',$site_mail,$language,$params);
+  }
+}
 
+/**
+ * implements hook_mail
+ */
+function koop_registration_form_mail($key,&$message,$params){
+  $message['body'][] = t('Een nieuwe gebruiker heeft zich geregistreerd met de volgende voor het systeem onbekende organisatienaam: @term', array('@term' => $params['term']));
+}
 
 /**
  * We'll have to alter the registration form to meet up with the requirements of being able to
@@ -52,7 +72,8 @@ function koop_registration_form_form_user_register_form_alter_step_1(&$form, &$f
     '#required' => TRUE,
     '#options' => array(
       'Data-eigenaar' => 'Data-eigenaar',
-      'Beheerder' => 'Beheerder',
+      // If you enable 'beheerder' again be sure to enable it in step 2 as well
+      //'Beheerder' => 'Beheerder',
       'Gebruiker' => 'Gebruiker',
     ),
     '#default_value' => 'Data-eigenaar',
@@ -99,12 +120,12 @@ function koop_registration_form_form_user_register_form_alter_step_2(&$form, &$f
   if($form_state['account_type'] == 'Data-eigenaar') {
     unset($form['field_pr_organisatienaam_plat']);
   }
-  elseif($form_state['account_type'] == 'Beheerder') {
+  /*elseif($form_state['account_type'] == 'Beheerder') {
     unset($form['field_pr_organisatienaam']);
     unset($form['field_pr_registratiehouder']);
     unset($form['field_pr_verstrekker']);
     unset($form['field_pr_catalogusbeheerder']);
-  }
+  }*/
   elseif($form_state['account_type'] == 'Gebruiker') {
     unset($form['field_pr_organisatienaam']);
     unset($form['field_pr_afdeling']);
@@ -139,7 +160,7 @@ function koop_registration_form_form_user_register_form_next($form, &$form_state
  */
 function koop_registration_form_form_user_profile_form_alter(&$form, &$form_state, $form_id) {
   if(in_array('Data-eigenaar', $form_state['user']->roles)) {
-    unset($form['field_pr_organisatienaam']);
+    unset($form['field_pr_organisatienaam_plat']);
   }
   elseif(in_array('Beheerder', $form_state['user']->roles)) {
     unset($form['field_pr_organisatienaam_plat']);
@@ -148,7 +169,7 @@ function koop_registration_form_form_user_profile_form_alter(&$form, &$form_stat
     unset($form['field_pr_catalogusbeheerder']);
   }
   elseif(in_array('Gebruiker', $form_state['user']->roles)) {
-    unset($form['field_pr_organisatienaam_plat']);
+    unset($form['field_pr_organisatienaam']);
     unset($form['field_pr_afdeling']);
     unset($form['field_pr_adres_organisatie']);
     unset($form['field_pr_functie']);

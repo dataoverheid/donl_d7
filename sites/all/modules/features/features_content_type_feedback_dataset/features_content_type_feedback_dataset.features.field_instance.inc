@@ -10,7 +10,7 @@
 function features_content_type_feedback_dataset_field_default_field_instances() {
   $field_instances = array();
 
-  // Exported field_instance: 'node-feedback_dataset-field_fd_data_eigenaar'
+  // Exported field_instance: 'node-feedback_dataset-field_fd_data_eigenaar'.
   $field_instances['node-feedback_dataset-field_fd_data_eigenaar'] = array(
     'bundle' => 'feedback_dataset',
     'default_value' => NULL,
@@ -46,11 +46,11 @@ function features_content_type_feedback_dataset_field_default_field_instances() 
         'size' => 60,
       ),
       'type' => 'text_textfield',
-      'weight' => 8,
+      'weight' => 10,
     ),
   );
 
-  // Exported field_instance: 'node-feedback_dataset-field_fd_email'
+  // Exported field_instance: 'node-feedback_dataset-field_fd_email'.
   $field_instances['node-feedback_dataset-field_fd_email'] = array(
     'bundle' => 'feedback_dataset',
     'default_value' => NULL,
@@ -86,11 +86,11 @@ function features_content_type_feedback_dataset_field_default_field_instances() 
         'size' => 60,
       ),
       'type' => 'text_textfield',
-      'weight' => 3,
+      'weight' => 12,
     ),
   );
 
-  // Exported field_instance: 'node-feedback_dataset-field_fd_feedback'
+  // Exported field_instance: 'node-feedback_dataset-field_fd_feedback'.
   $field_instances['node-feedback_dataset-field_fd_feedback'] = array(
     'bundle' => 'feedback_dataset',
     'default_value' => NULL,
@@ -130,7 +130,7 @@ function features_content_type_feedback_dataset_field_default_field_instances() 
     ),
   );
 
-  // Exported field_instance: 'node-feedback_dataset-field_fd_link_dataset'
+  // Exported field_instance: 'node-feedback_dataset-field_fd_link_dataset'.
   $field_instances['node-feedback_dataset-field_fd_link_dataset'] = array(
     'bundle' => 'feedback_dataset',
     'default_value' => NULL,
@@ -183,11 +183,11 @@ function features_content_type_feedback_dataset_field_default_field_instances() 
       'module' => 'link',
       'settings' => array(),
       'type' => 'link_field',
-      'weight' => 7,
+      'weight' => 8,
     ),
   );
 
-  // Exported field_instance: 'node-feedback_dataset-field_fd_naam'
+  // Exported field_instance: 'node-feedback_dataset-field_fd_naam'.
   $field_instances['node-feedback_dataset-field_fd_naam'] = array(
     'bundle' => 'feedback_dataset',
     'default_value' => NULL,
@@ -223,11 +223,11 @@ function features_content_type_feedback_dataset_field_default_field_instances() 
         'size' => 60,
       ),
       'type' => 'text_textfield',
-      'weight' => 2,
+      'weight' => 11,
     ),
   );
 
-  // Exported field_instance: 'node-feedback_dataset-field_fd_telefoon'
+  // Exported field_instance: 'node-feedback_dataset-field_fd_telefoon'.
   $field_instances['node-feedback_dataset-field_fd_telefoon'] = array(
     'bundle' => 'feedback_dataset',
     'default_value' => NULL,
@@ -263,11 +263,11 @@ function features_content_type_feedback_dataset_field_default_field_instances() 
         'size' => 60,
       ),
       'type' => 'text_textfield',
-      'weight' => 5,
+      'weight' => 13,
     ),
   );
 
-  // Exported field_instance: 'node-feedback_dataset-field_fd_titel_dataset'
+  // Exported field_instance: 'node-feedback_dataset-field_fd_titel_dataset'.
   $field_instances['node-feedback_dataset-field_fd_titel_dataset'] = array(
     'bundle' => 'feedback_dataset',
     'default_value' => NULL,
@@ -303,11 +303,11 @@ function features_content_type_feedback_dataset_field_default_field_instances() 
         'size' => 60,
       ),
       'type' => 'text_textfield',
-      'weight' => 6,
+      'weight' => 7,
     ),
   );
 
-  // Exported field_instance: 'node-feedback_dataset-field_gepubliceerd'
+  // Exported field_instance: 'node-feedback_dataset-field_gepubliceerd'.
   $field_instances['node-feedback_dataset-field_gepubliceerd'] = array(
     'bundle' => 'feedback_dataset',
     'default_value' => array(
@@ -334,7 +334,7 @@ function features_content_type_feedback_dataset_field_default_field_instances() 
     ),
     'entity_type' => 'node',
     'field_name' => 'field_gepubliceerd',
-    'label' => 'Publiceer dit dataverzoek',
+    'label' => 'Publiceer feedback',
     'required' => 0,
     'settings' => array(
       'user_register_form' => FALSE,
@@ -346,7 +346,7 @@ function features_content_type_feedback_dataset_field_default_field_instances() 
         'display_label' => 1,
       ),
       'type' => 'options_onoff',
-      'weight' => 9,
+      'weight' => 4,
     ),
   );
 
@@ -357,7 +357,7 @@ function features_content_type_feedback_dataset_field_default_field_instances() 
   t('Link dataset');
   t('Naam');
   t('Opmerking');
-  t('Publiceer dit dataverzoek');
+  t('Publiceer feedback');
   t('Telefoon');
   t('Titel dataset');
 

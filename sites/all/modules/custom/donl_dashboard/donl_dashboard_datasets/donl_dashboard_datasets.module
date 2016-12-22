@@ -1,0 +1,119 @@
+<?PHP
+/**
+ * Implements hook_cron().
+ */
+function donl_dashboard_datasets_cron() {
+  global $base_url;
+
+  $timestamp = time();
+
+  $ch = curl_init();
+  $curlConfig = array(
+    CURLOPT_URL => $base_url . '/service/waardelijsten/taxonomiebeleidsagenda',
+    CURLOPT_RETURNTRANSFER => TRUE,
+  );
+  curl_setopt_array($ch, $curlConfig);
+  $result = curl_exec($ch);
+  curl_close($ch);
+  $themes = json_decode($result);
+
+  // First get all the catalogs (ckan organizations)
+  $result = donl_dashboard_make_ckan_call('organization_list?all_fields=true');
+  if ($result->success) {
+    foreach ($result->result as $organization) {
+      $record = db_select('donl_dashboard_catalogus', 'ddc')
+        ->fields('ddc', array('catalogus_name', 'catalogus_name_human'))
+        ->condition('catalogus_id', $organization->id, '=')
+        ->execute()
+        ->fetchAssoc();
+
+      // Insert a new record if it doesn't exist
+      if (!isset($record['catalogus_name'])) {
+        db_insert('donl_dashboard_catalogus')
+          ->fields(array(
+            'catalogus_id' => $organization->id,
+            'catalogus_name' => $organization->name,
+            'catalogus_name_human' => $organization->display_name,
+          ))
+          ->execute();
+      }
+      // Update the record if the name has changed
+      elseif ($record['catalogus_name'] != $organization->name || $record['catalogus_name_human'] != $organization->display_name) {
+        db_update('donl_dashboard_catalogus')
+          ->fields(array(
+            'catalogus_name' => $organization->name,
+            'catalogus_name_human' => $organization->display_name,
+          ))
+          ->condition('catalogus_id', $organization->id, '=')
+          ->execute();
+      }
+      $organization_name = check_plain($organization->name);
+
+      // Get all the datasets, we'll remove all the theme data later on which
+      // should leave us with all datasets that don't have a theme
+      $datasets_withouth_theme = 0;
+      $open_datasets_withouth_theme = 0;
+      $result = donl_dashboard_make_ckan_call('package_search?fq=state:active+organization:' . $organization_name);
+      if ($result->success) {
+        $datasets_withouth_theme = $result->result->count;
+      }
+      foreach (unserialize(DONL_DATASET_OPEN_LICENCE) as $license) {
+        $result = donl_dashboard_make_ckan_call('package_search?fq=state:active+organization:' . $organization_name . '+license_id:' . $license);
+        if ($result->success) {
+          $open_datasets_withouth_theme += $result->result->count;
+        }
+      }
+
+      // We also need to store this information per theme
+      foreach ($themes as $theme) {
+        $statistics = array();
+
+        // Retrieve the total amount of datasets available.
+        $statistics['total_datasets'] = 0;
+        $result = donl_dashboard_make_ckan_call('package_search?fq=state:active+organization:' . $organization_name . '+theme_facet:"' . urlencode($theme->uri) . '"');
+        if ($result->success) {
+          $statistics['total_datasets'] = $result->result->count;
+          $datasets_withouth_theme -= $result->result->count;
+        }
+
+        // Retrieve the datasets with an open license (either cc-Zero or Public Domain)
+        $statistics['datasets_with_open_licence'] = 0;
+        foreach (unserialize(DONL_DATASET_OPEN_LICENCE) as $license) {
+          $result = donl_dashboard_make_ckan_call('package_search?fq=state:active+organization:' . $organization_name . '+theme_facet:"' . urlencode($theme->uri) . '"+license_id:' . $license);
+          if ($result->success) {
+            $statistics['datasets_with_open_licence'] += $result->result->count;
+            $open_datasets_withouth_theme -= $result->result->count;
+          }
+        }
+
+        // If we know the total amount we can calculate the amount of datasets without cc-zero as well
+        $statistics['datasets_without_open_licence'] = 0;
+        if (isset($statistics['total_datasets']) && isset($statistics['datasets_with_open_licence'])) {
+          $statistics['datasets_without_open_licence'] = $statistics['total_datasets'] - $statistics['datasets_with_open_licence'];
+        }
+
+        db_insert('donl_dashboard_stats_datasets')
+          ->fields(array(
+            'catalogus_id' => $organization->id,
+            'theme' => $theme->name,
+            'open' => $statistics['datasets_with_open_licence'],
+            'closed' => $statistics['datasets_without_open_licence'],
+            'timestamp' => $timestamp,
+          ))
+          ->execute();
+
+      } // End theme loop
+
+      $closed_datasets_withouth_theme = $datasets_withouth_theme - $open_datasets_withouth_theme;
+      db_insert('donl_dashboard_stats_datasets')
+        ->fields(array(
+          'catalogus_id' => $organization->id,
+          'theme' => '',
+          'open' => $open_datasets_withouth_theme,
+          'closed' => $closed_datasets_withouth_theme,
+          'timestamp' => $timestamp,
+        ))
+        ->execute();
+    } // End organization loop
+  }
+}

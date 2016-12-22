@@ -1,0 +1,15 @@
+name = Dashboard
+core = 7.x
+package = Features: Views
+dependencies[] = ctools
+dependencies[] = donl_dashboard
+dependencies[] = donl_dashboard_datasets
+dependencies[] = donl_dashboard_linkchecker
+dependencies[] = views
+features[ctools][] = views:views_default:3.0
+features[features_api][] = api:2
+features[views_view][] = datakalender
+features[views_view][] = linkcheck
+features[views_view][] = linkcheck2
+features[views_view][] = linkcheck_organisaties_
+features[views_view][] = linkcheck_thema_

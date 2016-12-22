@@ -10,6 +10,23 @@ function custom_reactie_dataset_install() {
   }
 }
 
+function custom_reactie_dataset_update_7001() {
+  $result = db_select('node', 'n')
+    ->fields('n', array('nid'))
+    ->condition('type', 'feedback_dataset', '=')
+    ->execute();
+
+  while ($record = $result->fetchAssoc()) {
+    $node = node_load($record['nid']);
+    if (isset($node->field_fd_link_dataset[LANGUAGE_NONE][0]['url'])) {
+      $url = $node->field_fd_link_dataset[LANGUAGE_NONE][0]['url'];
+      if (substr($node->field_fd_link_dataset[LANGUAGE_NONE][0]['url'], 0, 13) != 'data/dataset/') {
+        $node->field_fd_link_dataset[LANGUAGE_NONE][0]['url'] = 'data/dataset/' . $url;
+        node_save($node);
+      }
+    }
+  }
+}
 
 function custom_reactie_dataset_admin_paths_alter(&$paths) {
   $paths['node/add/feedback-dataset'] = FALSE;
@@ -22,7 +39,7 @@ function custom_reactie_dataset_form_feedback_dataset_node_form_alter(&$form, &$
     $form['field_fd_titel_dataset'][LANGUAGE_NONE][0]['value']['#disabled'] = TRUE;
   }
   if(isset($_GET['link_dataset'])) {
-    $form['field_fd_link_dataset'][LANGUAGE_NONE][0]['#value']['url'] = check_plain($_GET['link_dataset']);
+    $form['field_fd_link_dataset'][LANGUAGE_NONE][0]['#value']['url'] = ' data/dataset/' . check_plain($_GET['link_dataset']);
     $form['field_fd_link_dataset'][LANGUAGE_NONE][0]['#disabled'] = TRUE;
   }
   if(isset($_GET['data_eigenaar'])) {

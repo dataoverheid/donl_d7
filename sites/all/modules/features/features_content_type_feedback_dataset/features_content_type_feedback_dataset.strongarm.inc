@@ -19,7 +19,7 @@ function features_content_type_feedback_dataset_strongarm() {
     'extra_fields' => array(
       'form' => array(
         'title' => array(
-          'weight' => '0',
+          'weight' => '3',
         ),
         'path' => array(
           'weight' => '1',

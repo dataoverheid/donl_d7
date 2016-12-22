@@ -23,7 +23,7 @@ function features_content_type_feedback_dataset_node_info() {
       'base' => 'node_content',
       'description' => '',
       'has_title' => '1',
-      'title_label' => t('Titel'),
+      'title_label' => t('Feedback op dataset geven'),
       'help' => '',
     ),
   );

@@ -1,0 +1,34 @@
+#donl-dataset-widget .dataset {
+  margin-bottom: 2em;
+}
+
+#donl-dataset-widget .dataset .title {
+  font-weight: bold;
+}
+
+#donl-dataset-widget .dataset .title a {
+  text-decoration: none;
+  color: #000;
+}
+
+#donl-dataset-widget .dataset .title a:hover {
+  text-decoration: underline;
+}
+
+#donl-dataset-widget .dataset .notes {
+  font-style: italic;
+}
+
+#donl-dataset-widget table {
+  margin: 0;
+  width: 100%;
+}
+
+#donl-dataset-widget table caption {
+  font-weight: bold;
+  text-align: left;
+}
+
+#donl-dataset-widget table td {
+  padding: 5px;
+}

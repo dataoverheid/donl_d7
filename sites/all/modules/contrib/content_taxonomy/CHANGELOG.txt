@@ -1,0 +1,42 @@
+Content_Taxonomy 7.x-1.0-rc1, 2016-03-22
+----------------------------------------
+#1373716 by Owen Barton: Added hook_disable() to disable the custom field
+  widget and prevent site from breaking.
+By mh86: Added hook for altering the term tree callback used in the allowed
+  values function.
+By mh86: Added new submodule that supports the Entity Translation mode for
+  taxonomy terms.
+By mh86: Fixed translated term names on initial autocomplete deluxe suggestions.
+#1208164 by skein, mrded, rbayliss, drzraf, DamienMcKenna: Fix field migration.
+#2580251 by michel.settembrino, DamienMcKenna: Added EntityReference
+  autocomplete support.
+#2379611 by justanothermark: Wording change on autocomplete error message.
+#1160146 by moskito: Added ActiveTags support.
+#1395276 by bigjim: Fixed options field on migration.
+#2348363 by james.williams, DamienMcKenna: Only alter field instances for
+  content_taxonomy fields.
+#1558050 by bdimaggio, DamienMcKenna: The 'array_parents' element might not
+  exist.
+#1643858 by DamienMcKenna, hatuhay, BrightBold, marthinal, benjy, mikhailian,
+  MakaziMtingwa, zhilevan, klidifia, pappuksingh, cameronbprince: Fix invalid
+  default values.
+
+
+Content_Taxonomy 7.x-1.0-beta2, 2013-01-21
+------------------------------------------
+By mh86: Fixed validate handlers for new terms.
+By mh86: Added Search API Postprocessor for filtering out moderated terms from
+  facets.
+#1631000 by klausi: Fixed Strict warning: Declaration of
+  ContentTaxonomyAutocompleteModeratedTermsSearchAPIProcessor.
+By mh86: Added option for selects lists with opt groups
+
+
+Content_Taxonomy 7.x-1.0-beta1, 2011-06-22
+------------------------------------------
+By mh86: Initial port to D7.
+#1079846 by mh86: Fixed error in content_taxonomy_autocomplete when using
+  without autocomplete_deluxe.
+#1079938 by mh86: Fixed error in migration module.
+#1086228 by mh86: Support for upgrading Hierarchical Select fields.
+By mh86: Added option for the tree depth.

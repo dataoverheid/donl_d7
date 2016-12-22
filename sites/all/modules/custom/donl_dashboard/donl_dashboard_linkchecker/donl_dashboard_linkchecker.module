@@ -1,0 +1,557 @@
+<?PHP
+/**
+ * Implements hook_views_api().
+ */
+function donl_dashboard_linkchecker_views_api() {
+  return array(
+    'api' => 3,
+    'path' => drupal_get_path('module', 'donl_dashboard_linkchecker'),
+  );
+}
+
+
+/**
+ * Implements hook_menu().
+ */
+function donl_dashboard_linkchecker_menu() {
+  $items = array();
+
+  $items['service/linkcheck/%/%'] = array(
+    'type' => MENU_CALLBACK,
+    'access arguments' => array('access content'),
+    'page callback' => 'donl_dashboard_linkchecker_service',
+    'page arguments' => array(2, 3, 4),
+  );
+
+  return $items;
+}
+
+
+/**
+ * Implements hook_cron_queue_info().
+ */
+function donl_dashboard_linkchecker_cron_queue_info() {
+  $queues['donl_dashboard_linkchecker'] = array(
+    'worker callback' => 'donl_dashboard_linkchecker_cron_process',
+    'time' => variable_get('donl_dashboard_linkchecker_cron_time', 45),
+  );
+
+  return $queues;
+}
+
+
+/**
+ * Implements hook_cron().
+ */
+function donl_dashboard_linkchecker_cron() {
+  $queue = DrupalQueue::get('donl_dashboard_linkchecker');
+  if ($queue->numberOfItems() > 0) {
+    watchdog('Link checker', 'Cron started before queue was empty.', array(), WATCHDOG_ERROR);
+  }
+  else {
+
+    // Retrieve all the datasets which are currently in our report
+    $to_be_removed = array();
+    $result = db_select('donl_dashboard_link_check_datasets', 'dolcd')
+      ->fields('dolcd', array('dataset_id'))
+      ->distinct()
+      ->execute();
+    while ($record = $result->fetchAssoc()) {
+      $to_be_removed[$record['dataset_id']] = $record['dataset_id'];
+    }
+
+    // Retrieve all the datasets through the CKAN API (we do this in batches)
+    $i = 0;
+    do {
+      $result = donl_dashboard_make_ckan_call('package_search?rows=500&start=' . $i);
+      if ($result->success) {
+        foreach ($result->result->results as $dataset) {
+          // Unset this dataset from our remove list
+          unset($to_be_removed[$dataset->id]);
+          // Create a que item for this dataset
+          $queue->createItem(array(
+            'id' => $dataset->id,
+          ));
+        }
+      }
+      $i = $i + 500;
+    } while ($result->success && !empty($result->result->results));
+
+    // Remove any datasets which can't be found back in CKAN
+    if (!empty($to_be_removed)) {
+      foreach ($to_be_removed as $id) {
+        db_delete('donl_dashboard_link_check_datasets')
+          ->condition('dataset_id', $id, '=')
+          ->execute();
+
+        db_delete('donl_dashboard_link_check_resources')
+          ->condition('dataset_id', $id, '=')
+          ->execute();
+      }
+    }
+
+  }
+}
+
+
+function donl_dashboard_linkchecker_cron_process($item) {
+  $working_resources = 0;
+  $broken_resources = 0;
+
+  // Get all the data for the given dataset
+  $dataset = NULL;
+  $result = donl_dashboard_make_ckan_call('package_show?id=' . $item['id']);
+
+  // If we don't get back a valid response we'll just quite this cron run, there
+  // is a good possibility that the dataset doesn't even exists anymore. In those
+  // cases we've just deleted the record from the database :D
+  // In the rare case of this being a legit error on our end we'll automatically
+  // pick up the dataset again on the next cron to correct the mistaken
+  if (isset($result->success) && $result->success) {
+    $dataset = $result->result;
+
+    // Just another fail save check to make sure its a legit dataset we got back
+    if (isset($dataset->id)) {
+
+      // Now get all the data from this datasets resources (if we got any to begin with)
+      if (isset($dataset->resources) && !empty($dataset->resources)) {
+        foreach ($dataset->resources as $resource) {
+          $state = 0; // Unknown
+          if (isset($resource->link_status)) {
+            if ($resource->link_status) {
+              $state = 1; // Working
+              $working_resources++;
+            }
+            else {
+              $state = 3; // Broken
+              $broken_resources++;
+            }
+          }
+
+          // Save the data for this given resource.
+          db_merge('donl_dashboard_link_check_resources')
+            ->key(array('resource_id' => $resource->id, 'dataset_id' => $dataset->id))
+            ->fields(array(
+              'resource_id' => $resource->id,
+              'dataset_id' => $dataset->id,
+              'resource_name' => (strlen($resource->name) <= 252 ? $resource->name : substr($resource->name, 0, 252) . '...'),
+              'state' => $state,
+              'state_code' => NULL,
+              'state_report' => NULL,
+            ))
+            ->execute();
+        }
+      }
+
+
+      $dataset_state = 0;
+      if ($working_resources > 0 && $broken_resources == 0) {
+        $dataset_state = 1;
+      }
+      elseif ($working_resources > 0 && $broken_resources > 0) {
+        $dataset_state = 2;
+      }
+      elseif ($working_resources == 0 && $broken_resources > 0) {
+        $dataset_state = 3;
+      }
+      // No resources means the dataset itself is working.
+      elseif (isset($dataset->num_resources) && $dataset->num_resources == 0) {
+        $dataset_state = 1;
+      }
+
+      // Get all the dataset values which we need for our report.
+      $thema = NULL;
+      $sub_thema = NULL;
+      if (isset($dataset->theme_displayname) && !empty($dataset->theme_displayname)) {
+        $tmp = explode('|', $dataset->theme_displayname);
+        $thema = trim($tmp[0]);
+        $sub_thema = (isset($tmp[1]) ? trim($tmp[1]) : NULL);
+      }
+
+      // Get some total numbers
+      $percentage_broken_resources = 0;
+      if ($broken_resources > 0) {
+        $percentage_broken_resources = ($broken_resources / ($broken_resources + $working_resources)) * 100;
+      }
+      $percentage_working_resources = 100 - $percentage_broken_resources;
+      $total_resources = $broken_resources + $working_resources;
+      //get organization type and super-organization
+      if (isset($dataset->maintainer_displayname)) {
+        $owner = taxonomy_term_load(donl_dashboard_get_taxonomy_tid($dataset->maintainer_displayname, 'overheidsorganisatie'));
+      }
+      $soort_organisatie = '-';
+      if (isset($owner->field_soort_organisatie) && !empty($owner->field_soort_organisatie[LANGUAGE_NONE][0]['tid'])) {
+        $soort_organisatie_tid = $owner->field_soort_organisatie[LANGUAGE_NONE][0]['tid'];
+        $soort_organisatie_term = taxonomy_term_load($soort_organisatie_tid);
+        if (!empty($soort_organisatie_term)) {
+          $soort_organisatie = $soort_organisatie_term->name;
+        }
+      }
+
+      $valt_onder = '-';
+      if (!empty($owner->field_valt_onder[LANGUAGE_NONE][0]['tid'])) {
+        $valt_onder_tid = $owner->field_valt_onder[LANGUAGE_NONE][0]['tid'];
+        $valt_onder_term = taxonomy_term_load($valt_onder_tid);
+        if (!empty($valt_onder_term)) {
+          $valt_onder = $valt_onder_term->name;
+        }
+      }
+      //dataset_status gepland of in_onderzoek? Voeg dan de date_planned toe, anders null
+      $date_planned = NULL;
+      $dataset_calendar_state = NULL;
+      if ($dataset->dataset_status == 'http://data.overheid.nl/status/gepland' || $dataset->dataset_status == 'http://data.overheid.nl/status/in_onderzoek') {
+        $date_planned = strtotime($dataset->date_planned);
+        if ($dataset->dataset_status == 'http://data.overheid.nl/status/gepland') {
+          $dataset_calendar_state = 'Gepland';
+        }
+        if ($dataset->dataset_status == 'http://data.overheid.nl/status/in_onderzoek') {
+          $dataset_calendar_state = 'In onderzoek';
+        }
+      }
+
+      // Now save the data for this given dataset
+      db_merge('donl_dashboard_link_check_datasets')
+        ->key(array('dataset_id' => $dataset->id))
+        ->fields(array(
+          'dataset_id' => $dataset->id,
+          'dataset_name' => (strlen($dataset->title) <= 252 ? $dataset->title : substr($dataset->title, 0, 252) . '...'),
+          'dataset_maintainer' => (isset($dataset->maintainer_displayname) ? $dataset->maintainer_displayname : NULL),
+          'dataset_catalog' => (isset($dataset->organization->name) ? $dataset->organization->name : NULL),
+          'dataset_theme' => $thema,
+          'dataset_sub_theme' => $sub_thema,
+          'dataset_state' => $dataset_state,
+          'dataset_working_resources' => $working_resources,
+          'dataset_broken_resources' => $broken_resources,
+          'dataset_percentage_broken_resources' => round($percentage_broken_resources, 2),
+          'dataset_percentage_working_resources' => round($percentage_working_resources, 2),
+          'dataset_organization_type' => $soort_organisatie,
+          'dataset_organization_part_of' => $valt_onder,
+          'dataset_total_resources' => $total_resources,
+          'dataset_date_planned' => $date_planned,
+          'dataset_calendar_state' => $dataset_calendar_state,
+          'timestamp' => time(),
+        ))
+        ->execute();
+
+    } // End isset($dataset->id) check
+  } // End result->success check
+}
+
+
+/**
+ * Helper function to get status codes which are workable to generate a report
+ * for plain visitors.
+ */
+function donl_dashboard_linkchecker_get_status_report($code) {
+  if ($code >= 200 && $code <= 299) {
+    return 'Succesful';
+  }
+  elseif ($code >= 300 && $code <= 399) {
+    return 'Too many redirects';
+  }
+  elseif ($code == -1) {
+    return 'Time out';
+  }
+  elseif ($code == 401 || $code == 403) {
+    return 'Access denied';
+  }
+  elseif ($code == 404) {
+    return 'Page not found';
+  }
+  elseif ($code >= 400 && $code <= 499) {
+    return 'Browser error';
+  }
+  elseif ($code >= 500 && $code <= 599) {
+    return 'Server error';
+  }
+  elseif ($code == -1001 || $code == -1002 || $code == -1003) {
+    return 'Invalid url';
+  }
+
+  return 'Unknown error';
+}
+
+
+/**
+ * Service which returns a div containg a class with the status of the given
+ * dataset or resource
+ * Legenda status codes
+ * 0 => Unknown
+ * 1 => OK
+ * 2 => Partially OK
+ * 3 => Not OK
+ */
+function donl_dashboard_linkchecker_service($table, $id, $markup = 'markup') {
+  $status_code = 0;
+  $timestamp = 0;
+
+  if ($table == 'dataset') {
+    $record = db_select('donl_dashboard_link_check_datasets', 'dolcd')
+      ->fields('dolcd', array('dataset_state', 'timestamp'))
+      ->condition('dataset_id', $id, '=')
+      ->execute()
+      ->fetchAssoc();
+
+    $timestamp = $record['timestamp'];
+    if (!empty($record['dataset_state'])) {
+      $status_code = $record['dataset_state'];
+    }
+  }
+  elseif ($table == 'resource') {
+    $query = db_select('donl_dashboard_link_check_resources', 'dolcr');
+    $query->join('donl_dashboard_link_check_datasets', 'dolcd', 'dolcd.dataset_id = dolcr.dataset_id');
+    $query->fields('dolcr', array('state'));
+    $query->fields('dolcd', array('timestamp'));
+    $query->condition('resource_id', $id, '=');
+    $result = $query->execute();
+    $record = $result->fetchAssoc();
+
+    $timestamp = $record['timestamp'];
+    if ($record['state'] == 0) {
+      $status_code = '3';
+    }
+    elseif ($record['state'] == 1) {
+      $status_code = '1';
+    }
+  }
+
+  if ($markup == 'markup') {
+    // The actual html we return towards ckan to generate a block
+    echo '<a href="/monitor/datasets"><div class="quality-label">Kwaliteit: </div>';
+    echo '<div class="dataset-quality-' . $status_code . '">';
+
+    if (!empty($timestamp)) {
+      echo '(' . date('d-m-Y', $timestamp) . ')';
+    }
+    else {
+      echo '(Geen datum bekend)';
+    }
+    echo '</div></a>';
+  }
+  else {
+    echo $status_code;
+  }
+}
+
+
+function donl_dashboard_linkchecker_form_views_exposed_form_alter(&$form, &$form_state) {
+
+  if (isset($form['donl_maintainer_select'])) {
+    $form['donl_maintainer_select'] = array(
+      '#type' => 'select',
+      '#size' => 1,
+      '#options' => array('' => '') + donl_dashboard_linkchecker_get_maintainers(),
+
+    );
+  }
+  if (isset($form['donl_maintainer2_select'])) {
+    $form['donl_maintainer2_select'] = array(
+      '#type' => 'select',
+      '#options' => array('' => '') + donl_dashboard_linkchecker_get_maintainers(),
+
+    );
+  }
+  if (isset($form['dataset_theme'])) {
+    $form['dataset_theme'] = array(
+      '#type' => 'select',
+      '#size' => 1,
+      '#options' => array('' => '') + donl_dashboard_linkchecker_get_themes(),
+
+    );
+  }
+  if (isset($form['dataset_catalog'])) {
+    $form['dataset_catalog'] = array(
+      '#type' => 'select',
+      '#size' => 1,
+      '#options' => array('' => '') + donl_dashboard_linkchecker_get_catalogs(),
+
+    );
+  }
+  if (isset($form['dataset_organization_type'])) {
+    $form['dataset_organization_type'] = array(
+      '#type' => 'select',
+      '#size' => 1,
+      '#options' => array('' => '') + donl_dashboard_linkchecker_get_types(),
+    );
+  }
+  if (isset($form['dataset_organization_part_of'])) {
+    $form['dataset_organization_part_of'] = array(
+      '#type' => 'select',
+      '#size' => 1,
+      '#options' => array('' => '') + donl_dashboard_linkchecker_get_part_of(),
+    );
+  }
+
+  if (isset($form['dataset_calendar_state'])) {
+    $form['dataset_calendar_state'] = array(
+      '#type' => 'select',
+      '#size' => 1,
+      '#options' => array(
+        '' => '',
+        'Gepland' => 'Gepland',
+        'In onderzoek' => 'In onderzoek'
+      ),
+    );
+  }
+
+  if (isset($form['dataset_state'])) {
+    $form['dataset_state'] = array(
+      '#type' => 'select',
+      '#size' => 1,
+      '#options' => array(
+        '' => '',
+        '1' => 'Alles werkt',
+        '2' => 'Sommige werken niet',
+        '3' => 'Niets werkt'
+      ),
+    );
+  }
+
+  if(isset($form['dataset_date_planned']['min'])){
+    $form['dataset_date_planned']['min']=array(
+      '#type'=>'date_popup',
+      '#date_format' => 'd-m-Y',
+      '#title'=>'Vanaf',
+    );
+  }
+  if(isset($form['dataset_date_planned']['max'])){
+    $form['dataset_date_planned']['max']=array(
+      '#type'=>'date_popup',
+      '#date_format' => 'd-m-Y',
+      '#title'=>'Tot en met',
+    );
+  }
+}
+
+function donl_dashboard_linkchecker_date_popup_process_alter(&$element, &$form_state, $context) {
+  unset($element['date']['#description']);
+  unset($element['time']['#description']);
+  if($element['#title']=='Tot en met'){
+    $element['date']['#attributes']=array('placeholder'=>'Tot en met');
+  }
+  if($element['#title']=='Vanaf'){
+    $element['date']['#attributes']=array('placeholder'=>'Vanaf');
+  }
+  $element[ 'date']['#title_display']='invisible';
+}
+
+function donl_dashboard_linkchecker_get_maintainers($only_broken_links = FALSE) {
+  $query = db_select('donl_dashboard_link_check_datasets', 'ddlcd');
+  $query->distinct();
+  $query->fields('ddlcd', array('dataset_maintainer'));
+  if ($only_broken_links) {
+    $query->condition('dataset_state', 1, '!=');
+  }
+  $query->orderBy('dataset_maintainer', 'ASC');
+  $result = $query->execute();
+  $maintainers = array();
+  while ($record = $result->fetchAssoc()) {
+    $maintainers[$record['dataset_maintainer']] = $record['dataset_maintainer'];
+  }
+
+  return $maintainers;
+}
+
+function donl_dashboard_linkchecker_get_themes($only_broken_links = FALSE) {
+  $query = db_select('donl_dashboard_stats_datasets', 'ddsdt');
+  $query->distinct();
+  $query->fields('ddsdt', array('theme'));
+  $result = $query->execute();
+  $themes = array();
+  while ($record = $result->fetchAssoc()) {
+    $themes[$record['theme']] = $record['theme'];
+  }
+  return $themes;
+}
+
+function donl_dashboard_linkchecker_get_types($only_broken_links = FALSE) {
+  $query = db_select('donl_dashboard_link_check_datasets', 'ddsdt');
+  $query->distinct();
+  $query->fields('ddsdt', array('dataset_organization_type'));
+  $result = $query->execute();
+  $types = array();
+  while ($record = $result->fetchAssoc()) {
+    $types[$record['dataset_organization_type']] = $record['dataset_organization_type'];
+  }
+  return $types;
+}
+
+function donl_dashboard_linkchecker_get_part_of($only_broken_links = FALSE) {
+  $query = db_select('donl_dashboard_link_check_datasets', 'ddsdt');
+  $query->distinct();
+  $query->fields('ddsdt', array('dataset_organization_part_of'));
+  $result = $query->execute();
+  $types = array();
+  while ($record = $result->fetchAssoc()) {
+    $types[$record['dataset_organization_part_of']] = $record['dataset_organization_part_of'];
+  }
+  return $types;
+}
+
+function donl_dashboard_linkchecker_get_catalogs($only_broken_links = FALSE) {
+  $query = db_select('donl_dashboard_catalogus', 'ddc');
+  $query->distinct();
+  $query->fields('ddc', array('catalogus_name_human', 'catalogus_name'));
+  $result = $query->execute();
+  $catalogi = array();
+  while ($record = $result->fetchAssoc()) {
+    $catalogi[$record['catalogus_name']] = $record['catalogus_name_human'];
+  }
+  return $catalogi;
+}
+
+/*
+ * implements hook_views_pre_render
+ */
+function donl_dashboard_linkchecker_views_pre_render(&$view) {
+  if ($view->name == 'linkcheck_organisaties_' || $view->name == 'linkcheck_thema_') {
+    foreach ($view->result as $result) {
+      $working = $result->donl_dashboard_link_check_datasets_dataset_working_resources;
+      $total = $result->donl_dashboard_link_check_datasets_dataset_total_resources;
+      $percentage = round((($working / $total) * 100), 2);
+      $rewrite = $working . ' / ' . $total . ' - ' . $percentage . '%';
+      $result->donl_dashboard_link_check_datasets_dataset_working_resources = $rewrite;
+      $statuscode = 3;
+      if ($percentage > 0) {
+        $statuscode = 2;
+      }
+      if ($percentage >= 100) {
+        $statuscode = 1;
+      }
+
+      $result->donl_dashboard_link_check_datasets_dataset_broken_resources = $statuscode;
+    }
+  }
+}
+
+
+/**
+ * implements hook_views_query_alter
+ */
+function donl_dashboard_linkchecker_views_query_alter(&$view, &$query) {
+  if ($view->name == 'linkcheck_organisaties_') {
+    if (isset($view->exposed_data['dataset_state'])) {
+      foreach ($query->where as $wkey => $where) {
+        foreach ($where['conditions'] as $ckey => $condition) {
+          if ($condition['field'] == 'donl_dashboard_link_check_datasets.dataset_state') {
+            unset($query->where[$wkey]['conditions'][$ckey]);
+
+            switch ($view->exposed_data['dataset_state']) {
+              case '1':
+                $query->add_having_expression(999, 'AVG(donl_dashboard_link_check_datasets.dataset_working_resources / donl_dashboard_link_check_datasets.dataset_total_resources) = 1');
+                break;
+              case '2':
+                $query->add_having_expression(999, 'AVG(donl_dashboard_link_check_datasets.dataset_working_resources / donl_dashboard_link_check_datasets.dataset_total_resources) > 0');
+                $query->add_having_expression(999, 'AVG(donl_dashboard_link_check_datasets.dataset_working_resources / donl_dashboard_link_check_datasets.dataset_total_resources) < 1');
+                break;
+              case '3':
+                $query->add_having_expression(999, 'AVG(donl_dashboard_link_check_datasets.dataset_working_resources / donl_dashboard_link_check_datasets.dataset_total_resources) = 0');
+                break;
+            }
+            break 2;
+          }
+        }
+      }
+    }
+  }
+}

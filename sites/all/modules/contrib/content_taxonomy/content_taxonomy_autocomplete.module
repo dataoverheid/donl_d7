@@ -10,9 +10,24 @@ function content_taxonomy_autocomplete_field_widget_info_alter(&$info) {
   );
   $info['taxonomy_autocomplete']['settings'] += $ct_settings;
 
+  // Add this to the Active Tags as well, if enabled.
+  if (isset($info['active_tags']['settings'])) {
+    $info['active_tags']['settings'] += $ct_settings;
+  }
+
   // Add this to the autocomplete deluxe as well, if enabled.
   if (isset($info['autocomplete_deluxe_taxonomy']['settings'])) {
     $info['autocomplete_deluxe_taxonomy']['settings'] += $ct_settings;
+  }
+
+  // Add this to the entityreference autocomplete as well, if enabled.
+  if (isset($info['entityreference_autocomplete']['settings'])) {
+    $info['entityreference_autocomplete']['settings'] += $ct_settings;
+  }
+
+  // Add this to the entityreference autocomplete (tags) as well, if enabled.
+  if (isset($info['entityreference_autocomplete_tags']['settings'])) {
+    $info['entityreference_autocomplete_tags']['settings'] += $ct_settings;
   }
 }
 
@@ -22,7 +37,11 @@ function content_taxonomy_autocomplete_field_widget_info_alter(&$info) {
 function content_taxonomy_autocomplete_form_field_ui_field_edit_form_alter(&$form, &$form_state, $form_id) {
   $field = $form['#field'];
   $instance = $form['#instance'];
-  if ($instance['widget']['type'] == 'taxonomy_autocomplete' || $instance['widget']['type'] == 'autocomplete_deluxe_taxonomy') {
+  if ($instance['widget']['type'] == 'taxonomy_autocomplete'
+      || $instance['widget']['type'] == 'active_tags_taxonomy_autocomplete'
+      || $instance['widget']['type'] == 'autocomplete_deluxe_taxonomy'
+      || $instance['widget']['type'] == 'entityreference_autocomplete'
+      || $instance['widget']['type'] == 'entityreference_autocomplete_tags') {
     // Add a setting form for validating new terms.
     $options = array(
       'allow' => t('Allow and insert new terms'),
@@ -39,7 +58,14 @@ function content_taxonomy_autocomplete_form_field_ui_field_edit_form_alter(&$for
   }
 
   // Show form for second vocabulary.
-  if (isset($instance['widget']['settings']['content_taxonomy_autocomplete_new_terms']) && $instance['widget']['settings']['content_taxonomy_autocomplete_new_terms'] == 'moderate') {
+  if (($instance['widget']['type'] == 'taxonomy_autocomplete'
+      || $instance['widget']['type'] == 'active_tags_taxonomy_autocomplete'
+      || $instance['widget']['type'] == 'autocomplete_deluxe_taxonomy'
+      || $instance['widget']['type'] == 'entityreference_autocomplete'
+      || $instance['widget']['type'] == 'entityreference_autocomplete_tags')
+    && isset($form[$instance['field_name']])
+    && isset($instance['widget']['settings']['content_taxonomy_autocomplete_new_terms'])) {
+
     // Initialize settings, if not set.
     if (!isset($field['settings']['allowed_values'][1])) {
       $field['settings']['allowed_values'][1] = array(
@@ -83,8 +109,11 @@ function content_taxonomy_autocomplete_field_attach_form($entity_type, $entity, 
   // Add validation function to taxonomy_autocompletes, if necessary.
   $instances = field_info_instances($form['#entity_type'], $form['#bundle']);
   foreach ($instances as $instance) {
-    if (($instance['widget']['type'] == 'taxonomy_autocomplete' || $instance['widget']['type'] == 'autocomplete_deluxe_taxonomy') 
-      && isset($form[$instance['field_name']]) 
+    if (($instance['widget']['type'] == 'taxonomy_autocomplete'
+        || $instance['widget']['type'] == 'autocomplete_deluxe_taxonomy'
+        || $instance['widget']['type'] == 'entityreference_autocomplete'
+        || $instance['widget']['type'] == 'entityreference_autocomplete_tags')
+      && isset($form[$instance['field_name']])
       && isset($instance['widget']['settings']['content_taxonomy_autocomplete_new_terms'])) {
 
       // Use the language that is used in this form (which doesn't necessarily
@@ -105,12 +134,14 @@ function content_taxonomy_autocomplete_field_attach_form($entity_type, $entity, 
  */
 function content_taxonomy_autocomplete_validate_deny_new_terms($element, &$form_state, $form) {
   $values = $form_state['values'];
-  foreach ($element['#array_parents'] as $parent) {
-    $values = $values[$parent];
+  if (!empty($element['#array_parents'])) {
+    foreach ($element['#array_parents'] as $parent) {
+      $values = $values[$parent];
+    }
   }
   foreach ($values as $delta => $value) {
-    if ($value['tid'] == 'autocreate') {
-      form_error($element, t('%name: new terms are not allowed. Please choose from the given list.', array('%name' => $element['#title'])));
+    if (isset($value['tid']) && $value['tid'] == 'autocreate') {
+      form_error($element, t('%name: new terms are not allowed. Please choose from the suggested options.', array('%name' => $element['#title'])));
     }
   }
 }

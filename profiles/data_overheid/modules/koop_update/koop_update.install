@@ -5,7 +5,68 @@ function koop_update_update_7001() {
   module_enable($modules, TRUE);
 }
 
+/**
+ * Install the feedback modules
+ */
 function koop_update_update_7002() {
   $modules = array('custom_reactie_dataset', 'features_content_type_feedback_dataset');
   module_enable($modules, TRUE);
+}
+
+/**
+ * Install the new ckan authentication modules
+ */
+function koop_update_update_7004() {
+  $modules = array('donl_ckan',);
+  module_enable($modules, TRUE);
+}
+
+/**
+ * Disable the old ckan authentication modules
+ */
+function koop_update_update_7005() {
+  $modules = array('dgu_services', 'xmlrpc_server', 'rest_server', 'services_views', 'services');
+  module_disable($modules, TRUE);
+  drupal_uninstall_modules($modules);
+}
+
+/**
+ * Install the dashboard modules
+ */
+function koop_update_update_7006() {
+  // On some test enviroments they are already enabled to we'll disable them first since we've
+  // dome some heavy alters on the database tables.
+  $modules = array('donl_dashboard', 'donl_dashboard_datasets', 'donl_dashboard_linkchecker');
+  module_disable($modules, TRUE);
+  drupal_uninstall_modules($modules);
+
+  // And now enable them
+  module_enable($modules, TRUE);
+}
+
+/**
+ * Disable some more old modules
+ */
+function koop_update_update_7007() {
+  $modules = array('ckan_dataset', 'ckan');
+  module_disable($modules, TRUE);
+  drupal_uninstall_modules($modules);
+}
+
+
+/**
+ * Enable the create widget module
+ */
+function koop_update_update_7008() {
+  $modules = array('donl_widget');
+  module_enable($modules, TRUE);
+}
+
+/**
+ * Disable the composer manager
+ */
+function koop_update_update_7009() {
+  $modules = array('composer_manager');
+  module_disable($modules, TRUE);
+  drupal_uninstall_modules($modules);
 }

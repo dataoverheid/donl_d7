@@ -22,10 +22,30 @@ function custom_data_verzoek_admin_paths_alter(&$paths) {
 }
 
 
-function custom_data_verzoek_form_dataverzoek_node_form_alter(&$form, &$form_state) {
+function custom_data_verzoek_form_dataverzoek_node_form_alter(&$form, &$form_state, $form_id) {
+  foreach (element_children($form) as $key) {
+    $element = &$form[$key];
+    if (!empty($element[LANGUAGE_NONE]['#type']) && $element[LANGUAGE_NONE]['#type'] == 'radios') {
+      if (!isset($element[LANGUAGE_NONE]['#default_value'])) {
+        $element[LANGUAGE_NONE]['#default_value'] = '_none';
+      }
+    }
+  }
 
-  if(isset($_GET['gevraagde_data'])) {
+  if (isset($_GET['gevraagde_data'])) {
     $form['field_dv_gevraagde_data'][LANGUAGE_NONE][0]['value']['#default_value'] = check_plain($_GET['gevraagde_data']);
+  }
+
+  if (isset($_GET['data_eigenaar'])) {
+    $form['field_dv_mogelijke_beheers_org'][LANGUAGE_NONE][0]['value']['#default_value'] = check_plain($_GET['data_eigenaar']);
+  }
+
+  if ($form_id == 'dataverzoek_node_form') {
+    // Check if this is the node add or node edit form.
+    if (empty($form['nid']['#value'])) {
+      $form['field_nummer_dataverzoek'][LANGUAGE_NONE][0]['value']['#default_value'] = date('Y') . '-' . custom_data_verzoek_get_request_id();
+    }
+    $form['field_nummer_dataverzoek'][LANGUAGE_NONE][0]['value']['#attributes']['disabled'] = TRUE;
   }
 
   unset($form['author']);
@@ -38,11 +58,37 @@ function custom_data_verzoek_form_dataverzoek_node_form_alter(&$form, &$form_sta
 
 function custom_data_verzoek_node_presave($node) {
   if ($node->type == 'dataverzoek') {
-    if(isset($node->field_gepubliceerd[LANGUAGE_NONE][0]['value']) && $node->field_gepubliceerd[LANGUAGE_NONE][0]['value']) {
+    if (isset($node->field_gepubliceerd[LANGUAGE_NONE][0]['value']) && $node->field_gepubliceerd[LANGUAGE_NONE][0]['value']) {
       $node->status = 1;
     }
     else {
       $node->status = 0;
     }
+
+    // Automatically add a value for the field_nummer_dataverzoek.
+    if (!empty($node->field_nummer_dataverzoek)) {
+      $node->field_nummer_dataverzoek[LANGUAGE_NONE][0]['value'] = date('Y') . '-' . custom_data_verzoek_get_request_id();
+    }
   }
+}
+
+function custom_data_verzoek_get_request_id() {
+  // Get the last created node.
+  $query = db_select('field_data_field_nummer_dataverzoek', 'dv');
+  $query->fields('dv', array('field_nummer_dataverzoek_value'));
+  $ids = $query->execute()->fetchCol();
+
+  // Declare max
+  $max = 0;
+
+  // Find true highest value.
+  foreach ($ids as $key => $id) {
+    $explode = explode('-', $id);
+    if ($explode[1] > $max) {
+      $max = $explode[1];
+    }
+  }
+
+  // Return highest value
+  return $max + 1;
 }

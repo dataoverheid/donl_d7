@@ -187,13 +187,13 @@ function koop_theme_cron() {
   if(in_array($status, $correct_status)) {
     $dom = new DOMDocument;
     $dom->loadHTML($html);
-
     $tmp = $dom->getElementById('header');
     $head = new DOMDocument;
     foreach($tmp->childNodes as $x) {
       $head->appendChild($head->importNode($x, TRUE));
     }
     $head->removeChild($head->getElementById('navigation'));
+
     file_put_contents('public://koop_theme/header.html', $head->saveHTML());
   } else {
     watchdog('koop_theme', 'Couldn\'t refresh theme files', array(), WATCHDOG_WARNING);

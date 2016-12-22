@@ -1,0 +1,404 @@
+<?php
+
+/**
+ * @file
+ * Entity Translation integration for taxonomy terms.
+ */
+
+/**
+ * Implements hook_content_taxonomy_tree_callback_alter().
+ */
+function content_taxonomy_et_content_taxonomy_tree_callback_alter(&$tree_callback, $field, $vocabulary) {
+  // Checks whether the Entity Translation mode with the title field is enabled,
+  // if so, replace the tree callback with our custom language specific
+  // implementation.
+  if (title_field_replacement_enabled('taxonomy_term', $vocabulary->machine_name, 'name')) {
+    $tree_callback = 'content_taxonomy_et_get_tree';
+  }
+}
+
+/**
+ * Implements hook_menu_alter().
+ */
+function content_taxonomy_et_menu_alter(&$items) {
+  // Localize autocompletes.
+  $items['taxonomy/autocomplete']['page callback'] = 'content_taxonomy_et_autocomplete';
+  if (isset($items['autocomplete_deluxe/taxonomy'])) {
+    $items['autocomplete_deluxe/taxonomy']['page callback'] = 'content_taxonomy_et_autocomplete_deluxe';
+  }
+}
+
+/**
+ * Implements hook_field_widget_form_alter().
+ */
+function content_taxonomy_et_field_widget_form_alter(&$element, &$form_state, $context) {
+  // Change validation callback for autocompletes in order to fix the
+  // retrieving of terms in the right language.
+  if (in_array($context['instance']['widget']['type'], array('taxonomy_autocomplete', 'autocomplete_deluxe_taxonomy'))) {
+    foreach ($element['#element_validate'] as $key => $validate_callback) {
+      if ($validate_callback == 'taxonomy_autocomplete_validate') {
+        $element['#element_validate'][$key] = 'content_taxonomy_et_autocomplete_validate';
+        break;
+      }
+    }
+  }
+}
+
+/**
+ * Replacement for taxonomy_get_tree().
+ *
+ * Exchanges the term name property with the title field value in the current
+ * language.
+ */
+function content_taxonomy_et_get_tree($vid, $parent = 0, $max_depth = NULL, $load_entities = FALSE) {
+  global $language;
+
+  $children = &drupal_static(__FUNCTION__, array());
+  $parents = &drupal_static(__FUNCTION__ . ':parents', array());
+  $terms = &drupal_static(__FUNCTION__ . ':terms', array());
+
+  // We cache trees, so it's not CPU-intensive to call taxonomy_get_tree() on a
+  // term and its children, too.
+  if (!isset($children[$vid])) {
+    $children[$vid] = array();
+    $parents[$vid] = array();
+    $terms[$vid] = array();
+
+    $query = db_select('taxonomy_term_data', 't');
+    $query->join('taxonomy_term_hierarchy', 'h', 'h.tid = t.tid');
+    $query->leftJoin('field_data_name_field', 'fd', 'fd.entity_id = t.tid AND fd.entity_type = :type AND fd.language = :language',
+      array(':type' => 'taxonomy_term', ':language' => $language->language));
+    $result = $query
+      ->addTag('translatable')
+      ->addTag('term_access')
+      ->fields('t')
+      ->fields('h', array('parent'))
+      ->fields('fd', array('name_field_value'))
+      ->condition('t.vid', $vid)
+      ->orderBy('t.weight')
+      ->orderBy('t.name')
+      ->execute();
+
+    foreach ($result as $term) {
+      $children[$vid][$term->parent][] = $term->tid;
+      $parents[$vid][$term->tid][] = $term->parent;
+      $terms[$vid][$term->tid] = $term;
+    }
+  }
+
+  // Load full entities, if necessary. The entity controller statically
+  // caches the results.
+  if ($load_entities) {
+    $term_entities = taxonomy_term_load_multiple(array_keys($terms[$vid]));
+  }
+
+  $max_depth = (!isset($max_depth)) ? count($children[$vid]) : $max_depth;
+  $tree = array();
+
+  // Keeps track of the parents we have to process, the last entry is used
+  // for the next processing step.
+  $process_parents = array();
+  $process_parents[] = $parent;
+
+  // Loops over the parent terms and adds its children to the tree array.
+  // Uses a loop instead of a recursion, because it's more efficient.
+  while (count($process_parents)) {
+    $parent = array_pop($process_parents);
+    // The number of parents determines the current depth.
+    $depth = count($process_parents);
+    if ($max_depth > $depth && !empty($children[$vid][$parent])) {
+      $has_children = FALSE;
+      $child = current($children[$vid][$parent]);
+      do {
+        if (empty($child)) {
+          break;
+        }
+        $term = $load_entities ? $term_entities[$child] : $terms[$vid][$child];
+        if (isset($parents[$vid][$term->tid])) {
+          // Clone the term so that the depth attribute remains correct
+          // in the event of multiple parents.
+          $term = clone $term;
+        }
+
+        // Use translation if it exists in the name property.
+        if (!empty($term->name_field_value)) {
+          $term->name = $term->name_field_value;
+        }
+
+        $term->depth = $depth;
+        unset($term->parent);
+        $term->parents = $parents[$vid][$term->tid];
+        $tree[] = $term;
+        if (!empty($children[$vid][$term->tid])) {
+          $has_children = TRUE;
+
+          // We have to continue with this parent later.
+          $process_parents[] = $parent;
+          // Use the current term as parent for the next iteration.
+          $process_parents[] = $term->tid;
+
+          // Reset pointers for child lists because we step in there more often
+          // with multi parents.
+          reset($children[$vid][$term->tid]);
+          // Move pointer so that we get the correct term the next time.
+          next($children[$vid][$parent]);
+          break;
+        }
+      } while ($child = next($children[$vid][$parent]));
+
+      if (!$has_children) {
+        // We processed all terms in this hierarchy-level, reset pointer
+        // so that this function works the next time it gets called.
+        reset($children[$vid][$parent]);
+      }
+    }
+  }
+
+  return $tree;
+}
+
+/**
+ * Replacement for form validate handler taxonomy_autocomplete_validate().
+ *
+ * Uses content_taxonomy_et_get_first_possible_term() to retrieve the right term
+ * in the right language, instead of term_load_multiple().
+ */
+function content_taxonomy_et_autocomplete_validate($element, &$form_state) {
+  // Autocomplete widgets do not send their tids in the form, so we must detect
+  // them here and process them independently.
+  $value = array();
+  if ($tags = $element['#value']) {
+    // Collect candidate vocabularies.
+    $field = field_widget_field($element, $form_state);
+    $vocabularies = array();
+    foreach ($field['settings']['allowed_values'] as $tree) {
+      if ($vocabulary = taxonomy_vocabulary_machine_name_load($tree['vocabulary'])) {
+        $vocabularies[$vocabulary->vid] = $vocabulary;
+      }
+    }
+
+    // Translate term names into actual terms.
+    $typed_terms = drupal_explode_tags($tags);
+    foreach ($typed_terms as $typed_term) {
+      // See if the term exists in the chosen vocabulary and return the tid;
+      // otherwise, create a new 'autocreate' term for insert/update.
+      $term = content_taxonomy_et_get_first_possible_term(trim($typed_term), array_keys($vocabularies));
+      if (!$term) {
+        $vocabulary = reset($vocabularies);
+        $term = array(
+          'tid' => 'autocreate',
+          'vid' => $vocabulary->vid,
+          'name' => $typed_term,
+          'vocabulary_machine_name' => $vocabulary->machine_name,
+        );
+      }
+      $value[] = (array)$term;
+    }
+  }
+
+  form_set_value($element, $value, $form_state);
+}
+
+/**
+ * Replacement for taxonomy_autocomplete().
+ *
+ *  Adds an additional left join to the translatable title field.
+ */
+function content_taxonomy_et_autocomplete($field_name = '', $tags_typed = '') {
+  global $language;
+
+  // If the request has a '/' in the search text, then the menu system will have
+  // split it into multiple arguments, recover the intended $tags_typed.
+  $args = func_get_args();
+  // Shift off the $field_name argument.
+  array_shift($args);
+  $tags_typed = implode('/', $args);
+
+  // Make sure the field exists and is a taxonomy field.
+  if (!($field = field_info_field($field_name)) || $field['type'] !== 'taxonomy_term_reference') {
+    // Error string. The JavaScript handler will realize this is not JSON and
+    // will display it as debugging information.
+    print t('Taxonomy field @field_name not found.', array('@field_name' => $field_name));
+    exit;
+  }
+
+  // The user enters a comma-separated list of tags. We only autocomplete the last tag.
+  $tags_typed = drupal_explode_tags($tags_typed);
+  $tag_last = drupal_strtolower(array_pop($tags_typed));
+
+  $term_matches = array();
+  if ($tag_last != '') {
+
+    // Part of the criteria for the query come from the field's own settings.
+    $vids = array();
+    $vocabularies = taxonomy_vocabulary_get_names();
+    foreach ($field['settings']['allowed_values'] as $tree) {
+      $vids[] = $vocabularies[$tree['vocabulary']]->vid;
+    }
+
+    $query = db_select('taxonomy_term_data', 't');
+    $query->addTag('translatable');
+    $query->addTag('term_access');
+
+    $query->leftJoin('field_data_name_field', 'fd', 'fd.entity_id = t.tid AND fd.entity_type = :type AND fd.language = :language',
+      array(':type' => 'taxonomy_term', ':language' => $language->language));
+
+    // Do not select already entered terms.
+    if (!empty($tags_typed)) {
+      $query->condition('t.name', $tags_typed, 'NOT IN');
+    }
+
+    // Select rows that match by term name.
+    $tags_return = $query
+      ->fields('t', array('tid', 'name'))
+      ->fields('fd', array('name_field_value'))
+      ->condition('t.vid', $vids)
+      ->condition(db_or()->condition('t.name', '%' . db_like($tag_last) . '%', 'LIKE')->condition('fd.name_field_value', '%' . db_like($tag_last) . '%', 'LIKE'))
+      ->range(0, 10)
+      ->execute();
+
+    $prefix = count($tags_typed) ? drupal_implode_tags($tags_typed) . ', ' : '';
+
+    foreach ($tags_return as $record) {
+      $name = !empty($record->name_field_value) ? $record->name_field_value : $record->name;
+      $n = $name;
+      // Term names containing commas or quotes must be wrapped in quotes.
+      if (strpos($name, ',') !== FALSE || strpos($name, '"') !== FALSE) {
+        $n = '"' . str_replace('"', '""', $name) . '"';
+      }
+      $term_matches[$prefix . $n] = check_plain($name);
+    }
+  }
+
+  drupal_json_output($term_matches);
+}
+
+
+/**
+ * Replacement for taxonomy_autocomplete_deluxe().
+ *
+ * Adds an additional left join to the translatable title field.
+ *
+ * @todo
+ *   Merge with content_taxonomy_et_autocomplete().
+ */
+function content_taxonomy_et_autocomplete_deluxe($field_name, $tags_typed = '', $limit = 10) {
+  global $language;
+
+  $field = field_info_field($field_name);
+  $use_synonyms = !empty($_GET['synonyms']);
+
+  // The user enters a comma-separated list of tags. We only autocomplete the last tag.
+  $tags_typed = drupal_explode_tags($tags_typed);
+  $tag_last = drupal_strtolower(array_pop($tags_typed));
+
+  $matches = array();
+
+  // Part of the criteria for the query come from the field's own settings.
+  $vids = array();
+  $vocabularies = taxonomy_vocabulary_get_names();
+  foreach ($field['settings']['allowed_values'] as $tree) {
+    // If the content taxonomy setting content_taxonomy_ignore_in_suggestions
+    // is set, then the vocabulary is ignored.
+    if (empty($tree['content_taxonomy_ignore_in_suggestions'])) {
+      $vids[] = $vocabularies[$tree['vocabulary']]->vid;
+    }
+  }
+
+  $query = db_select('taxonomy_term_data', 't');
+  $query->addTag('translatable');
+  $query->addTag('term_access');
+
+  $query->leftJoin('field_data_name_field', 'fd', 'fd.entity_id = t.tid AND fd.entity_type = :type AND fd.language = :language',
+    array(':type' => 'taxonomy_term', ':language' => $language->language));
+
+  if (module_exists('synonyms') && !empty($use_synonyms)) {
+    $query->leftJoin('field_data_synonyms_synonym', 'fdss', 'fdss.entity_id = t.tid');
+  }
+
+  if ($tag_last != '') {
+    // Do not select already entered terms.
+    if (!empty($tags_typed)) {
+      $query->condition('t.name', $tags_typed, 'NOT IN');
+    }
+    // Select rows that match by term name.
+    $query
+      ->fields('t', array('tid', 'name'))
+      ->fields('fd', array('name_field_value'))
+      ->condition('t.vid', $vids);
+
+    if (module_exists('synonyms') && !empty($use_synonyms)) {
+      $or = db_or();
+      $or->condition('fdss.synonyms_synonym_value', '%' . db_like($tag_last) . '%', 'LIKE');
+      $or->condition('t.name', '%' . db_like($tag_last) . '%', 'LIKE');
+      $or->condition('fd.name_field_value', '%' . db_like($tag_last) . '%', 'LIKE');
+      $query->condition($or);
+    }
+    else {
+      $query->condition(db_or()->condition('t.name', '%' . db_like($tag_last) . '%', 'LIKE')->condition('fd.name_field_value', '%' . db_like($tag_last) . '%', 'LIKE'));
+
+    }
+
+    if (isset($limit) && $limit > 0) {
+      $query->range(0, $limit);
+    }
+
+    $tags_return = $query->execute();
+  }
+  else {
+    $query
+      ->fields('t', array('tid', 'name'))
+      ->fields('fd', array('name_field_value'))
+      ->condition('t.vid', $vids);
+
+    if (isset($limit) && $limit > 0) {
+      $query->range(0, $limit);
+    }
+
+    $tags_return = $query->execute();
+  }
+
+  $prefix = count($tags_typed) ? drupal_implode_tags($tags_typed) . ', ' : '';
+
+  $term_matches = array();
+  foreach ($tags_return as $record) {
+    $name = !empty($record->name_field_value) ? $record->name_field_value : $record->name;
+    $n = $name;
+    // Term names containing commas or quotes must be wrapped in quotes.
+    if (strpos($name, ',') !== FALSE || strpos($name, '"') !== FALSE) {
+      $n = '"' . str_replace('"', '""', $name) . '"';
+    }
+    $term_matches[$prefix . $n] = check_plain($name);
+  }
+
+  drupal_json_output($term_matches);
+}
+
+/**
+ * Helper function that retrieves the first possible term object for a given
+ * term name and and array of vocabulary ids.
+ *
+ * Used in content_taxonomy_et_autocomplete_validate().
+ */
+function content_taxonomy_et_get_first_possible_term($term_name, $vids) {
+  global $language;
+
+  // EFQ does not work here, as we do not have OR condition possibilities.
+  $query = db_select('taxonomy_term_data', 't');
+  $query->addTag('translatable');
+  $query->addTag('term_access');
+  $query->leftJoin('field_data_name_field', 'fd', 'fd.entity_id = t.tid AND fd.entity_type = :type AND fd.language = :language',
+    array(':type' => 'taxonomy_term', ':language' => $language->language));
+  $query->fields('t', array('tid'))
+    ->condition('t.vid', $vids, 'IN')
+    ->condition(db_or()->condition('t.name', $term_name)->condition('fd.name_field_value', $term_name))
+    ->orderBy('t.tid', 'ASC')
+    ->execute();
+
+  $first_tid = $query->execute()->fetchColumn();
+  if (!empty($first_tid)) {
+    $term = taxonomy_term_load($first_tid);
+    return $term;
+  }
+  return FALSE;
+}

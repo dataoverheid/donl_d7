@@ -1,0 +1,4 @@
+name = Indicia Charts
+description = Module that will add some additional charts
+package = Indicia
+core = 7.x

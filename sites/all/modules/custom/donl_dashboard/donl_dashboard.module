@@ -1,0 +1,103 @@
+<?PHP
+
+define('DONL_DATASET_OPEN_LICENCE', serialize(array(
+  'cc-by3',
+  'cc-by',
+  'cc-zero',
+  'cc-0',
+  'publiek-domein'
+)));
+
+
+/**
+ * Implements hook_menu().
+ */
+function donl_dashboard_menu() {
+  $items = array();
+
+  $items['monitor'] = array(
+    'title' => 'Monitor',
+    'type' => MENU_SUGGESTED_ITEM,
+    'access arguments' => array('access content'),
+    'menu_name'=>'main-menu',
+    'page callback' => 'donl_dashboard_page',
+    'file' => 'includes/dashboard.inc',
+  );
+
+  $items['monitor/overzicht'] = array(
+    'title' => 'Overzicht',
+    'type' => MENU_NORMAL_ITEM,
+    'page callback' => 'donl_dashboard_page',
+    'file' => 'includes/dashboard.inc',
+    'access arguments' => array('access content'),
+  );
+
+
+  return $items;
+}
+
+
+/**
+ * Implements hook_flush_caches().
+ */
+function donl_dashboard_flush_caches() {
+  return array('cache_donl_dashboard');
+}
+
+
+/**
+ * Helper function that will make an CKAN api call
+ * and give back the json object as php object.
+ */
+function donl_dashboard_make_ckan_call($action) {
+  $url = variable_get('ckan_url', '') . '3/action/' . $action;
+
+  $ch = curl_init();
+  $curlConfig = array(
+    CURLOPT_URL => $url,
+    CURLOPT_RETURNTRANSFER => TRUE,
+  );
+  curl_setopt_array($ch, $curlConfig);
+  $result = curl_exec($ch);
+  curl_close($ch);
+  return json_decode($result);
+}
+
+
+/**
+ * Helper function to get the taxonomy id for a given CKAN representation of the term
+ */
+function donl_dashboard_get_taxonomy_tid($search, $vocabulary = NULL) {
+  $tid = 0;
+  $terms = explode(' | ', $search);
+  $count = count($terms) - 1;
+
+  foreach ($terms as $i => $term) {
+    $query = db_select('taxonomy_term_data', 'ttd');
+    $query->innerJoin('taxonomy_vocabulary', 'tv', 'ttd.vid = tv.vid');
+    $query->leftJoin('taxonomy_term_hierarchy', 'tth', 'ttd.tid = tth.tid');
+    $query->fields('ttd', array('tid'));
+    $query->fields('tth', array('parent'));
+    $query->condition('ttd.name', trim($term), '=');
+    if (isset($vocabulary)) {
+      $query->condition('tv.machine_name', $vocabulary, '=');
+    }
+    if (isset($parents)) {
+      $query->condition('tth.parent', $parents, 'IN');
+    }
+    $result = $query->execute();
+
+    if ($i < $count) {
+      $parents = NULL;
+      while ($record = $result->fetchAssoc()) {
+        $parents[] = $record['tid'];
+      }
+    }
+    else {
+      $record = $result->fetchAssoc();
+      $tid = $record['tid'];
+    }
+  }
+
+  return $tid;
+}

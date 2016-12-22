@@ -8,12 +8,7 @@ core = 7.x
 
 stylesheets[all][]        = css/main.css
 stylesheets[all][]        = css/custom_theme_addons.css
-
-
-
-scripts[]                 = js/jquery-1.11.1.min.js
-scripts[]                 = js/modernizr.custom.js
-scripts[]                 = js/KOOP_webapp.js
+stylesheets[all][]        = css/grids-responsive-min.css
 
 
 

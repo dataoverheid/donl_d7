@@ -43,7 +43,7 @@ function dgu_user_strongarm() {
     'extra_fields' => array(
       'form' => array(
         'account' => array(
-          'weight' => '1',
+          'weight' => '0',
         ),
         'timezone' => array(
           'weight' => '2',
@@ -68,6 +68,9 @@ function dgu_user_strongarm() {
         ),
         'locale' => array(
           'weight' => '3',
+        ),
+        'password_policy' => array(
+          'weight' => '1',
         ),
       ),
       'display' => array(

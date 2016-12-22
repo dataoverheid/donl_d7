@@ -1,0 +1,8 @@
+name = DONL Widget
+description = Module that will provide a simple json widget for external users
+package = Custom
+core = 7.x
+version = "7.x-1.0"
+project = "Custom"
+
+dependencies[] = ckan_donl

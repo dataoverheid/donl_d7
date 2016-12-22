@@ -1,0 +1,94 @@
+<?php
+
+/**
+ * @file
+ * (Un-) installation tasks for content taxonomy.
+ */
+
+/**
+ * Implements hook_disable().
+ *
+ * Allow uninstall of content taxonomy by removing the callback in field
+ * configuration. Re-enabling requires to save the field configs to re-insert
+ * the callback.
+ */
+function content_taxonomy_disable() {
+  $fields = field_read_fields();
+  foreach ($fields as $field) {
+    if (isset($field['settings']['options_list_callback']) && $field['settings']['options_list_callback'] == 'content_taxonomy_allowed_values') {
+      // We cannot unset this value, because field_update_field() merges in
+      // prior settings before saving. Setting it to NULL works.
+      $field['settings']['options_list_callback'] = NULL;
+    }
+    field_update_field($field);
+  }
+}
+
+/**
+ * Implementations of hook_update_N().
+ */
+
+/**
+ * Fix the default values converted from D6. These values had an empty 'value'
+ * value which could cause errors on D7.
+ */
+function content_taxonomy_update_7100() {
+  $params = array(
+    'type' => 'taxonomy_term_reference',
+  );
+  foreach (field_read_fields($params) as $field) {
+    foreach (field_read_instances(array('field_name' => $field['field_name'])) as $instance) {
+      // If the 'default_value' item doesn't exist there's no point in
+      // continuing.
+      if (!isset($instance['default_value'])) {
+        continue;
+      }
+
+      // Keep track of whether fields are actually changed.
+      $updated = FALSE;
+
+      // Fix each of the default values.
+      foreach ($instance['default_value'] as $key => $defaults) {
+        // Need to check isset() and is_null() because the value could be NULL.
+        if (isset($instance['default_value'][$key]['value']) || is_null($instance['default_value'][$key]['value'])) {
+          // Remove any empty 'value' strings.
+          if (empty($instance['default_value'][$key]['value'])) {
+            unset($instance['default_value'][$key]['value']);
+            $updated = TRUE;
+          }
+
+          // Rename the 'value' string to 'tid'.
+          elseif (!isset($instance_value['default_value'][$key]['tid'])) {
+            $instance_value['default_value'][$key]['tid'] = $instance_value['default_value'][$key]['value'];
+            unset($instance_value['default_value'][$key]['value']);
+            $updated = TRUE;
+          }
+
+          // Look for a junk value carried over from D6.
+          if (isset($instance['default_value'][$key]['_error_element'])) {
+            unset($instance['default_value'][$key]['_error_element']);
+            $updated = TRUE;
+          }
+
+          // If the array is empty, just remove it.
+          if (empty($instance['default_value'][$key])) {
+            unset($instance['default_value'][$key]);
+            $updated = TRUE;
+          }
+        }
+      }
+
+      // If there are no default values left, just remove it.
+      if (empty($instance['default_value'])) {
+        unset($instance['default_value']);
+        $updated = TRUE;
+      }
+
+      // If the field's definition was changed, save it.
+      if ($updated) {
+        field_update_instance($instance);
+        drupal_set_message(t('Fixed configuration of the "@field_name" field ("@type" content type).', array('@field_name' => $instance['field_name'], '@type' => $instance['bundle'])));
+      }
+    }
+  }
+}

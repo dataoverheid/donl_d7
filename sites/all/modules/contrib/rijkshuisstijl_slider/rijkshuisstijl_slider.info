@@ -1,0 +1,21 @@
+name = Rijkshuisstijl Slider
+description = Slideshow block compatible with the Rijkshuisstijl.
+core = 7.x
+package = Rijkshuisstijl
+
+; Dependencies
+dependencies[] = bean
+dependencies[] = ctools
+dependencies[] = entity (>7.x-1.0-rc3)
+dependencies[] = field_collection (>7.x-1.0-beta4)
+dependencies[] = image
+
+; Module files
+files[] = plugins/bean/RijkshuisstijlSliderBean.class.php
+
+; Information added by Drupal.org packaging script on 2014-05-28
+version = "7.x-1.0-beta3"
+core = "7.x"
+project = "rijkshuisstijl_slider"
+datestamp = "1401260628"
+

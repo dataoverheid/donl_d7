@@ -14,7 +14,7 @@ function elysia_cron_should_run($conf, $now = -1) {
   }
 
   if (!preg_match('/^([0-9*,\/-]+)[ ]+([0-9*,\/-]+)[ ]+([0-9*,\/-]+)[ ]+([0-9*,\/-]+)[ ]+([0-9*,\/-]+)$/', $conf['rule'], $rules)) {
-    _dco_watchdog('cron', 'Invalid rule found: %rule', array('%rule' => $conf['rule']));
+    elysia_cron_warning('Invalid rule found: %rule', array('%rule' => $conf['rule']));
     return false;
   }
 

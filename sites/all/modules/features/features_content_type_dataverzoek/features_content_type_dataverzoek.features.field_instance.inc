@@ -10,7 +10,122 @@
 function features_content_type_dataverzoek_field_default_field_instances() {
   $field_instances = array();
 
-  // Exported field_instance: 'node-dataverzoek-field_dv_betreft_periode'
+  // Exported field_instance: 'node-dataverzoek-field_bron_verzoek'.
+  $field_instances['node-dataverzoek-field_bron_verzoek'] = array(
+    'bundle' => 'dataverzoek',
+    'default_value' => NULL,
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'module' => 'list',
+        'settings' => array(),
+        'type' => 'list_default',
+        'weight' => 24,
+      ),
+      'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+    ),
+    'entity_type' => 'node',
+    'field_name' => 'field_bron_verzoek',
+    'label' => 'Bron verzoek',
+    'required' => 0,
+    'settings' => array(
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'options',
+      'settings' => array(),
+      'type' => 'options_buttons',
+      'weight' => 17,
+    ),
+  );
+
+  // Exported field_instance: 'node-dataverzoek-field_dataverzoek_fase'.
+  $field_instances['node-dataverzoek-field_dataverzoek_fase'] = array(
+    'bundle' => 'dataverzoek',
+    'default_value' => NULL,
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'module' => 'taxonomy',
+        'settings' => array(),
+        'type' => 'taxonomy_term_reference_link',
+        'weight' => 27,
+      ),
+      'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+    ),
+    'entity_type' => 'node',
+    'field_name' => 'field_dataverzoek_fase',
+    'label' => 'Afgehandeld resultaat',
+    'required' => 0,
+    'settings' => array(
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'options',
+      'settings' => array(),
+      'type' => 'options_buttons',
+      'weight' => 35,
+    ),
+  );
+
+  // Exported field_instance: 'node-dataverzoek-field_doelgroep_aanvrager'.
+  $field_instances['node-dataverzoek-field_doelgroep_aanvrager'] = array(
+    'bundle' => 'dataverzoek',
+    'default_value' => array(
+      0 => array(
+        'value' => 'Onbekend',
+      ),
+    ),
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'module' => 'list',
+        'settings' => array(),
+        'type' => 'list_default',
+        'weight' => 23,
+      ),
+      'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+    ),
+    'entity_type' => 'node',
+    'field_name' => 'field_doelgroep_aanvrager',
+    'label' => 'Doelgroep aanvrager',
+    'required' => 0,
+    'settings' => array(
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'options',
+      'settings' => array(),
+      'type' => 'options_buttons',
+      'weight' => 30,
+    ),
+  );
+
+  // Exported field_instance: 'node-dataverzoek-field_dv_betreft_periode'.
   $field_instances['node-dataverzoek-field_dv_betreft_periode'] = array(
     'bundle' => 'dataverzoek',
     'deleted' => 0,
@@ -25,6 +140,7 @@ function features_content_type_dataverzoek_field_default_field_instances() {
           'multiple_from' => '',
           'multiple_number' => '',
           'multiple_to' => '',
+          'show_remaining_days' => FALSE,
         ),
         'type' => 'date_default',
         'weight' => 6,
@@ -63,7 +179,7 @@ function features_content_type_dataverzoek_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-dataverzoek-field_dv_data_eigenaar'
+  // Exported field_instance: 'node-dataverzoek-field_dv_data_eigenaar'.
   $field_instances['node-dataverzoek-field_dv_data_eigenaar'] = array(
     'bundle' => 'dataverzoek',
     'default_value' => NULL,
@@ -75,7 +191,7 @@ function features_content_type_dataverzoek_field_default_field_instances() {
         'module' => 'taxonomy',
         'settings' => array(),
         'type' => 'taxonomy_term_reference_link',
-        'weight' => 6,
+        'weight' => 29,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -92,17 +208,19 @@ function features_content_type_dataverzoek_field_default_field_instances() {
       'user_register_form' => FALSE,
     ),
     'widget' => array(
-      'active' => 1,
-      'module' => 'options',
+      'active' => 0,
+      'module' => 'taxonomy',
       'settings' => array(
-        'content_taxonomy_opt_groups' => FALSE,
+        'autocomplete_path' => 'taxonomy/autocomplete',
+        'content_taxonomy_autocomplete_new_terms' => 'allow',
+        'size' => 60,
       ),
-      'type' => 'options_select',
+      'type' => 'taxonomy_autocomplete',
       'weight' => 19,
     ),
   );
 
-  // Exported field_instance: 'node-dataverzoek-field_dv_datum'
+  // Exported field_instance: 'node-dataverzoek-field_dv_datum'.
   $field_instances['node-dataverzoek-field_dv_datum'] = array(
     'bundle' => 'dataverzoek',
     'deleted' => 0,
@@ -117,9 +235,10 @@ function features_content_type_dataverzoek_field_default_field_instances() {
           'multiple_from' => '',
           'multiple_number' => '',
           'multiple_to' => '',
+          'show_remaining_days' => FALSE,
         ),
         'type' => 'date_default',
-        'weight' => 1,
+        'weight' => 22,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -156,7 +275,7 @@ function features_content_type_dataverzoek_field_default_field_instances() {
   );
 
   // Exported field_instance:
-  // 'node-dataverzoek-field_dv_denkt_geld_te_verdienen'
+  // 'node-dataverzoek-field_dv_denkt_geld_te_verdienen'.
   $field_instances['node-dataverzoek-field_dv_denkt_geld_te_verdienen'] = array(
     'bundle' => 'dataverzoek',
     'default_value' => NULL,
@@ -195,7 +314,7 @@ function features_content_type_dataverzoek_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-dataverzoek-field_dv_emailadres'
+  // Exported field_instance: 'node-dataverzoek-field_dv_emailadres'.
   $field_instances['node-dataverzoek-field_dv_emailadres'] = array(
     'bundle' => 'dataverzoek',
     'default_value' => NULL,
@@ -207,7 +326,7 @@ function features_content_type_dataverzoek_field_default_field_instances() {
         'module' => 'email',
         'settings' => array(),
         'type' => 'email_default',
-        'weight' => 5,
+        'weight' => 4,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -234,7 +353,7 @@ function features_content_type_dataverzoek_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-dataverzoek-field_dv_fase'
+  // Exported field_instance: 'node-dataverzoek-field_dv_fase'.
   $field_instances['node-dataverzoek-field_dv_fase'] = array(
     'bundle' => 'dataverzoek',
     'default_value' => array(
@@ -247,10 +366,9 @@ function features_content_type_dataverzoek_field_default_field_instances() {
     'display' => array(
       'default' => array(
         'label' => 'above',
-        'module' => 'list',
         'settings' => array(),
-        'type' => 'list_default',
-        'weight' => 4,
+        'type' => 'hidden',
+        'weight' => 8,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -277,7 +395,7 @@ function features_content_type_dataverzoek_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-dataverzoek-field_dv_gebruik_dataset'
+  // Exported field_instance: 'node-dataverzoek-field_dv_gebruik_dataset'.
   $field_instances['node-dataverzoek-field_dv_gebruik_dataset'] = array(
     'bundle' => 'dataverzoek',
     'default_value' => NULL,
@@ -317,12 +435,12 @@ function features_content_type_dataverzoek_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-dataverzoek-field_dv_gevraagde_data'
+  // Exported field_instance: 'node-dataverzoek-field_dv_gevraagde_data'.
   $field_instances['node-dataverzoek-field_dv_gevraagde_data'] = array(
     'bundle' => 'dataverzoek',
     'default_value' => NULL,
     'deleted' => 0,
-    'description' => '',
+    'description' => 'Omschrijf zo gedetailleerd mogelijk welke data u zoekt. Omschrijf zo gedetailleerd mogelijk welke data u zoekt. Omschrijf zo gedetailleerd mogelijk welke data u zoekt. Omschrijf zo gedetailleerd mogelijk welke data u zoekt.',
     'display' => array(
       'default' => array(
         'label' => 'above',
@@ -350,14 +468,14 @@ function features_content_type_dataverzoek_field_default_field_instances() {
       'active' => 1,
       'module' => 'text',
       'settings' => array(
-        'rows' => 5,
+        'rows' => 4,
       ),
       'type' => 'text_textarea',
       'weight' => 4,
     ),
   );
 
-  // Exported field_instance: 'node-dataverzoek-field_dv_gewenste_dataformaat'
+  // Exported field_instance: 'node-dataverzoek-field_dv_gewenste_dataformaat'.
   $field_instances['node-dataverzoek-field_dv_gewenste_dataformaat'] = array(
     'bundle' => 'dataverzoek',
     'default_value' => NULL,
@@ -397,7 +515,7 @@ function features_content_type_dataverzoek_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-dataverzoek-field_dv_mogelijke_beheers_org'
+  // Exported field_instance: 'node-dataverzoek-field_dv_mogelijke_beheers_org'.
   $field_instances['node-dataverzoek-field_dv_mogelijke_beheers_org'] = array(
     'bundle' => 'dataverzoek',
     'default_value' => NULL,
@@ -437,12 +555,12 @@ function features_content_type_dataverzoek_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-dataverzoek-field_dv_naam'
+  // Exported field_instance: 'node-dataverzoek-field_dv_naam'.
   $field_instances['node-dataverzoek-field_dv_naam'] = array(
     'bundle' => 'dataverzoek',
     'default_value' => NULL,
     'deleted' => 0,
-    'description' => '',
+    'description' => 'Het is een vraagteken!',
     'display' => array(
       'default' => array(
         'label' => 'above',
@@ -477,7 +595,7 @@ function features_content_type_dataverzoek_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-dataverzoek-field_dv_organisatie'
+  // Exported field_instance: 'node-dataverzoek-field_dv_organisatie'.
   $field_instances['node-dataverzoek-field_dv_organisatie'] = array(
     'bundle' => 'dataverzoek',
     'default_value' => NULL,
@@ -489,7 +607,7 @@ function features_content_type_dataverzoek_field_default_field_instances() {
         'module' => 'text',
         'settings' => array(),
         'type' => 'text_default',
-        'weight' => 4,
+        'weight' => 3,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -517,7 +635,7 @@ function features_content_type_dataverzoek_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-dataverzoek-field_dv_problemen_gehad'
+  // Exported field_instance: 'node-dataverzoek-field_dv_problemen_gehad'.
   $field_instances['node-dataverzoek-field_dv_problemen_gehad'] = array(
     'bundle' => 'dataverzoek',
     'default_value' => NULL,
@@ -556,7 +674,7 @@ function features_content_type_dataverzoek_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-dataverzoek-field_dv_status'
+  // Exported field_instance: 'node-dataverzoek-field_dv_status'.
   $field_instances['node-dataverzoek-field_dv_status'] = array(
     'bundle' => 'dataverzoek',
     'default_value' => array(
@@ -572,7 +690,7 @@ function features_content_type_dataverzoek_field_default_field_instances() {
         'module' => 'list',
         'settings' => array(),
         'type' => 'list_default',
-        'weight' => 2,
+        'weight' => 25,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -599,7 +717,7 @@ function features_content_type_dataverzoek_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-dataverzoek-field_dv_telefoonnummer'
+  // Exported field_instance: 'node-dataverzoek-field_dv_telefoonnummer'.
   $field_instances['node-dataverzoek-field_dv_telefoonnummer'] = array(
     'bundle' => 'dataverzoek',
     'default_value' => NULL,
@@ -611,7 +729,7 @@ function features_content_type_dataverzoek_field_default_field_instances() {
         'module' => 'text',
         'settings' => array(),
         'type' => 'text_default',
-        'weight' => 6,
+        'weight' => 5,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -639,7 +757,7 @@ function features_content_type_dataverzoek_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-dataverzoek-field_dv_thema'
+  // Exported field_instance: 'node-dataverzoek-field_dv_thema'.
   $field_instances['node-dataverzoek-field_dv_thema'] = array(
     'bundle' => 'dataverzoek',
     'default_value' => NULL,
@@ -680,7 +798,7 @@ function features_content_type_dataverzoek_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-dataverzoek-field_dv_toelichting_status'
+  // Exported field_instance: 'node-dataverzoek-field_dv_toelichting_status'.
   $field_instances['node-dataverzoek-field_dv_toelichting_status'] = array(
     'bundle' => 'dataverzoek',
     'default_value' => NULL,
@@ -692,7 +810,7 @@ function features_content_type_dataverzoek_field_default_field_instances() {
         'module' => 'text',
         'settings' => array(),
         'type' => 'text_default',
-        'weight' => 5,
+        'weight' => 28,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -720,7 +838,7 @@ function features_content_type_dataverzoek_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-dataverzoek-field_dv_url_naar_dataset'
+  // Exported field_instance: 'node-dataverzoek-field_dv_url_naar_dataset'.
   $field_instances['node-dataverzoek-field_dv_url_naar_dataset'] = array(
     'bundle' => 'dataverzoek',
     'default_value' => NULL,
@@ -732,7 +850,7 @@ function features_content_type_dataverzoek_field_default_field_instances() {
         'module' => 'link',
         'settings' => array(),
         'type' => 'link_default',
-        'weight' => 7,
+        'weight' => 30,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -777,7 +895,7 @@ function features_content_type_dataverzoek_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-dataverzoek-field_dv_verklaring_probleem'
+  // Exported field_instance: 'node-dataverzoek-field_dv_verklaring_probleem'.
   $field_instances['node-dataverzoek-field_dv_verklaring_probleem'] = array(
     'bundle' => 'dataverzoek',
     'default_value' => NULL,
@@ -817,7 +935,7 @@ function features_content_type_dataverzoek_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-dataverzoek-field_gepubliceerd'
+  // Exported field_instance: 'node-dataverzoek-field_gepubliceerd'.
   $field_instances['node-dataverzoek-field_gepubliceerd'] = array(
     'bundle' => 'dataverzoek',
     'default_value' => array(
@@ -832,7 +950,7 @@ function features_content_type_dataverzoek_field_default_field_instances() {
         'label' => 'hidden',
         'settings' => array(),
         'type' => 'hidden',
-        'weight' => 8,
+        'weight' => 7,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -859,17 +977,199 @@ function features_content_type_dataverzoek_field_default_field_instances() {
     ),
   );
 
+  // Exported field_instance: 'node-dataverzoek-field_nummer_dataverzoek'.
+  $field_instances['node-dataverzoek-field_nummer_dataverzoek'] = array(
+    'bundle' => 'dataverzoek',
+    'default_value' => array(
+      0 => array(
+        'value' => '2016-00',
+      ),
+    ),
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'module' => 'text',
+        'settings' => array(),
+        'type' => 'text_default',
+        'weight' => 21,
+      ),
+      'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+    ),
+    'entity_type' => 'node',
+    'field_name' => 'field_nummer_dataverzoek',
+    'label' => 'Nummer Dataverzoek',
+    'required' => 0,
+    'settings' => array(
+      'text_processing' => 0,
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'text',
+      'settings' => array(
+        'size' => 12,
+      ),
+      'type' => 'text_textfield',
+      'weight' => 28,
+    ),
+  );
+
+  // Exported field_instance: 'node-dataverzoek-field_open_fase'.
+  $field_instances['node-dataverzoek-field_open_fase'] = array(
+    'bundle' => 'dataverzoek',
+    'default_value' => array(
+      0 => array(
+        'tid' => 2161,
+      ),
+    ),
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'module' => 'taxonomy',
+        'settings' => array(),
+        'type' => 'taxonomy_term_reference_link',
+        'weight' => 26,
+      ),
+      'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+    ),
+    'entity_type' => 'node',
+    'field_name' => 'field_open_fase',
+    'label' => 'Laatste status open dataverzoek',
+    'required' => 0,
+    'settings' => array(
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'options',
+      'settings' => array(),
+      'type' => 'options_buttons',
+      'weight' => 34,
+    ),
+  );
+
+  // Exported field_instance:
+  // 'taxonomy_term-taxonomiebeleidsagenda-field_icoon'.
+  $field_instances['taxonomy_term-taxonomiebeleidsagenda-field_icoon'] = array(
+    'bundle' => 'taxonomiebeleidsagenda',
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'module' => 'image',
+        'settings' => array(
+          'image_link' => '',
+          'image_style' => '',
+        ),
+        'type' => 'image',
+        'weight' => 1,
+      ),
+    ),
+    'entity_type' => 'taxonomy_term',
+    'field_name' => 'field_icoon',
+    'label' => 'Icoon',
+    'required' => 0,
+    'settings' => array(
+      'alt_field' => 0,
+      'default_image' => 0,
+      'file_directory' => '',
+      'file_extensions' => 'png gif jpg jpeg',
+      'max_filesize' => '',
+      'max_resolution' => '',
+      'min_resolution' => '',
+      'title_field' => 0,
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'media',
+      'settings' => array(
+        'allowed_schemes' => array(
+          'public' => 'public',
+        ),
+        'allowed_types' => array(
+          'audio' => 0,
+          'default' => 0,
+          'image' => 'image',
+          'video' => 0,
+        ),
+        'progress_indicator' => 'throbber',
+      ),
+      'type' => 'media_generic',
+      'weight' => 32,
+    ),
+  );
+
+  // Exported field_instance:
+  // 'taxonomy_term-taxonomiebeleidsagenda-field_kleurcode'.
+  $field_instances['taxonomy_term-taxonomiebeleidsagenda-field_kleurcode'] = array(
+    'bundle' => 'taxonomiebeleidsagenda',
+    'default_value' => NULL,
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'module' => 'text',
+        'settings' => array(),
+        'type' => 'text_default',
+        'weight' => 0,
+      ),
+    ),
+    'entity_type' => 'taxonomy_term',
+    'field_name' => 'field_kleurcode',
+    'label' => 'Kleurcode',
+    'required' => 0,
+    'settings' => array(
+      'text_processing' => 0,
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'text',
+      'settings' => array(
+        'size' => 60,
+      ),
+      'type' => 'text_textfield',
+      'weight' => 31,
+    ),
+  );
+
   // Translatables
   // Included for use with string extractors like potx.
   t('Aanvraag datum');
+  t('Afgehandeld resultaat');
+  t('Bron verzoek');
   t('Data-eigenaar');
   t('Dataset betreft een periode');
   t('Denkt u geld te verdienen met deze data?');
+  t('Doelgroep aanvrager');
   t('Fase');
   t('Gevraagde data');
   t('Gewenste dataformaat');
   t('Heeft u problemen gehad met het zoeken naar de data?');
+  t('Het is een vraagteken!');
+  t('Icoon');
+  t('Kleurcode');
+  t('Laatste status open dataverzoek');
   t('Nadere toelichting bij uw zoektocht naar dataset tot nu toe');
+  t('Nummer Dataverzoek');
+  t('Omschrijf zo gedetailleerd mogelijk welke data u zoekt. Omschrijf zo gedetailleerd mogelijk welke data u zoekt. Omschrijf zo gedetailleerd mogelijk welke data u zoekt. Omschrijf zo gedetailleerd mogelijk welke data u zoekt.');
   t('Overheidsorganisatie die (mogelijk) dataset in beheer heeft');
   t('Publiceer dit dataverzoek');
   t('Status');

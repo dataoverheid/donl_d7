@@ -1,0 +1,65 @@
+msgid "CKAN connection settings"
+msgstr "CKAN-verbinding instellen"
+
+msgid "CKAN Settings"
+msgstr "CKAN-instellingen"
+
+msgid "Organisation"
+msgstr "Organisatie"
+
+msgid "Subjects"
+msgstr "Onderwerpen"
+
+msgid "View all datasets"
+msgstr "Bekijk alle datasets"
+
+msgid "Total amount of datasets"
+msgstr "Totaal aantal datasets"
+
+msgid "with open licence "
+msgstr "met open data licentie "
+
+msgid "with different licence "
+msgstr "met andere licentie "
+
+msgid "Quality"
+msgstr "Kwaliteit"
+
+msgid "Last modified "
+msgstr "Laatste aanpassing "
+
+msgid "Total amount of datasets available at"
+msgstr "Totaal aantal datasets beschikbaar op"
+
+msgid "Last modified"
+msgstr "Laatst bijgewerkt op"
+
+msgid "Available"
+msgstr "Beschikbaar"
+
+msgid "Planned"
+msgstr "Gepland"
+
+msgid "In resource"
+msgstr "In onderzoek"
+
+msgid "Features"
+msgstr "Kenmerken"
+
+msgid "Publicly accessible"
+msgstr "Publiek beschikbaar"
+
+msgid "Amount of data maintainers"
+msgstr "Aantal data-eigenaren"
+
+msgid "Amount of data sources"
+msgstr "Aantal databronnen"
+
+msgid "Duplicate references"
+msgstr "Dubbele verwijzingen"
+
+msgid "Go to the data calendar"
+msgstr "Ga naar de datakalender"
+
+msgid "More numbers and statistics"
+msgstr "Meer aantallen en statistieken"

@@ -2,160 +2,67 @@
 require_once('includes/koop_waardelijsten.xml_to_array.inc');
 
 
-
 function koop_waardelijsten_menu() {
-  /*$items['admin/koop_waardelijsten/import/taxonomiebeleidsagenda'] = array(
-    'page callback' => 'koop_waardelijsten_import',
-    'page arguments' => array(3),
-    'access arguments' => array('access content'),
-    'type' => MENU_CALLBACK,
-  );*/
-  
-  /*$items['admin/koop_waardelijsten/import/overheidsorganisatie'] = array(
-    'page callback' => 'koop_waardelijsten_import',
-    'page arguments' => array(3),
-    'access arguments' => array('access content'),
-    'type' => MENU_CALLBACK,
-  );*/
-  
-  $items['service/waardelijsten/taxonomiebeleidsagenda'] = array(
+  $items['service/waardelijsten'] = array(
     'page callback' => 'koop_waardelijsten_service',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['service/waardelijsten/%'] = array(
+    'page callback' => 'koop_waardelijsten_service_vocabulary',
     'page arguments' => array(2),
     'access arguments' => array('access content'),
     'type' => MENU_CALLBACK,
   );
 
-  $items['service/waardelijsten/overheidsorganisatie'] = array(
-    'page callback' => 'koop_waardelijsten_service',
-    'page arguments' => array(2),
-    'access arguments' => array('access content'),
-    'type' => MENU_CALLBACK,
+  $items['admin/structure/taxonomy/import'] = array(
+    'title' => 'Taxonomy import',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('koop_waardelijsten_import_form'),
+    'access arguments' => array('administer taxonomy'),
+    'type' => MENU_NORMAL_ITEM,
+    'file' => 'includes/import.inc',
   );
-  
+
   return $items;
 }
 
 
-
-function koop_waardelijsten_import($type) {
-
-  switch($type) {
-    /**
-     * TaxonomieBeleidsagenda
-     * Deze lijst bestaat uit 2 niveau's
-     */
-    case 'taxonomiebeleidsagenda': 
-
-      $values = koop_waardelijsten_get_lijst('http://standaarden.overheid.nl/owms/terms/TaxonomieBeleidsagenda.xml');
-      $vocabulary = taxonomy_vocabulary_machine_name_load('taxonomiebeleidsagenda');
-
-      foreach($values['value'] as $value) {
-        $result = db_select('taxonomy_term_data', 'ttd')
-          ->fields('ttd', array('tid'))
-          ->condition('description', $value['@attributes']['resourceIdentifier'], '=')
-          ->condition('vid', $vocabulary->vid, '=')
-          ->execute()
-          ->fetchAssoc();
-
-        if(empty($result['tid'])) {
-          $parent = new stdClass();
-          $parent->vid = $vocabulary->vid;
-          $parent->name = $value['@attributes']['prefLabel'];
-          $parent->description = $value['@attributes']['resourceIdentifier'];
-          taxonomy_term_save($parent);
-        }
-        else {
-          $parent = taxonomy_term_load($result['tid']);
-        }
-
-        foreach($value['value'] as $v) {
-          $result = db_select('taxonomy_term_data', 'ttd')
-            ->fields('ttd', array('tid'))
-            ->condition('description', $v['@attributes']['resourceIdentifier'], '=')
-            ->condition('vid', $vocabulary->vid, '=')
-            ->execute()
-            ->fetchAssoc();
-
-          if(empty($result['tid'])) {
-            $term = new stdClass();
-            $term->vid = $vocabulary->vid;
-            $term->name = $v['@attributes']['prefLabel'];
-            $term->description = $v['@attributes']['resourceIdentifier'];
-            $term->parent = $parent->tid;
-            taxonomy_term_save($term);
-          }
-        }
-      }
-
-      break;
-
-
-    /**
-     * TaxonomieBeleidsagenda
-     * Deze lijst bestaat uit 1 niveau
-     */
-    case 'overheidsorganisatie': 
-
-      $values = koop_waardelijsten_get_lijst('http://standaarden.overheid.nl/owms/terms/Overheidsorganisatie.xml');
-      $vocabulary = taxonomy_vocabulary_machine_name_load('overheidsorganisatie');
-   
-      foreach($values['value'] as $v) {
-        $result = db_select('taxonomy_term_data', 'ttd')
-          ->fields('ttd', array('tid'))
-          ->condition('description', $v['resourceIdentifier'], '=')
-          ->condition('vid', $vocabulary->vid, '=')
-          ->execute()
-          ->fetchAssoc();
-
-        if(empty($result['tid'])) {
-          $term = new stdClass();
-          $term->vid = $vocabulary->vid;
-          $term->name = $v['prefLabel'];
-          $term->description = $v['resourceIdentifier'];
-          taxonomy_term_save($term);
-        }
-      }
-
-      break;
-
-  }
-  return '';
-}
-
-
-
-function koop_waardelijsten_get_lijst($url) {
-  $ch = curl_init();
-  $curlConfig = array(
-    CURLOPT_URL => $url,
-    CURLOPT_RETURNTRANSFER => TRUE,
+function koop_waardelijsten_service() {
+  $variables = array(
+    'items' => array(),
+    'title' => 'Waardelijsten',
+    'type' => 'ul',
+    'attributes' => array(),
   );
-  curl_setopt_array($ch, $curlConfig);
-  $result = curl_exec($ch);  
-  curl_close($ch);
 
-  return xml_to_array($result);
+  foreach(taxonomy_vocabulary_get_names() as $vocabulary) {
+    $variables['items'][] = l($vocabulary->name, 'service/waardelijsten/' . $vocabulary->machine_name);
+  }
+
+  echo theme_item_list($variables);
 }
 
 
-
-function koop_waardelijsten_service($vocabulary) {
+function koop_waardelijsten_service_vocabulary($vocabulary) {
   $voc = taxonomy_vocabulary_machine_name_load($vocabulary);
-  $tree = taxonomy_get_nested_tree($voc->vid);
+  if (!empty($voc->vid)) {
+    $tree = taxonomy_get_nested_tree($voc->vid);
+    echo drupal_json_encode(taxonomy_nested_tree_render($tree));
+  }
 
-  echo drupal_json_encode(taxonomy_nested_tree_render($tree));
+  exit;
 }
-
 
 
 function taxonomy_get_nested_tree($vid_or_terms = array(), $max_depth = NULL, $parent = 0, $parents_index = array(), $depth = 0) {
-
   if (!is_array($vid_or_terms)) {
-    $vid_or_terms = taxonomy_get_tree($vid_or_terms);
+    $vid_or_terms = taxonomy_get_tree($vid_or_terms, 0, NULL, TRUE);
   }
 
+  $return = array();
   foreach ($vid_or_terms as $term) {
-
     foreach ($term->parents as $term_parent) {
       if ($term_parent == $parent) {
         $return[$term->tid] = $term;
@@ -176,23 +83,38 @@ function taxonomy_get_nested_tree($vid_or_terms = array(), $max_depth = NULL, $p
 }
 
 
-
-function taxonomy_nested_tree_render($tree, $recurring = FALSE) {
-
+function taxonomy_nested_tree_render($tree) {
   $items = array();
 
   if (count($tree)) {
-
     foreach ($tree as $term) {
-      $path = taxonomy_term_uri($term);
-      $item = array('name' => $term->name, 'uri' => strip_tags(str_replace(array("\n","\r\n","\r"), '', $term->description)));
+      $term = (array) $term;
 
-      if (isset($term->children)) {
-        $item["children"] = taxonomy_nested_tree_render($term->children, TRUE);
+      $item = array(
+        'name' => $term['name'],
+        'description' => $term['description'],
+      );
+
+      // @todo: Legacy code is such a beautiful thing
+      if (isset($term['field_uri'][LANGUAGE_NONE][0]['value']) && !empty($term['field_uri'][LANGUAGE_NONE][0]['value'])) {
+        $item['uri'] = $term['field_uri'][LANGUAGE_NONE][0]['value'];
+      }
+      else {
+        $item['uri'] = strip_tags(str_replace(array("\n", "\r\n", "\r"), '', $term['description']));
+      }
+      unset($term['field_uri']);
+
+      foreach($term as $k => $v) {
+        if(substr($k, 0, 6) === 'field_') {
+          $item[$k] = (isset($v[LANGUAGE_NONE][0]['value']) ? $v[LANGUAGE_NONE][0]['value'] : NULL);
+        }
+      }
+
+      if (isset($term['children'])) {
+        $item["children"] = taxonomy_nested_tree_render($term['children']);
       }
       $items[] = $item;
     }
-
   }
 
   return $items;

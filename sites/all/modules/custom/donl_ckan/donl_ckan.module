@@ -1,0 +1,138 @@
+<?php
+
+function donl_ckan_menu() {
+  $items = array();
+
+  $items['services/xmlrpc'] = array(
+    'page callback' => 'donl_ckan_xmlrpc',
+    'access callback' => 'donl_ckan_access',
+    'type' => MENU_CALLBACK,
+  );
+
+  return $items;
+}
+
+
+
+function donl_ckan_access() {
+  return TRUE;
+}
+
+
+
+function donl_ckan_xmlrpc() {
+  $input = file_get_contents("php://input");
+
+  $xml = simplexml_load_string($input);
+  $json = json_encode($xml);
+  $array = json_decode($json,TRUE);
+
+  if (!isset($array['params']['param']['value']['string'])) {
+    die('');
+  }
+  $value = $array['params']['param']['value']['string'];
+
+  if ($array['methodName'] == 'session.retrieve') {
+    donl_ckan_retrieve_uid($value);
+  }
+  elseif ($array['methodName'] == 'user.retrieve') {
+    donl_ckan_retrieve_user($value);
+  }
+  else {
+    die('');
+  }
+}
+
+
+
+function donl_ckan_retrieve_uid($value) {
+  $record = db_select('sessions', 's')
+    ->fields('s', array('uid'))
+    ->condition('sid', $value, '=')
+    ->execute()
+    ->fetchAssoc();
+
+  if (!isset($record['uid'])) {
+    watchdog('donl_ckan', 'No uid found so services returned nothing');
+    die('');
+  }
+
+  echo '<?xml version="1.0"?><methodResponse><params><param><value><string>' . $record['uid'] . '</string></value></param></params></methodResponse>';
+}
+
+
+
+function donl_ckan_retrieve_user($value) {
+  // Load the user
+  $user = user_load($value);
+
+  // Load some of the fields in the way we want them.
+  $donl_data_eigenaar = null;
+  if (isset($user->field_dv_data_eigenaar[LANGUAGE_NONE][0]['tid'])) {
+    if ($term = taxonomy_term_load($user->field_dv_data_eigenaar[LANGUAGE_NONE][0]['tid'])) {
+      $donl_data_eigenaar = (isset($term->uri) ? $term->uri : strip_tags(str_replace(array("\n", "\r\n", "\r"), '', $term->description)));
+    }
+  }
+  $donl_verstrekker = null;
+  if (isset($user->field_verstrekker[LANGUAGE_NONE][0]['tid'])) {
+    if ($term = taxonomy_term_load($user->field_verstrekker[LANGUAGE_NONE][0]['tid'])) {
+      $donl_verstrekker = (isset($term->uri) ? $term->uri : strip_tags(str_replace(array("\n", "\r\n", "\r"), '', $term->description)));
+    }
+  }
+  $donl_organisatienaam = null;
+  if (isset($user->field_catalogus_invoer[LANGUAGE_NONE][0]['tid'])) {
+    if ($term = taxonomy_term_load($user->field_catalogus_invoer[LANGUAGE_NONE][0]['tid'])) {
+      $donl_organisatienaam = (isset($term->uri) ? $term->uri : strip_tags(str_replace(array("\n", "\r\n", "\r"), '', $term->description)));
+    }
+  }
+
+
+  // Only set the values we need to send over
+  $values = array(
+    'uid' => $user->uid,
+    'name' => $user->name,
+    'mail' => $user->mail,
+    'created' => $user->created,
+    'access' => $user->access,
+    'login' => $user->login,
+    'status' => $user->status,
+    'timezone' => $user->timezone,
+    'language' => $user->language,
+    'uuid' => $user->uuid,
+    'roles' => $user->roles,
+    'donl_data_eigenaar' => $donl_data_eigenaar,
+    'donl_verstrekker' => $donl_verstrekker,
+    'donl_organisatienaam' => $donl_organisatienaam,
+    'donl_ckan_storage' => (isset($user->field_pr_toegang_ckan_storage[LANGUAGE_NONE][0]['value']) ? $user->field_pr_toegang_ckan_storage[LANGUAGE_NONE][0]['value'] : 'false'),
+  );
+
+
+  // Build up the array as if it was an XMLrpc call
+  $xml = '';
+  foreach ($values as $k => $v) {
+    $xml .= '<member>';
+    $xml .= '<name>' . $k . '</name>';
+
+    if (is_array($v)) {
+      $xml .= '<value>';
+      $xml .= '<struct>';
+      foreach($v as $key => $value) {
+        $xml .= '<member>';
+          $xml .= '<name>' . $key . '</name>';
+          $xml .= '<value><string>' . $value . '</string></value>';
+        $xml .= '</member>';
+      }
+      $xml .= '</struct>';
+      $xml .= '</value>';
+    }
+    else {
+      $xml .= '<value>';
+      $xml .= '<string>' . $v . '</string>';
+      $xml .= '</value>';
+    }
+
+    $xml .= '</member>';
+  }
+
+  echo '<?xml version="1.0"?><methodResponse><params><param><value><struct>' . $xml . '</struct></value></param></params></methodResponse>';
+}

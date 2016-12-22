@@ -10,13 +10,109 @@
 function features_content_type_dataverzoek_field_default_field_bases() {
   $field_bases = array();
 
-  // Exported field_base: 'field_dv_betreft_periode'
+  // Exported field_base: 'field_bron_verzoek'.
+  $field_bases['field_bron_verzoek'] = array(
+    'active' => 1,
+    'cardinality' => 1,
+    'deleted' => 0,
+    'entity_types' => array(),
+    'field_name' => 'field_bron_verzoek',
+    'field_permissions' => array(
+      'type' => 2,
+    ),
+    'indexes' => array(
+      'value' => array(
+        0 => 'value',
+      ),
+    ),
+    'locked' => 0,
+    'module' => 'list',
+    'settings' => array(
+      'allowed_values' => array(
+        'Formulier' => 'Formulier dataverzoek op data.overheid.nl',
+        'Email' => 'Verzoek per email',
+        'Ander kanaal' => 'Verzoek via ander kanaal',
+        'Inventarisatie' => 'Verzoek naa aanleiding van inventarisatielijst',
+      ),
+      'allowed_values_function' => '',
+    ),
+    'translatable' => 0,
+    'type' => 'list_text',
+  );
+
+  // Exported field_base: 'field_dataverzoek_fase'.
+  $field_bases['field_dataverzoek_fase'] = array(
+    'active' => 1,
+    'cardinality' => 1,
+    'deleted' => 0,
+    'entity_types' => array(),
+    'field_name' => 'field_dataverzoek_fase',
+    'field_permissions' => array(
+      'type' => 2,
+    ),
+    'indexes' => array(
+      'tid' => array(
+        0 => 'tid',
+      ),
+    ),
+    'locked' => 0,
+    'module' => 'taxonomy',
+    'settings' => array(
+      'allowed_values' => array(
+        0 => array(
+          'vocabulary' => 'dataverzoeken_status',
+          'parent' => 2157,
+          'depth' => '',
+        ),
+      ),
+      'options_list_callback' => 'content_taxonomy_allowed_values',
+    ),
+    'translatable' => 0,
+    'type' => 'taxonomy_term_reference',
+  );
+
+  // Exported field_base: 'field_doelgroep_aanvrager'.
+  $field_bases['field_doelgroep_aanvrager'] = array(
+    'active' => 1,
+    'cardinality' => 1,
+    'deleted' => 0,
+    'entity_types' => array(),
+    'field_name' => 'field_doelgroep_aanvrager',
+    'field_permissions' => array(
+      'type' => 2,
+    ),
+    'indexes' => array(
+      'value' => array(
+        0 => 'value',
+      ),
+    ),
+    'locked' => 0,
+    'module' => 'list',
+    'settings' => array(
+      'allowed_values' => array(
+        'Onbekend' => 'Onbekende aanvrager',
+        'Overheid' => 'Overheidsorganisatie',
+        'Ondernemer' => 'Ondernemer',
+        'Burger' => 'Burger',
+        'Wetenschap' => 'Student of wetenschapper',
+        'Hergebruik' => 'Ontwikkelaar',
+      ),
+      'allowed_values_function' => '',
+    ),
+    'translatable' => 0,
+    'type' => 'list_text',
+  );
+
+  // Exported field_base: 'field_dv_betreft_periode'.
   $field_bases['field_dv_betreft_periode'] = array(
     'active' => 1,
     'cardinality' => 1,
     'deleted' => 0,
     'entity_types' => array(),
     'field_name' => 'field_dv_betreft_periode',
+    'field_permissions' => array(
+      'type' => 0,
+    ),
     'indexes' => array(),
     'locked' => 0,
     'module' => 'date',
@@ -40,10 +136,10 @@ function features_content_type_dataverzoek_field_default_field_bases() {
     'type' => 'datetime',
   );
 
-  // Exported field_base: 'field_dv_data_eigenaar'
+  // Exported field_base: 'field_dv_data_eigenaar'.
   $field_bases['field_dv_data_eigenaar'] = array(
     'active' => 1,
-    'cardinality' => 1,
+    'cardinality' => -1,
     'deleted' => 0,
     'entity_types' => array(),
     'field_name' => 'field_dv_data_eigenaar',
@@ -63,6 +159,10 @@ function features_content_type_dataverzoek_field_default_field_bases() {
           'vocabulary' => 'overheidsorganisatie',
           'parent' => 0,
         ),
+        1 => array(
+          'parent' => 0,
+          'vocabulary' => 'overheidsorganisatie',
+        ),
       ),
       'options_list_callback' => 'content_taxonomy_allowed_values',
     ),
@@ -70,7 +170,7 @@ function features_content_type_dataverzoek_field_default_field_bases() {
     'type' => 'taxonomy_term_reference',
   );
 
-  // Exported field_base: 'field_dv_datum'
+  // Exported field_base: 'field_dv_datum'.
   $field_bases['field_dv_datum'] = array(
     'active' => 1,
     'cardinality' => 1,
@@ -102,7 +202,7 @@ function features_content_type_dataverzoek_field_default_field_bases() {
     'type' => 'datetime',
   );
 
-  // Exported field_base: 'field_dv_denkt_geld_te_verdienen'
+  // Exported field_base: 'field_dv_denkt_geld_te_verdienen'.
   $field_bases['field_dv_denkt_geld_te_verdienen'] = array(
     'active' => 1,
     'cardinality' => 1,
@@ -131,7 +231,7 @@ function features_content_type_dataverzoek_field_default_field_bases() {
     'type' => 'list_text',
   );
 
-  // Exported field_base: 'field_dv_emailadres'
+  // Exported field_base: 'field_dv_emailadres'.
   $field_bases['field_dv_emailadres'] = array(
     'active' => 1,
     'cardinality' => 1,
@@ -151,7 +251,7 @@ function features_content_type_dataverzoek_field_default_field_bases() {
     'type' => 'email',
   );
 
-  // Exported field_base: 'field_dv_fase'
+  // Exported field_base: 'field_dv_fase'.
   $field_bases['field_dv_fase'] = array(
     'active' => 1,
     'cardinality' => 1,
@@ -174,6 +274,7 @@ function features_content_type_dataverzoek_field_default_field_bases() {
         'doorverwijzing data-eigenaar' => 'Doorverwijzing data-eigenaar',
         'actie data-eigenaar' => 'Actie data-eigenaar',
         'data is beschikbaar' => 'Data is beschikbaar',
+        'data in onderzoek' => 'Data in onderzoek',
         'data is gepland voor openen' => 'Data is gepland voor openen',
         'data is aangepast' => 'Data is aangepast',
         'data is niet openbaar' => 'Data is niet openbaar',
@@ -187,7 +288,7 @@ function features_content_type_dataverzoek_field_default_field_bases() {
     'type' => 'list_text',
   );
 
-  // Exported field_base: 'field_dv_gebruik_dataset'
+  // Exported field_base: 'field_dv_gebruik_dataset'.
   $field_bases['field_dv_gebruik_dataset'] = array(
     'active' => 1,
     'cardinality' => 1,
@@ -211,13 +312,16 @@ function features_content_type_dataverzoek_field_default_field_bases() {
     'type' => 'text_long',
   );
 
-  // Exported field_base: 'field_dv_gevraagde_data'
+  // Exported field_base: 'field_dv_gevraagde_data'.
   $field_bases['field_dv_gevraagde_data'] = array(
     'active' => 1,
     'cardinality' => 1,
     'deleted' => 0,
     'entity_types' => array(),
     'field_name' => 'field_dv_gevraagde_data',
+    'field_permissions' => array(
+      'type' => 0,
+    ),
     'indexes' => array(
       'format' => array(
         0 => 'format',
@@ -232,7 +336,7 @@ function features_content_type_dataverzoek_field_default_field_bases() {
     'type' => 'text_long',
   );
 
-  // Exported field_base: 'field_dv_gewenste_dataformaat'
+  // Exported field_base: 'field_dv_gewenste_dataformaat'.
   $field_bases['field_dv_gewenste_dataformaat'] = array(
     'active' => 1,
     'cardinality' => 1,
@@ -256,13 +360,16 @@ function features_content_type_dataverzoek_field_default_field_bases() {
     'type' => 'text',
   );
 
-  // Exported field_base: 'field_dv_mogelijke_beheers_org'
+  // Exported field_base: 'field_dv_mogelijke_beheers_org'.
   $field_bases['field_dv_mogelijke_beheers_org'] = array(
     'active' => 1,
     'cardinality' => 1,
     'deleted' => 0,
     'entity_types' => array(),
     'field_name' => 'field_dv_mogelijke_beheers_org',
+    'field_permissions' => array(
+      'type' => 0,
+    ),
     'indexes' => array(
       'format' => array(
         0 => 'format',
@@ -278,7 +385,7 @@ function features_content_type_dataverzoek_field_default_field_bases() {
     'type' => 'text',
   );
 
-  // Exported field_base: 'field_dv_naam'
+  // Exported field_base: 'field_dv_naam'.
   $field_bases['field_dv_naam'] = array(
     'active' => 1,
     'cardinality' => 1,
@@ -303,7 +410,7 @@ function features_content_type_dataverzoek_field_default_field_bases() {
     'type' => 'text',
   );
 
-  // Exported field_base: 'field_dv_organisatie'
+  // Exported field_base: 'field_dv_organisatie'.
   $field_bases['field_dv_organisatie'] = array(
     'active' => 1,
     'cardinality' => 1,
@@ -328,13 +435,16 @@ function features_content_type_dataverzoek_field_default_field_bases() {
     'type' => 'text',
   );
 
-  // Exported field_base: 'field_dv_problemen_gehad'
+  // Exported field_base: 'field_dv_problemen_gehad'.
   $field_bases['field_dv_problemen_gehad'] = array(
     'active' => 1,
     'cardinality' => 1,
     'deleted' => 0,
     'entity_types' => array(),
     'field_name' => 'field_dv_problemen_gehad',
+    'field_permissions' => array(
+      'type' => 2,
+    ),
     'indexes' => array(
       'value' => array(
         0 => 'value',
@@ -354,7 +464,7 @@ function features_content_type_dataverzoek_field_default_field_bases() {
     'type' => 'list_text',
   );
 
-  // Exported field_base: 'field_dv_status'
+  // Exported field_base: 'field_dv_status'.
   $field_bases['field_dv_status'] = array(
     'active' => 1,
     'cardinality' => 1,
@@ -382,7 +492,7 @@ function features_content_type_dataverzoek_field_default_field_bases() {
     'type' => 'list_text',
   );
 
-  // Exported field_base: 'field_dv_telefoonnummer'
+  // Exported field_base: 'field_dv_telefoonnummer'.
   $field_bases['field_dv_telefoonnummer'] = array(
     'active' => 1,
     'cardinality' => 1,
@@ -407,7 +517,7 @@ function features_content_type_dataverzoek_field_default_field_bases() {
     'type' => 'text',
   );
 
-  // Exported field_base: 'field_dv_thema'
+  // Exported field_base: 'field_dv_thema'.
   $field_bases['field_dv_thema'] = array(
     'active' => 1,
     'cardinality' => 9,
@@ -438,7 +548,7 @@ function features_content_type_dataverzoek_field_default_field_bases() {
     'type' => 'taxonomy_term_reference',
   );
 
-  // Exported field_base: 'field_dv_toelichting_status'
+  // Exported field_base: 'field_dv_toelichting_status'.
   $field_bases['field_dv_toelichting_status'] = array(
     'active' => 1,
     'cardinality' => 1,
@@ -460,7 +570,7 @@ function features_content_type_dataverzoek_field_default_field_bases() {
     'type' => 'text_long',
   );
 
-  // Exported field_base: 'field_dv_url_naar_dataset'
+  // Exported field_base: 'field_dv_url_naar_dataset'.
   $field_bases['field_dv_url_naar_dataset'] = array(
     'active' => 1,
     'cardinality' => 1,
@@ -492,7 +602,7 @@ function features_content_type_dataverzoek_field_default_field_bases() {
     'type' => 'link_field',
   );
 
-  // Exported field_base: 'field_dv_verklaring_probleem'
+  // Exported field_base: 'field_dv_verklaring_probleem'.
   $field_bases['field_dv_verklaring_probleem'] = array(
     'active' => 1,
     'cardinality' => 1,
@@ -516,7 +626,7 @@ function features_content_type_dataverzoek_field_default_field_bases() {
     'type' => 'text_long',
   );
 
-  // Exported field_base: 'field_gepubliceerd'
+  // Exported field_base: 'field_gepubliceerd'.
   $field_bases['field_gepubliceerd'] = array(
     'active' => 1,
     'cardinality' => 1,
@@ -542,6 +652,110 @@ function features_content_type_dataverzoek_field_default_field_bases() {
     ),
     'translatable' => 0,
     'type' => 'list_boolean',
+  );
+
+  // Exported field_base: 'field_icoon'.
+  $field_bases['field_icoon'] = array(
+    'active' => 1,
+    'cardinality' => 1,
+    'deleted' => 0,
+    'entity_types' => array(),
+    'field_name' => 'field_icoon',
+    'field_permissions' => array(
+      'type' => 0,
+    ),
+    'indexes' => array(
+      'fid' => array(
+        0 => 'fid',
+      ),
+    ),
+    'locked' => 0,
+    'module' => 'image',
+    'settings' => array(
+      'default_image' => 0,
+      'uri_scheme' => 'public',
+    ),
+    'translatable' => 0,
+    'type' => 'image',
+  );
+
+  // Exported field_base: 'field_kleurcode'.
+  $field_bases['field_kleurcode'] = array(
+    'active' => 1,
+    'cardinality' => 1,
+    'deleted' => 0,
+    'entity_types' => array(),
+    'field_name' => 'field_kleurcode',
+    'field_permissions' => array(
+      'type' => 0,
+    ),
+    'indexes' => array(
+      'format' => array(
+        0 => 'format',
+      ),
+    ),
+    'locked' => 0,
+    'module' => 'text',
+    'settings' => array(
+      'max_length' => 255,
+    ),
+    'translatable' => 0,
+    'type' => 'text',
+  );
+
+  // Exported field_base: 'field_nummer_dataverzoek'.
+  $field_bases['field_nummer_dataverzoek'] = array(
+    'active' => 1,
+    'cardinality' => 1,
+    'deleted' => 0,
+    'entity_types' => array(),
+    'field_name' => 'field_nummer_dataverzoek',
+    'field_permissions' => array(
+      'type' => 2,
+    ),
+    'indexes' => array(
+      'format' => array(
+        0 => 'format',
+      ),
+    ),
+    'locked' => 0,
+    'module' => 'text',
+    'settings' => array(
+      'max_length' => 12,
+    ),
+    'translatable' => 0,
+    'type' => 'text',
+  );
+
+  // Exported field_base: 'field_open_fase'.
+  $field_bases['field_open_fase'] = array(
+    'active' => 1,
+    'cardinality' => 1,
+    'deleted' => 0,
+    'entity_types' => array(),
+    'field_name' => 'field_open_fase',
+    'field_permissions' => array(
+      'type' => 2,
+    ),
+    'indexes' => array(
+      'tid' => array(
+        0 => 'tid',
+      ),
+    ),
+    'locked' => 0,
+    'module' => 'taxonomy',
+    'settings' => array(
+      'allowed_values' => array(
+        0 => array(
+          'vocabulary' => 'dataverzoeken_status',
+          'parent' => 2157,
+          'depth' => '',
+        ),
+      ),
+      'options_list_callback' => 'content_taxonomy_allowed_values',
+    ),
+    'translatable' => 0,
+    'type' => 'taxonomy_term_reference',
   );
 
   return $field_bases;

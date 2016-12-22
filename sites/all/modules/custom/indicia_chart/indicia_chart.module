@@ -1,0 +1,94 @@
+<?php
+
+global $indicia_chart_id;
+$indicia_chart_id = 0;
+
+
+/**
+ * Abstract class for the custom charts
+ */
+abstract class indicia_chart {
+
+  protected $id;
+  protected $title;
+  protected $data;
+  protected $options;
+
+
+  /**
+   * Constructor
+   */
+  function __construct($title, $data, $options = array()) {
+    global $indicia_chart_id;
+
+    $this->id = $indicia_chart_id++;
+    $this->title = $title;
+    $this->data = $data;
+    $this->options = $options;
+  }
+
+
+  /**
+   * Function to set the chart options for each chart type
+   */
+  abstract protected function set_chart_options();
+
+
+  /**
+   * Function to set chart specific libraries
+   */
+  abstract protected function include_libarary($cache);
+
+
+  private function set_global_chart_settings() {
+    return array(
+      'exporting' => array(
+        'enabled' => FALSE,
+      ),
+      'credits' => array(
+        'enabled' => FALSE,
+      ),
+    );
+  }
+
+
+  /**
+   * Function that will return the html to create an highcharts chart
+   */
+  function create_chart($cache = FALSE) {
+    $libraries = '';
+    if ($this->id == 0) {
+      if (!$cache) {
+        drupal_add_js(libraries_get_path('highcharts') . '/js/highcharts.js');
+        drupal_add_js(libraries_get_path('highcharts') . '/js/highcharts-more.js');
+      }
+      // When cached we'll need to print them out in a somewhat more ugly way.
+      else {
+        $libraries = '<script type="text/javascript" src="' . base_path() . libraries_get_path('highcharts') . '/js/highcharts.js"></script>';
+        $libraries .= '<script type="text/javascript" src="' . base_path() . libraries_get_path('highcharts') . '/js/highcharts-more.js"></script>';
+      }
+    }
+
+    // Load the required libraries
+    if (!$cache) {
+      $this->include_libarary(FALSE);
+    }
+    else {
+      $libraries .= $this->include_libarary(TRUE);
+    }
+
+    $chartOptions = $this->options + $this->set_chart_options() + $this->set_global_chart_settings();
+
+    return '<div id="chart-container-' . $this->id . '" style="display: none;"></div>
+    ' . $libraries . '
+    <script type="text/javascript">
+      (function ($) {
+        $(document).ready(function() {
+          $(\'#chart-container-' . $this->id . '\').show();
+          $(\'#chart-container-' . $this->id . '\').highcharts(' . json_encode($chartOptions) . ');
+        });
+      })(jQuery);
+    </script>';
+  }
+
+}

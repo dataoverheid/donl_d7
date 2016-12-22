@@ -10,7 +10,7 @@
 function features_content_type_feedback_dataset_field_default_field_bases() {
   $field_bases = array();
 
-  // Exported field_base: 'field_fd_data_eigenaar'
+  // Exported field_base: 'field_fd_data_eigenaar'.
   $field_bases['field_fd_data_eigenaar'] = array(
     'active' => 1,
     'cardinality' => 1,
@@ -34,7 +34,7 @@ function features_content_type_feedback_dataset_field_default_field_bases() {
     'type' => 'text',
   );
 
-  // Exported field_base: 'field_fd_email'
+  // Exported field_base: 'field_fd_email'.
   $field_bases['field_fd_email'] = array(
     'active' => 1,
     'cardinality' => 1,
@@ -58,7 +58,7 @@ function features_content_type_feedback_dataset_field_default_field_bases() {
     'type' => 'text',
   );
 
-  // Exported field_base: 'field_fd_feedback'
+  // Exported field_base: 'field_fd_feedback'.
   $field_bases['field_fd_feedback'] = array(
     'active' => 1,
     'cardinality' => 1,
@@ -80,7 +80,7 @@ function features_content_type_feedback_dataset_field_default_field_bases() {
     'type' => 'text_long',
   );
 
-  // Exported field_base: 'field_fd_link_dataset'
+  // Exported field_base: 'field_fd_link_dataset'.
   $field_bases['field_fd_link_dataset'] = array(
     'active' => 1,
     'cardinality' => 1,
@@ -112,7 +112,7 @@ function features_content_type_feedback_dataset_field_default_field_bases() {
     'type' => 'link_field',
   );
 
-  // Exported field_base: 'field_fd_naam'
+  // Exported field_base: 'field_fd_naam'.
   $field_bases['field_fd_naam'] = array(
     'active' => 1,
     'cardinality' => 1,
@@ -136,7 +136,7 @@ function features_content_type_feedback_dataset_field_default_field_bases() {
     'type' => 'text',
   );
 
-  // Exported field_base: 'field_fd_telefoon'
+  // Exported field_base: 'field_fd_telefoon'.
   $field_bases['field_fd_telefoon'] = array(
     'active' => 1,
     'cardinality' => 1,
@@ -160,7 +160,7 @@ function features_content_type_feedback_dataset_field_default_field_bases() {
     'type' => 'text',
   );
 
-  // Exported field_base: 'field_fd_titel_dataset'
+  // Exported field_base: 'field_fd_titel_dataset'.
   $field_bases['field_fd_titel_dataset'] = array(
     'active' => 1,
     'cardinality' => 1,

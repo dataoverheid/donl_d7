@@ -1,0 +1,9 @@
+name = DONL Dashboard linkchecker
+description = A module which will check and save data for CKAN datasets
+package = Custom
+
+version = "7.x-1.0"
+core = "7.x"
+project = "Custom"
+
+dependencies[] = ckan_donl

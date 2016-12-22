@@ -34,14 +34,14 @@ function features_content_type_evenementen_views_default_views() {
   $handler->display->display_options['style_options']['class'] = 'document_tree';
   $handler->display->display_options['style_options']['wrapper_class'] = '';
   $handler->display->display_options['row_plugin'] = 'fields';
-  /* Kop: Global: Text area */
+  /* Header: Global: Text area */
   $handler->display->display_options['header']['area']['id'] = 'area';
   $handler->display->display_options['header']['area']['table'] = 'views';
   $handler->display->display_options['header']['area']['field'] = 'area';
   $handler->display->display_options['header']['area']['empty'] = TRUE;
   $handler->display->display_options['header']['area']['content'] = 'Alle Open Data evenementen op een rij. Heeft u een Open Data event dat u vermeld wilt hebben? <a href="/contact">Neem contact met ons op.</a>';
   $handler->display->display_options['header']['area']['format'] = 'full_html';
-  /* Veld: Inhoud: Titel */
+  /* Field: Content: Title */
   $handler->display->display_options['fields']['title']['id'] = 'title';
   $handler->display->display_options['fields']['title']['table'] = 'node';
   $handler->display->display_options['fields']['title']['field'] = 'title';
@@ -50,7 +50,7 @@ function features_content_type_evenementen_views_default_views() {
   $handler->display->display_options['fields']['title']['alter']['word_boundary'] = FALSE;
   $handler->display->display_options['fields']['title']['alter']['ellipsis'] = FALSE;
   $handler->display->display_options['fields']['title']['element_label_colon'] = FALSE;
-  /* Veld: Inhoud: Datum */
+  /* Field: Content: Datum */
   $handler->display->display_options['fields']['field_ev_datum']['id'] = 'field_ev_datum';
   $handler->display->display_options['fields']['field_ev_datum']['table'] = 'field_data_field_ev_datum';
   $handler->display->display_options['fields']['field_ev_datum']['field'] = 'field_ev_datum';
@@ -64,30 +64,29 @@ function features_content_type_evenementen_views_default_views() {
     'multiple_from' => '',
     'multiple_to' => '',
   );
-  /* Veld: Global: Custom text */
+  /* Field: Global: Custom text */
   $handler->display->display_options['fields']['nothing']['id'] = 'nothing';
   $handler->display->display_options['fields']['nothing']['table'] = 'views';
   $handler->display->display_options['fields']['nothing']['field'] = 'nothing';
   $handler->display->display_options['fields']['nothing']['label'] = '';
   $handler->display->display_options['fields']['nothing']['alter']['text'] = '[title] - [field_ev_datum]';
   $handler->display->display_options['fields']['nothing']['element_label_colon'] = FALSE;
-  /* Sort criterion: Inhoud: Post date */
-  $handler->display->display_options['sorts']['created']['id'] = 'created';
-  $handler->display->display_options['sorts']['created']['table'] = 'node';
-  $handler->display->display_options['sorts']['created']['field'] = 'created';
-  $handler->display->display_options['sorts']['created']['order'] = 'DESC';
+  /* Sort criterion: Content: Datum -  start date (field_ev_datum) */
+  $handler->display->display_options['sorts']['field_ev_datum_value']['id'] = 'field_ev_datum_value';
+  $handler->display->display_options['sorts']['field_ev_datum_value']['table'] = 'field_data_field_ev_datum';
+  $handler->display->display_options['sorts']['field_ev_datum_value']['field'] = 'field_ev_datum_value';
   $handler->display->display_options['filter_groups']['groups'] = array(
     1 => 'AND',
     2 => 'OR',
   );
-  /* Filter criterion: Inhoud: Gepubliceerd */
+  /* Filter criterion: Content: Published */
   $handler->display->display_options['filters']['status']['id'] = 'status';
   $handler->display->display_options['filters']['status']['table'] = 'node';
   $handler->display->display_options['filters']['status']['field'] = 'status';
   $handler->display->display_options['filters']['status']['value'] = 1;
   $handler->display->display_options['filters']['status']['group'] = 1;
   $handler->display->display_options['filters']['status']['expose']['operator'] = FALSE;
-  /* Filter criterion: Inhoud: Type */
+  /* Filter criterion: Content: Type */
   $handler->display->display_options['filters']['type']['id'] = 'type';
   $handler->display->display_options['filters']['type']['table'] = 'node';
   $handler->display->display_options['filters']['type']['field'] = 'type';
@@ -95,14 +94,14 @@ function features_content_type_evenementen_views_default_views() {
     'evenement' => 'evenement',
   );
   $handler->display->display_options['filters']['type']['group'] = 1;
-  /* Filter criterion: Inhoud: Datum -  start date (field_ev_datum) */
+  /* Filter criterion: Content: Datum -  start date (field_ev_datum) */
   $handler->display->display_options['filters']['field_ev_datum_value']['id'] = 'field_ev_datum_value';
   $handler->display->display_options['filters']['field_ev_datum_value']['table'] = 'field_data_field_ev_datum';
   $handler->display->display_options['filters']['field_ev_datum_value']['field'] = 'field_ev_datum_value';
   $handler->display->display_options['filters']['field_ev_datum_value']['operator'] = '>=';
   $handler->display->display_options['filters']['field_ev_datum_value']['group'] = 2;
   $handler->display->display_options['filters']['field_ev_datum_value']['default_date'] = 'now';
-  /* Filter criterion: Inhoud: Datum - end date (field_ev_datum:value2) */
+  /* Filter criterion: Content: Datum - end date (field_ev_datum:value2) */
   $handler->display->display_options['filters']['field_ev_datum_value2']['id'] = 'field_ev_datum_value2';
   $handler->display->display_options['filters']['field_ev_datum_value2']['table'] = 'field_data_field_ev_datum';
   $handler->display->display_options['filters']['field_ev_datum_value2']['field'] = 'field_ev_datum_value2';
@@ -124,14 +123,14 @@ function features_content_type_evenementen_views_default_views() {
   $handler->display->display_options['pager']['options']['offset'] = '0';
   $handler->display->display_options['defaults']['header'] = FALSE;
   $handler->display->display_options['defaults']['footer'] = FALSE;
-  /* Voet: Global: Text area */
+  /* Footer: Global: Text area */
   $handler->display->display_options['footer']['area']['id'] = 'area';
   $handler->display->display_options['footer']['area']['table'] = 'views';
   $handler->display->display_options['footer']['area']['field'] = 'area';
   $handler->display->display_options['footer']['area']['content'] = '<a href="/interactie/events/alle-evenementen">Bekijk alle events</a>';
   $handler->display->display_options['footer']['area']['format'] = 'full_html';
   $handler->display->display_options['defaults']['fields'] = FALSE;
-  /* Veld: Inhoud: Titel */
+  /* Field: Content: Title */
   $handler->display->display_options['fields']['title']['id'] = 'title';
   $handler->display->display_options['fields']['title']['table'] = 'node';
   $handler->display->display_options['fields']['title']['field'] = 'title';
@@ -139,7 +138,7 @@ function features_content_type_evenementen_views_default_views() {
   $handler->display->display_options['fields']['title']['alter']['word_boundary'] = FALSE;
   $handler->display->display_options['fields']['title']['alter']['ellipsis'] = FALSE;
   $handler->display->display_options['fields']['title']['element_label_colon'] = FALSE;
-  /* Veld: Inhoud: Datum */
+  /* Field: Content: Datum */
   $handler->display->display_options['fields']['field_ev_datum']['id'] = 'field_ev_datum';
   $handler->display->display_options['fields']['field_ev_datum']['table'] = 'field_data_field_ev_datum';
   $handler->display->display_options['fields']['field_ev_datum']['field'] = 'field_ev_datum';
@@ -148,19 +147,19 @@ function features_content_type_evenementen_views_default_views() {
   $handler->display->display_options['fields']['field_ev_datum']['element_label_colon'] = FALSE;
   $handler->display->display_options['fields']['field_ev_datum']['settings'] = array(
     'format_type' => 'short',
-    'fromto' => 'both',
+    'fromto' => 'value',
     'multiple_number' => '',
     'multiple_from' => '',
     'multiple_to' => '',
   );
-  /* Veld: Inhoud: Organisator */
+  /* Field: Content: Organisator */
   $handler->display->display_options['fields']['field_ev_organisator']['id'] = 'field_ev_organisator';
   $handler->display->display_options['fields']['field_ev_organisator']['table'] = 'field_data_field_ev_organisator';
   $handler->display->display_options['fields']['field_ev_organisator']['field'] = 'field_ev_organisator';
   $handler->display->display_options['fields']['field_ev_organisator']['label'] = '';
   $handler->display->display_options['fields']['field_ev_organisator']['exclude'] = TRUE;
   $handler->display->display_options['fields']['field_ev_organisator']['element_label_colon'] = FALSE;
-  /* Veld: Global: Custom text */
+  /* Field: Global: Custom text */
   $handler->display->display_options['fields']['nothing']['id'] = 'nothing';
   $handler->display->display_options['fields']['nothing']['table'] = 'views';
   $handler->display->display_options['fields']['nothing']['field'] = 'nothing';

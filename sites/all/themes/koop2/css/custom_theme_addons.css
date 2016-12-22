@@ -1,79 +1,147 @@
+/* -----------------------------------------------
+	 MAIN TYPOGRAPHY
+	 -----------------------------------------------*/
+@font-face {
+    font-family: 'IconFont';
+    src: url('../font/fonts/fontawesome-webfont.eot?v=4.1.0');
+    src: url('../font/fonts/fontawesome-webfont.eot?#iefix&v=4.1.0') format('embedded-opentype'), url('../font/fonts/fontawesome-webfont.woff?v=4.1.0') format('woff'), url('../font/fonts/fontawesome-webfont.ttf?v=4.1.0') format('truetype'), url('../font/fonts/fontawesome-webfont.svg?v=4.1.0#fontawesomeregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'RijksOverheidSans';
+    src: url('../font/fonts/ROsanswebtextregular.eot');
+    src: url('../font/fonts/ROsanswebtextregulareot?#iefix') format('embedded-opentype'), url('../font/fonts/ROsanswebtextregular.woff') format('woff'), url('../font/fonts/ROsanswebtextregular.ttf') format('truetype'), url('../font/fonts/ROsanswebtextregular.svg#RijksOverheidSansRegular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'RijksOverheidSans';
+    src: url('../font/fonts/ROsanswebtextbold.eot');
+    src: url('../font/fonts/ROsanswebtextbold.eot?#iefix') format('embedded-opentype'), url('../font/fonts/ROsanswebtextbold.woff') format('woff'), url('../font/fonts/ROsanswebtextbold.ttf') format('truetype'), url('../font/fonts/ROsanswebtextbold.svg#RijksOverheidSansBold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'RijksOverheidSans';
+    src: url('../font/fonts/ROsanswebtextitalic.eot');
+    src: url('../font/fonts/ROsanswebtextitalic.eot?#iefix') format('embedded-opentype'), url('../font/fonts/ROsanswebtextitalic.woff') format('woff'), url('../font/fonts/ROsanswebtextitalic.ttf') format('truetype'), url('../font/fonts/ROsanswebtextitalic.svg#RijksOverheidSansItalic') format('svg');
+    font-weight: normal;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'RijksOverheidSerif';
+    src: url('../font/fonts/ROserifwebregular.eot');
+    src: url('../font/fonts/ROserifwebregular?#iefix') format('embedded-opentype'), url('../font/fonts/ROserifwebregular.woff') format('woff'), url('../font/fonts/ROserifwebregular.ttf') format('truetype'), url('../font/fonts/ROserifwebregular.svg#RijksOverheidSerifRegular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'RijksOverheidSerif';
+    src: url('../font/fonts/ROserifwebbold.eot');
+    src: url('../font/fonts/ROserifwebbold.eot?#iefix') format('embedded-opentype'), url('../font/fonts/ROserifwebbold.woff') format('woff'), url('../font/fonts/ROserifwebbold.ttf') format('truetype'), url('../font/fonts/ROserifwebbold.svg#RijksOverheidSerifBold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'RijksOverheidSerif';
+    src: url('../font/fonts/ROserifwebitalic.eot');
+    src: url('../font/fonts/ROserifwebitalic.eot?#iefix') format('embedded-opentype'), url('../font/fonts/ROserifwebitalic.woff') format('woff'), url('../font/fonts/ROserifwebitalic.ttf') format('truetype'), url('../font/fonts/ROserifwebitalic.svg#RijksOverheidSerifItalic') format('svg');
+    font-weight: normal;
+    font-style: italic;
+}
+
 /**
  * Custom tabs overwrite
  */
 #main .header .menu-block-wrapper ul {
-  clear: left;
+    clear: left;
 }
+
 #main .header .menu-block-wrapper ul li {
-  border-top: 1px solid #b2d7ee;
-  list-style: none;
+    border-top: 1px solid #b2d7ee;
+    list-style: none;
 }
+
 #main .header .menu-block-wrapper ul a {
-  display: block;
-  padding: 0.4em 0;
-  color: #154273;
-  text-decoration: none;
-  font-family: Arial, HelveticaNeue, Helvetica, sans-serif;
-  font-size: 1em;
+    display: block;
+    padding: 0.4em 0;
+    color: #154273;
+    text-decoration: none;
+    font-family: RijksOverheidSans, 'Droid Sans', Arial, Verdana, sans-serif;
+    font-size: 1em;
 }
+
 #main .header .menu-block-wrapper ul a:visited {
-  color: #154273;
+    color: #154273;
 }
+
 #main .header .menu-block-wrapper ul a:focus,
 #main .header .menu-block-wrapper ul a:hover {
-  color: #007bc7;
-  text-decoration: underline;
+    color: #007bc7;
+    text-decoration: underline;
 }
+
 #main .header .menu-block-wrapper ul .selected a {
-  color: #000000;
-  font-weight: bold;
+    color: #000000;
+    font-weight: bold;
 }
 
 @media (min-width: 36em) {
-  #main .header .menu-block-wrapper ul {
-    margin-left: 0;
-  }
-  #main .header .menu-block-wrapper ul li {
-    float: left;
-    border-top: 0;
-  }
-  #main .header .menu-block-wrapper ul a {
-    display: block;
-    padding: 0.3em 10px;
-    text-decoration: none;
-    font-size: 1em;
-  }
-  #main .header .menu-block-wrapper ul .selected a,
-  #main .header .menu-block-wrapper ul .selected a:hover,
-  #main .header .menu-block-wrapper ul .selected a:visited:hover,
-  #main .header .menu-block-wrapper ul .selected a:focus,
-  #main .header .menu-block-wrapper ul .selected a:visited:focus {
-    background-color: #ffffff;
-    color: #000000;
-    font-weight: bold;
-  }
+    #main .header .menu-block-wrapper ul {
+        margin-left: 0;
+    }
+
+    #main .header .menu-block-wrapper ul li {
+        float: left;
+        border-top: 0;
+    }
+
+    #main .header .menu-block-wrapper ul a {
+        display: block;
+        padding: 0.3em 10px;
+        text-decoration: none;
+        font-size: 1em;
+    }
+
+    #main .header .menu-block-wrapper ul .selected a,
+    #main .header .menu-block-wrapper ul .selected a:hover,
+    #main .header .menu-block-wrapper ul .selected a:visited:hover,
+    #main .header .menu-block-wrapper ul .selected a:focus,
+    #main .header .menu-block-wrapper ul .selected a:visited:focus {
+        background-color: #ffffff;
+        color: #000000;
+        font-weight: bold;
+    }
 }
+
 @media (min-width: 50em) {
-  #main .header .menu-block-wrapper ul {
-    font-size: 0.85em;
-  }
-  #main .header .menu-block-wrapper ul li {
-    margin-right: 10px;
-  }
-  #main .header .menu-block-wrapper ul a,
-  #main .header .menu-block-wrapper ul strong {
-    font-size: 1.25em;
-  }
+    #main .header .menu-block-wrapper ul {
+        font-size: 0.85em;
+    }
+
+    #main .header .menu-block-wrapper ul li {
+        margin-right: 10px;
+    }
+
+    #main .header .menu-block-wrapper ul a,
+    #main .header .menu-block-wrapper ul strong {
+        font-size: 1.25em;
+    }
 }
-
-
 
 /**
  * Custom menu overwrite
  */
 body.ckan #navigation .menu li.data a {
-  background-color: #b2d7ee;
-  color: #000000;
+    background-color: #b2d7ee;
+    color: #000000;
 }
 
 body.ckan.datasets #main .menu li.datasets a,
@@ -81,135 +149,125 @@ body.ckan.kwaliteit #main .menu li.datakwaliteit a,
 body.ckan.organisaties #main .menu li.organisaties a,
 body.ckan.organisaties #main .menu li.datasets-per-organisatie a,
 body.ckan.dataset-aanmelden #main .menu li.dataset-aanmelden a {
-  background-color: #FFFFFF;
-  color: #000000;
-  font-weight: bold;
+    background-color: #FFFFFF;
+    color: #000000;
+    font-weight: bold;
 }
 
 body.drupal ul.tabs.primary {
-  overflow: hidden;
-  margin: 0 0 20px 0px;
+    overflow: hidden;
+    margin: 0 0 20px 0px;
 }
-
-
 
 /**
  * Custom views overwrite
  */
 fieldset.views-exposed-form input {
-  height: auto;
+    height: auto;
 }
 
 fieldset.views-exposed-form label {
-  width: auto;
+    width: auto;
 }
 
 fieldset.views-exposed-form .views-exposed-widgets {
-  margin-bottom: 0px;
-  width: 100%;
+    margin-bottom: 0px;
+    width: 100%;
 }
 
 fieldset.views-exposed-form .form-item, .views-exposed-form .form-submit {
-  margin-top: 10px;
-  margin-bottom: -10px;
+    margin-top: 10px;
+    margin-bottom: -10px;
 }
 
 body.drupal .view-data-verzoeken.view-display-id-page ul.search_result li a span {
-  color: #000;
+    color: #000;
 }
-
-
-
 
 /**
  * Remove the white border on the top of the page.
  */
 #content {
-  margin: 20px 0 0 0;
-  padding-top: 0;
+    margin: 20px 0 0 0;
+    padding-top: 0;
 }
 
 #sub_form h2:first-child {
-  margin-top: 10px;
+    margin-top: 10px;
 }
 
 #content #block-system-main {
-  margin-top: 10px;
+    margin-top: 10px;
 }
 
 #content #block-system-main h2:first-child {
-  margin-top: 0 !important;
+    margin-top: 0 !important;
 }
-
-
 
 /**
  * Adjust the header position on some pages
  */
 body.ckan #content.showleftbar h1.margin-left,
 body.drupal.front #content.showleftbar h1 {
-  padding-left: 0px;
+    padding-left: 0px;
 }
-
 
 /**
  * Fix for html lists
  */
 #content .node ol li,
 #content .node ul li {
-  margin-right: 55px;
+    margin-right: 55px;
 }
-
 
 /**
  * Table fix
  */
 #content.mainform .content_section table p {
-  width: auto;
+    width: auto;
 }
-
 
 /**
  * FORM
  */
 
 .form-horizontal .control-group {
-  padding-bottom: 10px;
-  padding-top: 10px;
-  padding-left: 20px;
-  margin: 0;
-  background-color: #d9ebf7;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    padding-left: 20px;
+    margin: 0;
+    background-color: #d9ebf7;
 }
 
 .control-medium input, .control-medium select, .control-medium textarea, select {
-  width: 100%;
-  border: 1px solid #cce0f1;
-  padding: .2em 0;
-  font: normal 1em/1.8 Verdana,Geneva,sans-serif;
-  -webkit-border-radius: 0;
-  border-bottom: 2px solid #01689b;
+    width: 100%;
+    border: 1px solid #cce0f1;
+    padding: .2em 0;
+    font: normal 1em/1.8 Verdana, Geneva, sans-serif;
+    -webkit-border-radius: 0;
+    border-bottom: 2px solid #01689b;
 }
 
 select, input[type="file"] {
-  height: 28px;
+    height: 28px;
 }
 
 .form-horizontal .control-label {
-  width: 10.5em;
-  text-align: left;
-  left: 0;
-  font-size: 1em;
-  font-weight: normal;
+    width: 10.5em;
+    text-align: left;
+    left: 0;
+    font-size: 1em;
+    font-weight: normal;
 }
 
 #user-register-form {
-  background-color: #d9ebf7;
-  padding: 10px 0 0 20px;
+    background-color: #d9ebf7;
+    padding: 10px 0 0 20px;
 }
 
 .node-form {
-  background-color: #d9ebf7;
-  padding: 10px 0 20px 20px;
+    background-color: #d9ebf7;
+    padding: 10px 0 20px 20px;
 }
 
 /*.form-select label {
@@ -217,446 +275,459 @@ select, input[type="file"] {
 }*/
 
 .form-textarea-wrapper textarea {
-  width: 100%;
-  max-width: 400px;
-  border: 1px solid #cce0f1;
-  padding: 0.2em 0;
+    width: 100%;
+    max-width: 385px;
+    border: 1px solid #cce0f1;
+    padding: 0.2em 0;
 }
 
 select[multiple] {
-  height: auto;
+    height: auto;
+}
+
+.resizable-textarea {
+    display: inline-block;
 }
 
 .resizable-textarea .grippie {
-  width: 100%;
-  max-width: 400px;
-  background-color: #01689b;
-  border: none;
-  margin-left: 126px;
+    width: 100%;
+    max-width: 385px;
+    background-color: #01689b;
+    border: none;
+    /*margin-left: 126px;*/
 }
 
 .form-horizontal .info-inline {
-  clear: both;
-  width: 100%;
-  margin-top: 0;
-  padding: 10px 0 0;
-  color: #000;
+    clear: both;
+    width: 100%;
+    margin-top: 0;
+    padding: 10px 0 0;
+    color: #000;
 }
 
 button.btn.btn-mini, input[type="submit"].btn.btn-mini {
-  display: block;
-  width: auto;
-  margin: 10px 0 0 0;
-  padding: .4em 10px;
-  padding-bottom: .6em;
-  border: 0;
-  background: #01689b;
-  color: #FFF;
-  font-weight: normal;
-  font-size: 1.083em;
-  text-shadow: none;
-  cursor: pointer;
-  -webkit-border-radius: 0;
-  -webkit-appearance: button;
+    display: block;
+    width: auto;
+    margin: 10px 0 0 0;
+    padding: .4em 10px;
+    padding-bottom: .6em;
+    border: 0;
+    background: #01689b;
+    color: #FFF;
+    font-weight: normal;
+    font-size: 1.083em;
+    text-shadow: none;
+    cursor: pointer;
+    -webkit-border-radius: 0;
+    -webkit-appearance: button;
 }
 
 #main .header .menu-block-wrapper ul li:active,
 #main .header .menu-block-wrapper ul li:visited,
 #main .header .menu-block-wrapper ul li:focus {
-  background: #fff;
+    background: #fff;
 }
 
 #header a.logout-link {
-  position: absolute;
-  bottom: 0px;
-  right: 20px;
-  padding: 0.1em 10px;
-  color: #ffffff;
-  font-family: arial, helvetica, sans-serif;
-  font-size: 1.1em;
-  font-weight: bold;
-  text-decoration: none;
-  background-color: #007bc7;
+    position: absolute;
+    bottom: 0px;
+    right: 20px;
+    padding: 0.1em 10px;
+    color: #ffffff;
+    font-family: RijksOverheidSans, 'Droid Sans', Arial, Verdana, sans-serif;
+    font-size: 1.1em;
+    font-weight: bold;
+    text-decoration: none;
+    background-color: #007bc7;
 }
 
 #header a.logout-link:hover {
-  background-color: #b2d7ee;
-  color: #000000;
+    background-color: #b2d7ee;
+    color: #000000;
 }
 
 @media (min-width: 500px) {
-  #header #navigation ul {
-    padding-right: 100px;
-  }
+    #header #navigation ul {
+        padding-right: 100px;
+    }
 }
+
 @media (max-width: 499px) {
-  #header #navigation ul.menu {
-    padding-bottom: 20px;
-  }
+    #header #navigation ul.menu {
+        padding-bottom: 20px;
+    }
 }
 
 .form-horizontal .info-inline a {
-  color: #000;
+    color: #000;
 }
 
 .slug-preview {
-  font-size: inherit;
-  line-height: inherit;
-  margin-top: 5px;
-  margin-left: 0;
+    font-size: inherit;
+    line-height: inherit;
+    margin-top: 5px;
+    margin-left: 0;
 }
 
 .select2-container .select2-choice {
-  border: 1px solid #cce0f1;
-  padding: .4em 0;
-  line-height: 1.8;
-  font: normal 1em/1.2 Verdana,Geneva,sans-serif;
-  -webkit-border-radius: 0;
-  border-bottom: 2px solid #01689b;
-  background: #fff;
-  height: 25px;
-  -webkit-appearance: menulist-button;
+    border: 1px solid #cce0f1;
+    padding: .4em 0;
+    line-height: 1.8;
+    font: normal 1em/1.2 Verdana, Geneva, sans-serif;
+    -webkit-border-radius: 0;
+    border-bottom: 2px solid #01689b;
+    background: #fff;
+    height: 25px;
+    -webkit-appearance: menulist-button;
 }
 
 .select2-container .select2-choice > .select2-chosen {
-  padding: 5px 0;
+    padding: 5px 0;
 }
 
 .select2-container .select2-choice .select2-arrow,
 .select2-container .select2-choice .select2-arrow b {
-  background: none;
-  border: none;
+    background: none;
+    border: none;
 }
 
 .select2-drop {
-  border-radius: 0;
-  border: 1px solid #cce0f1;
-  border-bottom: 2px solid #01689b;
-  padding: 10px;
+    border-radius: 0;
+    border: 1px solid #cce0f1;
+    border-bottom: 2px solid #01689b;
+    padding: 10px;
 }
 
 .select2-search input {
-  -webkit-border-radius: 0;
-  -webkit-appearance: none;
-  border: 1px solid #cce0f1;
-  border-bottom: 2px solid #01689b;
+    -webkit-border-radius: 0;
+    -webkit-appearance: none;
+    border: 1px solid #cce0f1;
+    border-bottom: 2px solid #01689b;
 }
 
 .module-content > .search-form {
-  background: #d9ebf7;
-  padding: 10px;
+    background: #d9ebf7;
+    padding: 10px;
 }
 
 #content > .module > .module-content > .search-form > h2 {
-  padding-left: 0;
-  margin: 15px 0 0 0;
-  color: #000;
+    padding-left: 0;
+    margin: 15px 0 0 0;
+    color: #000;
 }
 
 .control-large input, .control-large .control-label {
-  font-size: inherit;
-  line-height: inherit;
+    font-size: inherit;
+    line-height: inherit;
 }
 
 .control-large input {
-  height: 28px;
-  font-size: inherit;
-  line-height: inherit;
-  border: 1px solid #cce0f1;
-  -webkit-border-radius: 0;
-  border-bottom: 2px solid #01689b;
+    height: 28px;
+    font-size: inherit;
+    line-height: inherit;
+    border: 1px solid #cce0f1;
+    -webkit-border-radius: 0;
+    border-bottom: 2px solid #01689b;
 }
 
 .search-form .search-input {
-  margin-bottom: 10px;
+    margin-bottom: 10px;
 }
 
 .editor .editor-info-block {
-  background: #01689b;
-  color: #fff;
-  border: none;
+    background: #01689b;
+    color: #fff;
+    border: none;
 }
 
 .editor textarea {
-  border: 1px solid #cce0f1;
+    border: 1px solid #cce0f1;
 }
 
 .editor .editor-info-block a {
-  color: #fff;
+    color: #fff;
 }
 
 .select2-container .select2-choice input,
 .select2-container-multi .select2-choices .select2-search-field:first-child input {
-  font-size: inherit;
-  padding: 0;
-  margin: 0;
+    font-size: inherit;
+    padding: 0;
+    margin: 0;
 }
 
 .select2-container-multi .select2-choices .select2-search-choice {
-  padding: 3px 8px 3px 22px;
-  background: #01689b;
-  border: none;
-  color: #fff;
-  margin: 5px 2px 5px 5px;
+    padding: 3px 8px 3px 22px;
+    background: #01689b;
+    border: none;
+    color: #fff;
+    margin: 5px 2px 5px 5px;
 }
 
 .select2-results .select2-highlighted {
-  background: #01689b;
+    background: #01689b;
 }
 
 .views-exposed-form label {
-  font-weight: inherit;
-  left: 0;
+    font-weight: inherit;
+    left: 0;
 }
 
 html.js input.form-autocomplete {
-  background-position: 99% 8px;
+    background-position: 99% 8px;
 }
 
 .select2-container {
-  margin-top: 1px;
-  width: 100%!important;
+    margin-top: 1px;
+    width: 100% !important;
 }
 
 .select2-container-multi.select2-container .select2-choices {
-  padding: 0;
-  width: 100%;
-  border: 1px solid #cce0f1;
-  font: normal 1em/1.8 Verdana,Geneva,sans-serif;
-  -webkit-border-radius: 0;
-  border-bottom: 2px solid #01689b;
+    padding: 0;
+    width: 100%;
+    border: 1px solid #cce0f1;
+    font: normal 1em/1.8 Verdana, Geneva, sans-serif;
+    -webkit-border-radius: 0;
+    border-bottom: 2px solid #01689b;
 }
 
 .control-full .select2-container {
-  width: 100% !important;
-  height: 28px;
+    width: 100% !important;
+    height: 28px;
+}
+
+.control-full #s2id_field-tags {
+    height: auto;
 }
 
 .views-exposed-form .views-exposed-widget .form-submit {
-  margin: 0;
+    margin: 0;
 }
 
 .form-horizontal .controls {
-  padding-right: 60px;
+    padding-right: 50px;
 }
 
-input[type="submit"]{
-  display: block;
-  width: auto;
-  margin: 0 20px 0 0;
-  padding: .2em 10px;
-  border: 0;
-  background-color: #01689b;
-  color: #FFF;
-  font-size: 1.083em;
-  cursor: pointer;
-  -webkit-appearance: button;
+input[type="submit"] {
+    display: block;
+    width: auto;
+    margin: 0 20px 0 0;
+    padding: .2em 10px;
+    border: 0;
+    background-color: #01689b;
+    color: #FFF;
+    font-size: 1.083em;
+    cursor: pointer;
+    -webkit-appearance: button;
 }
 
 .icon-search:before {
-  content: "Zoeken";
+    content: "Zoeken";
 }
 
 .marker, .form-required,
 .control-required {
-  color: #000;
+    color: #000;
 }
 
 .form-item .description {
-  font-size: inherit;
+    font-size: inherit;
 }
 
 .form-item input,
 .form-item select {
-  width: 100%;
-  max-width: 400px;
-  border: 1px solid #cce0f1;
-  border-bottom: 2px solid #01689b;
-  padding: 0.2em 0;
-  -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
-  -moz-box-sizing: border-box;    /* Firefox, other Gecko */
-  box-sizing: border-box;         /* Opera/IE 8+ */
+    /*width: 100%;*/
+    max-width: 385px;
+    border: 1px solid #cce0f1;
+    border-bottom: 2px solid #01689b;
+    padding: 0.2em 0;
+    -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+    -moz-box-sizing: border-box; /* Firefox, other Gecko */
+    box-sizing: border-box; /* Opera/IE 8+ */
 }
 
 body.drupal .field-type-datetime fieldset .fieldset-wrapper,
 .form-item, .form-actions {
-  margin-bottom: 0;
-/*  padding-left: 12em;*/
+    margin-bottom: 0;
+    /*  padding-left: 12em;*/
 }
-
 
 /**
  * PAGING
  */
 
 .module .pagination {
-  border-top: 3px solid #01689b;
+    border-top: 3px solid #01689b;
 }
 
-.pagination ul>li>a, .pagination ul>li>span {
-  border: none;
-  padding: .5em 8px;
-  padding-top: .7em;
-  color: #154273;
-  font: normal 1.25em/1.2 Arial,"Helvetica Neue",Helvetica,Univers,sans-serif;
+.pagination ul > li > a, .pagination ul > li > span {
+    border: none;
+    padding: .5em 8px;
+    padding-top: .7em;
+    color: #154273;
+    font: normal 1.25em/1.2 Arial, "Helvetica Neue", Helvetica, Univers, sans-serif;
 }
 
-.pagination ul>.active>a, .pagination ul>.active>span {
-  color: #fff;
-  cursor: pointer;
-  background-color: #01689b;
+.pagination ul > .active > a, .pagination ul > .active > span {
+    color: #fff;
+    cursor: pointer;
+    background-color: #01689b;
 }
 
-.pagination ul>li>a:hover, 
-.pagination ul>li>a:focus {
-  color: #0162cd;
-  text-decoration: underline;
-  background: transparent;
+.pagination ul > li > a:hover,
+.pagination ul > li > a:focus {
+    color: #0162cd;
+    text-decoration: underline;
+    background: transparent;
 }
 
 .dataset-content > div {
-  font-size: .846em;
+    font-size: .846em;
 }
- 
+
 /**
  * STAGES
  */
 
 .stages {
-  margin: 0;
+    margin: 0;
 }
 
 .stages li.active .highlight {
-  background: #01689b;
-} 
-
-.stages li.active:before {
-  color: #01689b;
+    background: #01689b;
 }
 
+.stages li.active:before {
+    color: #01689b;
+}
 
 /**
  * Global overwrites
  */
 .module:first-child {
-  margin: 0;
+    margin: 0;
 }
 
 .module-content:first-child {
-  padding: 0;  
-  margin-top: -20px;
-  margin-bottom: 40px;
+    padding: 0;
+    margin-top: -20px;
+    margin-bottom: 40px;
 }
 
 .module-content {
-  padding: 0;
+    padding: 0;
 }
 
 .module-content .module-content {
-  padding: 20px 0 0 0;
-  margin: 0;
+    padding: 20px 0 0 0;
+    margin: 0;
 }
 
 .block-background-blue .content {
-  background: #d9ebf7;
+    background: #d9ebf7;
 }
 
 .fieldset-background-blue2,
 .block-background-blue2 .content {
-  background: #b2d7ee;
+    background: #b2d7ee;
 }
 
 .fieldset-background-orange2 {
-  background: #ffa500;
+    background: #ffa500;
+}
+
+.fieldset-background-white2 {
+  background: #fff;
 }
 
 .fieldset-background-orange2,
-.fieldset-background-blue2 {
-  padding: 10px;
+.fieldset-background-blue2,
+.fieldset-background-white2 {
+    padding: 10px;
 }
 
 #content .fieldset-background-orange2 h3:first-child,
-#content .fieldset-background-blue2 h3:first-child {
-  margin-top: 0;
+#content .fieldset-background-blue2 h3:first-child,
+#content .fieldset-background-white2 h3:first-child {
+    margin-top: 0;
 }
 
 #content ul.list,
 #sub_form ul.list {
-  margin: 0;
-  border: none;
-  padding: 0;
-  background: none;
+    margin: 0;
+    border: none;
+    padding: 0;
+    background: none;
 }
 
 #sub_form ul.list li {
-  list-style: none;
-  background: url("../images/sprite-icons-xl-1.2.png") no-repeat;
-  background-position: -102px -451px;
-  padding-left: 25px;
+    list-style: none;
+    background: url("../images/sprite-icons-xl-1.2.png") no-repeat;
+    background-position: -102px -451px;
+    padding-left: 25px;
 }
 
-#sub_form  ul.document_tree,
+#sub_form ul.document_tree,
 #content ul.document_tree {
-  margin: 0px;
-  border: none;
-  padding: 0;
-  background: none;
+    margin: 0px;
+    border: none;
+    padding: 0;
+    background: none;
 }
 
 #sub_form ul.document_tree li,
 #content ul.document_tree li {
-  margin: 0px;
-  padding: 0px 0px 0px 20px;
-  list-style: none;
-  background: url("../images/sprite-icons-xl-1.2.png") no-repeat left -503px top -91px;
+    margin: 0px;
+    padding: 0px 0px 0px 20px;
+    list-style: none;
+    background: url("../images/sprite-icons-xl-1.2.png") no-repeat left -503px top -91px;
 }
 
 ul.facet_selected:empty {
-  display: none;
+    display: none;
 }
 
 #footer .clearfix {
-  width: 100%;
-  display: block;
+    width: 100%;
+    display: block;
 }
 
 .rteright {
-  text-align: right;
+    text-align: right;
 }
 
 .rteleft {
-  text-align: left;
+    text-align: left;
 }
 
 #breadcrumb h1 {
-  float: none;
-  clear: both;
+    float: none;
+    clear: both;
 }
 
 #content .content_section.no_border {
-  border-left: 2px solid #FFF;
+    border-left: 2px solid #FFF;
 }
 
 .frontpage-title {
-  font-size: 20px;
-  margin: 20px 20px 0px 20px;
+    font-size: 20px;
+    margin: 20px 20px 0px 20px;
 }
 
 #footer .column .block {
-  overflow: hidden;
-  clear: both;
+    overflow: hidden;
+    clear: both;
 }
 
 .showleftbar .content fieldset {
-  width: 100%;
+    width: 100%;
 }
 
-.showleftbar .content fieldset.margin-left { 
-  margin-left: -20px;
+.showleftbar .content fieldset.margin-left {
+    margin-left: -20px;
 }
 
 .home-block-padding {
-  padding: 10px;
+    padding: 10px;
 }
 
 ul.accordion-tree {
@@ -664,841 +735,1957 @@ ul.accordion-tree {
 }
 
 ul.accordion-tree > li {
-  border: 1px solid black;
-  border-radius: 10px;
-  padding: 3px 8px;
-  margin: 0px 0px 10px 0px;
-  background: #b2d7ee;
-  color: #000;
-  font-weight: bold;
+    border: 1px solid black;
+    border-radius: 10px;
+    padding: 3px 8px;
+    margin: 0px 0px 10px 0px;
+    background: #b2d7ee;
+    color: #000;
+    font-weight: bold;
 }
 
 ul.accordion-tree > li:before {
-  content: "+";
+    content: "+";
 }
 
 ul.accordion-tree > li.open:before {
-  content: "-";
+    content: "-";
 }
 
 ul.accordion-tree > li a {
-  font-weight: normal;
-  color: #000;
+    font-weight: normal;
+    color: #000;
 }
 
 ul.accordion-tree > li > ul {
-  border-top: 1px solid black;
+    border-top: 1px solid black;
 }
 
 #content .text_format ul li span.date-display-single {
-  display: inline;
+    display: inline;
 }
 
 #logotype {
-  max-height: 80px;
+    max-height: 80px;
 }
 
 .inline-file-icon {
-  border: 0px;
-  vertical-align: baseline;
+    border: 0px;
+    vertical-align: baseline;
 }
 
 .block-ckan-donl .ckan-themes {
-  overflow: hidden;
+    overflow: hidden;
 }
-
-
 
 /**
  * Themes
  */
 .theme-wrapper {
-  width: 190px;
-  display: block;
-  float: left;
-  min-height: 50px;
-  padding: 5px;
+    display: block;
+    float: left;
+    min-height: 50px;
+    /*padding: 5px;*/
 }
 
-div.theme {
-  max-width: 230px;
-  font-size: 1.1em;
-  border-left: 3px;
-  border-style: solid;
-  border-color: #000;
-  text-align: left;
-  padding: 5px 10px;
-  line-height: 1.1em;
-  display: inline-block;
+.content div.theme {
+    max-width: 230px;
+    font-family: RijksOverheidSans, 'Droid Sans', Arial, Verdana, sans-serif;
+    font-size: 16px;
+
+    line-height: 1.1em;
+    display: inline-block;
 }
 
-div.theme.bestuur,
-div.theme.bestuur a {
-  color: #39870c;
-  border-color: #39870c;
+.dataset-content div.theme, .dataset-information div.theme {
+    font-size: 1.1em;
+    text-align: left;
+    line-height: 2em;
 }
 
-div.theme.cultuur_en_recreatie,
-div.theme.cultuur_en_recreatie a {
-  color: #42145f;
-  border-color: #42145f;
+.dataset-content div.theme:before, .dataset-information div.theme:before {
+    content: '';
+    width: 2em;
+    margin-right: 5px;
+    height: 2em;
+    float: left;
+    /* height: 100%; */
+    /* width: 100%; */
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    background-size: 80%;
+    border-radius: 3px;
 }
 
-div.theme.economie,
-div.theme.economie a {
-  color: #a90061;
-  border-color: #a90061;
+@-webkit-keyframes scaler {
+    0% {
+        background-size: 20%;
+        background-position: 50% 50%;
+    }
+    /*50%{font-size:22px;}*/
+    60% {
+        background-size: 3000%;
+    }
+    61% {
+        background-size: 0%;
+        background-position: 50% 50%;
+    }
+    62% {
+        background-position: 50% 100%;
+    }
+    100% {
+        background-size: 50%;
+        background-position: 50% 60%;
+    }
 }
 
-div.theme.financien,
-div.theme.financien a {
-  color: #8fcae7;
-  border-color: #8fcae7;
+/* Standard syntax */
+@keyframes scaler {
+    /*0%   {background-size:20%;background-position:50% 50%;}*/
+    /*50%{font-size:22px;}*/
+    /*60% {background-size:3000%;}*/
+    /*61%{background-size:0%;background-position:50% 50%;}*/
+    /*62%{background-position:50% 100%;}*/
+    /*100% {background-size:50%;background-position:50% 60%;}*/
+    0% {
+        transform: rotateY(0deg);
+        background-size: 30%;
+    }
+    50% {
+        transform: rotateY(-180deg);
+        background-size: 50%;
+    }
+    100% {
+        transform: rotateY(-360deg);
+        background-size: 40%;
+    }
 }
 
-div.theme.huisvesting,
-div.theme.huisvesting a {
-  color: #94710a;
-  border-color: #94710a;
+#block-ckan-donl-ckan-donl-themes a.theme-wrapper {
+    height: 146px;
+    width: 146px;
+    margin: 5px;
+    font-weight: 800;
+    color: #ffffff;
+    position: relative;
+    box-sizing: border-box;
+    -webkit-perspective: 80px;
+    perspective: 80px;
+    /*-moz-transition: background-size .5s ease-in, background-position .5s ease-in, font-size .2s;*/
+    /*-webkit-transition: background-size .5s ease-in,background-position .5s ease-in, font-size .2s;*/
+    /*transition:background-size .5s ease-in,background-position .5s ease-in, font-size .2s;*/
+    /*-webkit-animation: scaler 0.5s ease-in-out backwards ;*/
+    /*animation: scaler 0.5s ease-in-out backwards;*/
+    /*-webkit-animation: scaler 0.5s ease-in-out;*/
+    /*animation: scaler 0.5s ease-in-out;*/
 }
 
-div.theme.internationaal,
-div.theme.internationaal a {
-  color: #777c00;
-  border-color: #777c00;
+#block-ckan-donl-ckan-donl-themes a.theme-wrapper .icon {
+    height: 100%;
+    width: 100%;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    background-size: 30%;
+    position: absolute;
+    /*background-color:lightseagreen;*/
 }
 
-div.theme.landbouw,
-div.theme.landbouw a {
-  color: #f092cd;
-  border-color: #f092cd;
+#block-ckan-donl-ckan-donl-themes a.theme-wrapper:hover .icon {
+    /*background-size:3000%;*/
+
+    -webkit-animation: scaler 1.0s ease-in-out forwards;
+    animation: scaler 1.0s ease-in-out forwards;
+    /*font-size:22px*/
 }
 
-div.theme.migratie_en_integratie,
-div.theme.migratie_en_integratie a {
-  color: #673327;
-  border-color: #673327;
+#content .text_format a.theme-wrapper {
+    text-decoration: none;
 }
 
-div.theme.natuur_en_milieu,
-div.theme.natuur_en_milieu a {
-  color: #01689b;
-  border-color: #01689b;
+#block-ckan-donl-ckan-donl-themes a.theme-wrapper span.count {
+    font-size: 20px;
+    position: absolute;
+    line-height: 0.65em;
+    right: 5px;
+    bottom: 5px;
 }
 
-div.theme.onderwijs_en_wetenschap,
-div.theme.onderwijs_en_wetenschap a {
-  color: #007bc7;
-  border-color: #007bc7;
+#block-ckan-donl-ckan-donl-themes div.theme, div.theme a {
+    /*width:100%;*/
+    padding: 5px;
+    text-transform: uppercase;
+    font-family: RijksOverheidSans, 'Droid Sans', Arial, Verdana, sans-serif;
 }
 
-div.theme.openbare_orde_en_veiligheid,
-div.theme.openbare_orde_en_veiligheid a {
-  color: #275937;
-  border-color: #275937;
+a.theme-wrapper.bestuur, div.theme.bestuur:before {
+    background-color: #01689b;
 }
 
-div.theme.recht,
-div.theme.recht a {
-  color: #ca005d;
-  border-color: #ca005d;
+div.theme.bestuur, div.theme.bestuur a {
+    color: #01689b;
 }
 
-div.theme.ruimte_en_infrastructuur,
-div.theme.ruimte_en_infrastructuur a {
-  color: #007bc7;
-  border-color: #007bc7;
+a.theme-wrapper.cultuur_en_recreatie, div.theme.cultuur_en_recreatie:before {
+    background-color: #42145f;
 }
 
-div.theme.sociale_zekerheid,
-div.theme.sociale_zekerheid a {
-  color: #76d2b6;
-  border-color: #76d2b6;
+div.theme.cultuur_en_recreatie, div.theme.cultuur_en_recreatie a {
+    color: #42145f;
 }
 
-div.theme.verkeer,
-div.theme.verkeer a {
-  color: #e17000;
-  border-color: #e17000;
+a.theme-wrapper.economie, div.theme.economie:before {
+    background-color: #a90061;
 }
 
-div.theme.werk,
-div.theme.werk a {
-  color: #ffb612;
-  border-color: #ffb612;
+div.theme.economie, div.theme.economie a {
+    color: #a90061;
 }
 
-div.theme.zorg_en_gezondheid,
-div.theme.zorg_en_gezondheid a {
-  color: #d52b1e;
-  border-color: #d52b1e;
+a.theme-wrapper.financiën, div.theme.financiën:before {
+    background-color: #d52b1e;
 }
 
-div.theme.unkown {
-  color: #e6e6e6;
-  border-color: #CCC;
+div.theme.financiën, div.theme.financiën a {
+    color: #d52b1e;
+}
+
+a.theme-wrapper.huisvesting, div.theme.huisvesting:before {
+    background-color: #94710a;
+}
+
+div.theme.huisvesting, div.theme.huisvesting a {
+    color: #94710a;
+}
+
+a.theme-wrapper.internationaal, div.theme.internationaal:before {
+    background-color: #777c00;
+}
+
+div.theme.internationaal, div.theme.internationaal a {
+    color: #777c00;
+}
+
+a.theme-wrapper.landbouw, div.theme.landbouw:before {
+    background-color: #e17000;
+}
+
+div.theme.landbouw, div.theme.landbouw a {
+    color: #e17000;
+}
+
+a.theme-wrapper.migratie_en_integratie, div.theme.migratie_en_integratie:before {
+    background-color: #673327;
+}
+
+div.theme.migratie_en_integratie, div.theme.migratie_en_integratie a {
+    color: #673327;
+}
+
+a.theme-wrapper.natuur_en_milieu, div.theme.natuur_en_milieu:before {
+    background-color: #39870c;
+}
+
+div.theme.natuur_en_milieu, div.theme.natuur_en_milieu a {
+    color: #39870c;
+}
+
+a.theme-wrapper.onderwijs_en_wetenschap, div.theme.onderwijs_en_wetenschap:before {
+    background-color: #42145f;
+}
+
+div.theme.onderwijs_en_wetenschap, div.theme.onderwijs_en_wetenschap a {
+    color: #42145f;
+}
+
+a.theme-wrapper.openbare_orde_en_veiligheid, div.theme.openbare_orde_en_veiligheid:before {
+    background-color: #275937;
+}
+
+div.theme.openbare_orde_en_veiligheid, div.theme.openbare_orde_en_veiligheid a {
+    color: #275937;
+}
+
+a.theme-wrapper.recht, div.theme.recht:before {
+    background-color: #ca005d;
+}
+
+div.theme.recht, div.theme.recht a {
+    color: #ca005d;
+}
+
+a.theme-wrapper.ruimte_en_infrastructuur, div.theme.ruimte_en_infrastructuur:before {
+    background-color: #007bc7;
+}
+
+div.theme.ruimte_en_infrastructuur, div.theme.ruimte_en_infrastructuur a {
+    color: #007bc7;
+}
+
+a.theme-wrapper.sociale_zekerheid, div.theme.sociale_zekerheid:before {
+    background-color: #673327;
+}
+
+div.theme.sociale_zekerheid, div.theme.sociale_zekerheid a {
+    color: #673327;
+}
+
+a.theme-wrapper.verkeer, div.theme.verkeer:before {
+    background-color: #e17000;
+}
+
+div.theme.verkeer, div.theme.verkeer a {
+    color: #e17000;
+}
+
+a.theme-wrapper.werk, div.theme.werk:before {
+    background-color: #a90061;
+}
+
+div.theme.werk, div.theme.werk a {
+    color: #a90061;
+}
+
+a.theme-wrapper.zorg_en_gezondheid, div.theme.zorg_en_gezondheid:before {
+    background-color: #d52b1e;
+}
+
+div.theme.zorg_en_gezondheid, div.theme.zorg_en_gezondheid a {
+    color: #d52b1e;
+}
+
+a.theme-wrapper.unkown, div.theme.unkown:before {
+    background-color: #777c00;
+}
+
+div.theme.unkown, div.theme.unkown a {
+    color: #777c00;
+}
+
+#content #block-ckan-donl-ckan-donl-themes .theme-wrapper div.theme {
+    color: white !important;
+}
+
+a.theme-wrapper.bestuur .icon, .dataset-content div.theme.bestuur:before, .dataset-information div.theme.bestuur:before {
+    background-image: url(../images/rijkshuisstijl_iconen/9014%20algemene%20bestuurszaken.svg);
+}
+
+a.theme-wrapper.cultuur_en_recreatie .icon, .dataset-content div.theme.cultuur_en_recreatie:before, .dataset-information div.theme.cultuur_en_recreatie:before {
+    background-image: url(../images/rijkshuisstijl_iconen/4055%20cultuur.svg);
+}
+
+a.theme-wrapper.economie .icon, .dataset-content div.theme.economie:before, .dataset-information div.theme.economie:before {
+    background-image: url(../images/rijkshuisstijl_iconen/6000%20economische%20zaken.svg);
+}
+
+a.theme-wrapper.financiën .icon, .dataset-content div.theme.financiën:before, .dataset-information div.theme.financiën:before {
+    background-image: url(../images/rijkshuisstijl_iconen/9000%20budget.svg);
+}
+
+a.theme-wrapper.huisvesting .icon, .dataset-content div.theme.huisvesting:before, .dataset-information div.theme.huisvesting:before {
+    background-image: url(../images/rijkshuisstijl_iconen/5063%20huisvesting.svg);
+}
+
+a.theme-wrapper.internationaal .icon, .dataset-content div.theme.internationaal:before, .dataset-information div.theme.internationaal:before {
+    background-image: url(../images/rijkshuisstijl_iconen/8001%20buitenlandse%20zaken.svg);
+}
+
+a.theme-wrapper.landbouw .icon, .dataset-content div.theme.landbouw:before, .dataset-information div.theme.landbouw:before {
+    background-image: url(../images/rijkshuisstijl_iconen/6020%20landbouw.svg);
+}
+
+a.theme-wrapper.migratie_en_integratie .icon, .dataset-content div.theme.migratie_en_integratie:before, .dataset-information div.theme.migratie_en_integratie:before {
+    background-image: url(../images/rijkshuisstijl_iconen/8009%20immigratie.svg);
+}
+
+a.theme-wrapper.natuur_en_milieu .icon, .dataset-content div.theme.natuur_en_milieu:before, .dataset-information div.theme.natuur_en_milieu:before {
+    background-image: url(../images/rijkshuisstijl_iconen/6002%20natuur.svg);
+}
+
+a.theme-wrapper.onderwijs_en_wetenschap .icon, .dataset-content div.theme.onderwijs_en_wetenschap:before, .dataset-information div.theme.onderwijs_en_wetenschap:before {
+    background-image: url(../images/rijkshuisstijl_iconen/4030%20onderwijs%20cultuur%20wetenschap.svg);
+}
+
+a.theme-wrapper.openbare_orde_en_veiligheid .icon, .dataset-content div.theme.openbare_orde_en_veiligheid:before, .dataset-information div.theme.openbare_orde_en_veiligheid:before {
+    background-image: url(../images/rijkshuisstijl_iconen/7012%20veiligheid.svg);
+}
+
+a.theme-wrapper.recht .icon, .dataset-content div.theme.recht:before, .dataset-information div.theme.recht:before {
+    background-image: url(../images/rijkshuisstijl_iconen/7001%20veiligheid%20en%20justitie.svg);
+}
+
+a.theme-wrapper.ruimte_en_infrastructuur .icon, .dataset-content div.theme.ruimte_en_infrastructuur:before, .dataset-information div.theme.ruimte_en_infrastructuur:before {
+    background-image: url(../images/rijkshuisstijl_iconen/5013%20infrastructuur%20en%20milieu.svg);
+}
+
+a.theme-wrapper.sociale_zekerheid .icon, .dataset-content div.theme.sociale_zekerheid:before, .dataset-information div.theme.sociale_zekerheid:before {
+    background-image: url(../images/rijkshuisstijl_iconen/4029%20sociale%20zaken%20en%20arbeidsmarkt.svg);
+}
+
+a.theme-wrapper.verkeer .icon, .dataset-content div.theme.verkeer:before, .dataset-information div.theme.verkeer:before {
+    background-image: url(../images/rijkshuisstijl_iconen/5003%20auto.svg);
+}
+
+a.theme-wrapper.werk .icon, .dataset-content div.theme.werk:before, .dataset-information div.theme.werk:before {
+    background-image: url(../images/rijkshuisstijl_iconen/4094%20werkgelegenheid.svg);
+}
+
+a.theme-wrapper.zorg_en_gezondheid .icon, .dataset-content div.theme.zorg_en_gezondheid:before, .dataset-information div.theme.zorg_en_gezondheid:before {
+    background-image: url(../images/rijkshuisstijl_iconen/4028%20zorg.svg);
+}
+
+a.theme-wrapper.unkown .icon, .dataset-content div.theme.unkown:before, .dataset-information div.theme.unkown:before {
+    background-image: url(../images/rijkshuisstijl_iconen/9014%20algemene%20bestuurszaken.svg);
 }
 
 .dataset-information div.theme {
-  float: none;
-  text-align: left;
-  border-right: 0px;
-  border-left: 3px;
-  border-style: solid;
-  margin: 10px 0px;
+    float: none;
+    text-align: left;
+    border-right: 0px;
+    border-left: 0px;
+    border-style: solid;
+    margin: 10px 0px;
 }
 
-
 .node-webform .form-item input[type="radio"],
-.node-webform .form-item input[type="checkbox"]{
-  width: auto;
+.node-webform .form-item input[type="checkbox"] {
+    width: auto;
 }
 
 .node-webform .form-item label {
-  display: inline-block;
-  min-width: 150px;
+    display: inline-block;
+    min-width: 150px;
 }
 
 .node-webform .form-item.form-type-radio label,
 .node-webform .form-item.form-type-checkbox label {
-  min-width: 10px;
+    min-width: 10px;
 }
 
 .node-webform .form-textarea-wrapper .grippie {
-  display: none;
+    display: none;
 }
 
+table.linkcheck-table {
+    width: 100%;
+}
+
+table.linkcheck-table th.title {
+    width: 50%;
+}
+
+table.linkcheck-table th.stat {
+    width: 25%;
+}
+
+.view-linkcheck2 table.views-table, .view-linkcheck table.views-table, .view-linkcheck-organisaties- table.views-table, .view-linkcheck-thema- table.views-table, .view-datakalender table.views-table {
+    margin-left: 0px;
+    /*width:940px;*/
+}
+
+.view-linkcheck2 .views-widget-filter-dataset_theme, .view-datakalender .views-widget-filter-dataset_catalog {
+    display: none;
+}
+
+#edit-dataset-date-planned-wrapper .form-item.form-item-dataset-date-planned-min, #edit-dataset-date-planned-wrapper .form-item.form-item-dataset-date-planned-max {
+    margin-top: 0px;
+    margin-bottom: 0px;
+    padding-left: 5px;
+}
+
+#edit-dataset-date-planned-wrapper .form-item.form-item-dataset-date-planned-min-date, #edit-dataset-date-planned-wrapper .form-item.form-item-dataset-date-planned-max-date {
+    margin-top: 0px;
+    margin-bottom: 0px;
+
+}
 
 /**
  * Drupal specific overwrites
  */
 body.drupal.front #content .content_section {
-  border-left: none;
-  padding-left: 0px;
+    border-left: none;
+    padding-left: 0px;
 }
- 
+
 body.drupal .field-type-datetime fieldset.form-wrapper {
-  background: none;
-  border: 0px;
-  padding: 0px;
-  margin: 0px;
-  width: auto;
-  height: auto;
+    background: none;
+    border: 0px;
+    padding: 0px;
+    margin: 0px;
+    width: auto;
+    height: auto;
 }
 
 body {
-  color: #000;
+    color: #000;
 }
 
-body.drupal .mainform .node-form label {
-  display: block;
-  width: 10.5em;
-  float: left;
-  font-weight: normal;
-  position: relative;
-  top: .25em;
-/*  left: -11em;*/
-  margin: 0;
-/*  margin-right: -11em;*/
-  font-size: 1em;
+body.drupal .mainform .node-form .form-type-textfield label, .form-type-textarea label, .form-type-select label, .form-type-link-field label {
+    display: block;
+    width: 11.5em;
+    float: left;
+    font-weight: normal;
+    position: relative;
+    top: .25em;
+    margin: 0;
+    font-size: 1em;
+}
+
+
+body.drupal .mainform .node-form .form-type-radios label.option {
+    font-weight: normal;
+    position: relative;
+    top: .25em;
+    margin: 0;
+    font-size: 1em;
 }
 
 body.drupal input,
 body.drupal select,
 body.drupal textarea {
-  padding-left: 5px;
-  padding-right: 5px;
+    padding-left: 5px;
+    padding-right: 5px;
 }
 
 body.drupal #main #content {
-  overflow: hidden;
+    overflow: hidden;
 }
 
 body.drupal .node.clearfix {
-  display: block;
+    display: block;
 }
- 
+
 body.drupal div.form-wrapper {
-  overflow: hidden;
+    overflow: hidden;
 }
 
 body.drupal .field-name-field-dv-betreft-period {
-  min-width: 600px;
+    min-width: 600px;
 }
 
 body.drupal .field-name-field-dv-betreft-periode .start-date-wrapper {
-  clear: none;
-  float: left;
-  width: 35%;
+    clear: none;
+    float: left;
+    width: 35%;
 }
 
 body.drupal .field-name-field-dv-betreft-periode .end-date-wrapper {
-  clear: none;
-  float: right;
-  width: 42%;
+    clear: none;
+    float: right;
+    width: 42%;
 }
 
 body.drupal .field-type-datetime fieldset input {
-  height: auto;
+    height: auto;
 }
 
 body.drupal .field-type-datetime fieldset legend {
-  display: block;
-  width: 125px;
-  float: left;
+    display: block;
+    width: 125px;
+    float: left;
 }
 
 body.drupal .node-form .field-type-datetime fieldset label {
-  margin: 0;
-  top: 0;
-  left: 0;
+    margin: 0;
+    top: 0;
+    left: 0;
 }
 
 body.drupal .field-type-datetime fieldset span {
-  float: none;
-  margin: 0px;
-  clear: none;
-  display: inline-block;
+    float: none;
+    margin: 0px;
+    clear: none;
+    display: inline-block;
 }
 
 body.drupal label[for=edit-field-dv-betreft-periode-und-0-value2] {
-  display: none !important;
+    display: none !important;
 }
 
 html.js body .field-type-datetime fieldset span.js-hide {
-  display: none;
+    display: none;
 }
 
 .container-inline-date > .form-type-date-popup > label {
-  display: none;
+    display: none;
+}
+
+body.drupal #donl-widget-form .code-block {
+    padding-top: 30px;
+}
+
+body.drupal #donl-widget-form .code-block pre {
+    padding: 0;
+    margin: 5px 0;
+}
+
+body.drupal #donl-widget-form fieldset.example-widget #donl-dataset-widget {
+    padding: 10px;
 }
 
 /**
  * SIDENAV
  */
 #sub_form ul.facet_selected li a {
-  right: 5px;
+    right: 5px;
 }
 
 #sub_form {
-  overflow: hidden;
-  margin-top: 20px;
+    overflow-x: hidden;
+    margin-top: 20px;
 }
 
 #sub_form.open_navigation {
-  margin-top: 0px;
+    margin-top: 0px;
 }
 
 body.drupal.admin-menu #sub_form.open_navigation {
-  margin-top: 20px;
+    margin-top: 20px;
 }
 
 #sub_form div.content {
-  padding: 0;
-  background-color: transparent;
+    padding: 0;
+    background-color: transparent;
 }
 
 #navigation ul {
-  padding-bottom: 0em;
+    padding-bottom: 0em;
 }
 
 #navigation ul li {
-  padding: 0px;
+    padding: 0px;
 }
 
 #content .text_format #edit-actions #edit-links li {
-  list-style: none;
-  margin-left: 0px;
-  padding-left: 0px;
+    list-style: none;
+    margin-left: 0px;
+    padding-left: 0px;
 }
-
 
 /**
  * Subform menu
  */
 #sub_form ul.menu {
-  border-top: none;
-  background-color: transparent;
-  padding: 0 0 0 10px;
-  margin: 0;
+    border-top: none;
+    background-color: transparent;
+    padding: 0 0 0 10px;
+    margin: 0;
 }
 
 #sub_form ul.menu:first-child {
-  padding: 0;
+    padding: 0;
 }
 
 #sub_form ul.menu li {
-  list-style: none;
-  padding: 0;
+    list-style: none;
+    padding: 0;
 }
 
 #sub_form ul.menu li > a {
-  color: #000;
-  text-decoration: none;
-  display: inline-block;
-  padding: 2px 3px 2px 15px;
-  background: url("../images/arrows.png") no-repeat;
-  background-position: 3px 10px;
+    color: #000;
+    text-decoration: none;
+    display: inline-block;
+    padding: 2px 3px 2px 15px;
+    background: url("../images/arrows.png") no-repeat;
+    background-position: 3px 10px;
 }
 
 #sub_form ul.menu li.expanded > a,
 #sub_form ul.menu li.collapsed > a {
-  background-position: 3px -81px;
+    background-position: 3px -81px;
 }
 
 #sub_form ul.menu li.ckan-active,
 #sub_form ul.menu li > a.active-trail {
-  background-color: #d9ebf7;
+    background-color: #d9ebf7;
 }
 
 #sub_form ul.menu li > a:hover {
-  background-color: #b2d7ee;
+    background-color: #b2d7ee;
 }
 
 #sub_form ul.menu li > span {
-  margin-left: 2px;
+    margin-left: 2px;
 }
 
-@media(max-width: 967px) {
-  #sub_form ul.menu ul.menu {
-    width: auto !important;
-  }
+@media (max-width: 967px) {
+    #sub_form ul.menu ul.menu {
+        width: auto !important;
+    }
 }
-
 
 /**
  * Search results
  */
 #content.mainform ul.search_result li {
-  list-style-type: none;
-  padding-left: 0px;
-  margin-left: 0px;
-  font-size: 0.9;
-  font-weight: normal;
+    list-style-type: none;
+    padding-left: 0px;
+    margin-left: 0px;
+    font-size: 0.9;
+    font-weight: normal;
 }
 
 #content.mainform ul.search_result li a {
-  text-decoration: none
+    text-decoration: none
 }
-
+#content.mainform ul.search_result li a.label:hover,#content.mainform ul.search_result li a.label:visited,#content.mainform ul.search_result li a.label:active {
+    color:white;
+}
+#content.mainform ul.search_result .dataset-resources li:hover a{
+    color:white;
+}
 .mainform ul.search_result {
-  padding-right: 0px;
+    padding-right: 0px;
 }
 
 fieldset.ckan-themes .theme {
-  display: block;
-  float: left;
-  width: 190px;
-  min-height: 50px;
-  padding: 5px;
+    display: block;
+    float: left;
+    width: 190px;
+    min-height: 50px;
+    padding: 5px;
 }
 
+/**
+ * Description
+ */
+.control-group button.open,
+.control-group button.close,
+.form-item button.open,
+.form-item button.close {
+    background-color: #01689b;
+    background-image: url("../images/custom_icon/generic-icons.svg");
+    background-position: -27px 4px;
+    color: #fff;
+    font-size: 1em;
+    text-decoration: none;
+    font-weight: normal;
+    text-indent: -999px;
+    width: 26px;
+    height: 29px;
+    overflow: hidden;
+    line-height: 1;
+    margin: 0;
+    transition: transform 0.3s;
+}
 
+.control-group button.close,
+.form-item button.close {
+    background-position: -27px -25px;
+    transform: translateY(29px);
+    -webkit-transform: translateY(29px);
+    -ms-transform: translateY(29px);
+
+}
+
+.form-type-textarea button.close {
+    transform: translateY(100px);
+    -webkit-transform: translateY(100px);
+    -ms-transform: translateY(75px);
+}
+
+.form-item .description {
+    max-width: 385px;
+    min-height: 29px;
+}
 
 /**
  * Ckan specific overwrites
  */
 body.ckan .actions a.btn {
-  background-image: none;
-  background-color: #154273;
-  border: none;
-  border-radius: 0;
-  font-weight: normal;
-  color: #FFF;
-  text-shadow: none;
-  padding: 3px 10px;
-  height: 2em;
-  line-height: 1.8em;
+    background-image: none;
+    background-color: #154273;
+    border: none;
+    border-radius: 0;
+    font-weight: normal;
+    color: #FFF;
+    text-shadow: none;
+    padding: 3px 10px;
+    height: 2em;
+    line-height: 1.8em;
 }
 
 body.ckan .actions a.btn:hover {
-  background-color: #b2d7ee;
-  color: #000;
+    background-color: #b2d7ee;
+    color: #000;
 }
 
 body.ckan #content h2 {
-  padding-left: 0px;
+    padding-left: 0px;
 }
 
 body.ckan ol.breadcrumb {
-  background: none;  
+    background: none;
 }
 
 body.ckan.controller-package.action-search .sidebar-search {
- margin-left: 0px;
+    margin-left: 0px;
 }
 
 body.ckan .facet-box-unboxed {
-  padding-left: 0px;
+    padding-left: 0px;
 }
 
 body.ckan #sub_form h3:first-child {
 }
 
 body.ckan #sub_form.facet-filters {
-  width: 100%;
-  margin: 0px;
+    width: 100%;
+    margin: 0px;
 }
 
 body.ckan .facet-filters {
-  position: static;
-  background: none;
-  border: none;
-  border-radius: 0px;
-  box-shadow: none;
-  padding: 0px;
-  width: 100%;
+    position: static;
+    background: none;
+    border: none;
+    border-radius: 0px;
+    box-shadow: none;
+    padding: 0px;
+    width: 100%;
 }
 
 body.ckan #main {
-  background: #FFF;
+    background: #FFF;
 }
 
 body.ckan #main #content .wrapper {
-  border: 0px;
-  -webkit-border-radius: 0px;
-  -moz-border-radius: 0px;
-  border-radius: 0px;
-  -webkit-box-shadow: 0 0 0 0px rgba(0,0,0,0.05);
-  -moz-box-shadow: 0 0 0 0px rgba(0,0,0,0.05);
-  box-shadow: 0 0 0 0px rgba(0,0,0,0.05);
+    border: 0px;
+    -webkit-border-radius: 0px;
+    -moz-border-radius: 0px;
+    border-radius: 0px;
+    -webkit-box-shadow: 0 0 0 0px rgba(0, 0, 0, 0.05);
+    -moz-box-shadow: 0 0 0 0px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 0 0 0px rgba(0, 0, 0, 0.05);
 }
 
 body.ckan .dataset-summary {
-  border-left: none;
+    border-left: none;
 }
 
 body.ckan .dataset-body {
-  overflow: hidden;
+    overflow: hidden;
 }
 
 body.ckan #publisher-tree ul li {
-  margin-left: 0px;
-  margin-bottom: 20px;
+    margin-left: 0px;
+    margin-bottom: 20px;
 }
 
 body.ckan #publisher-tree ul li ul li {
-  margin-left: 25px;
+    margin-left: 25px;
 }
 
 body.ckan .element-invisible {
-  position: absolute !important;
-  clip: rect(1px 1px 1px 1px);
-  clip: rect(1px, 1px, 1px, 1px);
-  overflow: hidden;
-  height: 1px;
+    position: absolute !important;
+    clip: rect(1px 1px 1px 1px);
+    clip: rect(1px, 1px, 1px, 1px);
+    overflow: hidden;
+    height: 1px;
 }
 
 body.ckan .control-group div.select2-container a.select2-choice,
 body.ckan .control-group textarea {
-  padding: 5px;
+    padding: 5px;
+}
+
+body.ckan div.dataset-qualtiy div {
+    min-height: 42px;
+    /*padding-left: 48px;*/
+    background-repeat: no-repeat;
+    background-position: 0 40%;
+    background-size: 30px;
+    display: inline;
+}
+
+body.ckan div.dataset-quality .quality-label {
+    display: inline;
+}
+
+body.ckan div.dataset-qualtiy .dataset-quality-0:before, body.ckan div.dataset-qualtiy .dataset-quality-1:before, body.ckan div.dataset-qualtiy .dataset-quality-2:before, body.ckan div.dataset-qualtiy .dataset-quality-3:before {
+    content: '';
+    background-color: #555;
+    width:30px;
+
+    display: inline-block;
+    width: 35px;
+    height: 20px;
+    border-radius: 5px;
+    margin-right: 5px;
+    color:white;
+    text-align:center;
+}
+
+body.ckan div.dataset-qualtiy .dataset-quality-0:before {
+    background-color: #FFB612;
+    content: '';
+}
+
+body.ckan div.dataset-qualtiy .dataset-quality-1:before {
+    content: '';
+    background-color: #39870C;
+    content: '';
+    /*background-image: url(../images/custom_icon/goed.png);*/
+}
+
+body.ckan div.dataset-qualtiy .dataset-quality-2:before {
+    content: '';
+    background-color: #FFB612;
+}
+
+body.ckan div.dataset-qualtiy .dataset-quality-3:before {
+    content: '';
+    /*background-image: url(../images/custom_icon/fout.png);*/
+    background-color: #D52B1E;
 }
 
 body.ckan div.information-icon {
-  background: url(../images/sprite-icons-xl-1.2.png);
-  background-repeat: no-repeat;
-  background-position: -498px -88px;
-  padding-left: 35px;
-  min-height: 25px;
+    background-image: url(../images/sprite-icons-xl-1.2.png);
+    background-repeat: no-repeat;
+    background-position: -498px -88px;
+    padding-left: 35px;
+    min-height: 25px;
 }
 
 body.ckan div.license-icon {
-  background: url('../images/license/Licentie onbekend.png');
-  background-repeat: no-repeat;
-  display: inline-block;
-  padding-left: 35px;
-  min-height: 25px;  
+    background-image: url('../images/license/Licentie onbekend.png');
+    background-repeat: no-repeat;
+    display: inline-block;
+    padding-left: 35px;
+    min-height: 25px;
 }
 
 body.ckan div.license-icon.CC-0 {
-  background-image: url('../images/license/CC-0.png');
+    background-image: url('../images/license/CC-0.png');
 }
 
 body.ckan div.license-icon.CC-BY {
-  background-image: url('../images/license/CC-BY.png');
+    background-image: url('../images/license/CC-BY.png');
 }
 
 body.ckan div.license-icon.Publiek.Domein {
-  background-image: url('../images/license/Publiek Domein.png');
+    background-image: url('../images/license/Publiek Domein.png');
 }
 
-
-
 body.ckan section#dataset-resources ul.resource-list .resource-item {
-  margin: 10px 0px;
-  padding: 10px;
-  background: #d9ebf7;
-  border-radius: 0px;
-  color: #000;
+    margin: 20px 0px;
+    padding: 10px;
+    background: #d9ebf7;
+    border-radius: 0px;
+    color: #000;
 }
 
 body.ckan ul.resource-list li.resource-item .resource-row {
-  clear: both;
-  position: relative;
-  width: 100%;
-  border-bottom: 1px solid black;
-  padding: 3px 0;
+    clear: both;
+    position: relative;
+    width: 100%;
+    border-bottom: 1px solid black;
+    padding: 3px 0;
 }
 
 body.ckan ul.resource-list li.resource-item .resource-row:last-child {
-  border-bottom: 0px;
+    border-bottom: 0px;
 }
 
 body.ckan ul.resource-list li.resource-item .resource-row .resource-label {
-  color: #154273;
+    color: #000;
 }
 
 body.ckan ul.resource-list li.resource-item .resource-row .resource-row-block {
-  display: inline-block;
-  width: 25%;
+    display: inline-block;
+    width: 25%;
+}
+
+body.ckan ul.resource-list li.resource-item .resource-row a.edit-resource {
+    margin-left: -50px;
 }
 
 body.ckan ul.resource-list li.resource-item .resource-row a.heading,
 body.ckan ul.resource-list li.resource-item .resource-row p.description {
-  margin-left: 0;
-  margin-right: 150px;
+    margin-left: 0;
+    margin-right: 150px;
 }
 
 body.ckan ul.resource-list li.resource-item .resource-row div.header-melding {
-  position: absolute;
-  top: 0;
-  right: 0;
+    position: absolute;
+    top: 0;
+    right: 0;
 }
 
 body.ckan ul.resource-list li.resource-item .resource-row div.header-melding .webservice2 {
-  clear: both;
-  display: block;
-  line-height: 12px;
+    clear: both;
+    display: block;
+    line-height: 12px;
 }
 
 body.ckan ul.resource-list li.resource-item .resource-row span.formatlabel {
-  position: relative;
-  left: 0;
+    position: relative;
+    left: 0;
 }
 
-
 body.ckan .block-background-blue ul.resource-list {
-  margin: 0;
+    margin: 0;
 }
 
 body.ckan .block-background-blue ul.resource-list li.resource-item {
-  padding: 0;
+    padding: 0;
 }
 
 body.ckan .block-background-blue ul.resource-list li.resource-item:hover {
-  background: none;
+    background: none;
 }
-
-
 
 /* Bronnen */
 body.ckan #main {
-  padding: 0px;
+    padding: 0px;
 }
 
 body.ckan #content {
-  padding: 0px;
+    padding: 0px;
 }
 
 body.ckan .header {
-  margin: 0px;
+    margin: 0px;
 }
 
 body.ckan .page-header .content_action {
-  margin: 0px;
+    margin: 0px;
 }
 
 body.ckan .resource-content {
-  padding: 20px;
-  position: relative;
+    padding: 20px;
+    position: relative;
 }
 
 body.ckan .formatlabel.format-download {
-  background: #f092cd;
-  color: #000;
+    background: #f092cd;
+    color: #000;
 }
 
 body.ckan .formatlabel.format-webservice {
-  background: #e17000;
-  color: #000;
+    background: #e17000;
+    color: #000;
 }
 
 body.ckan .resource-content .formatlabel-wrapper {
-  overflow: hidden;
-  position: relative;
+    overflow: hidden;
+    position: relative;
 }
 
 body.ckan .resource-content .formatlabel-wrapper .formatlabel {
-  top: 0px;
-  left: 0px;
-  position: absolute;
+    top: 0px;
+    left: 0px;
+    position: absolute;
 }
 
 body.ckan .resource-content .formatlabel-wrapper .formatlabel-description {
-  float: left;
-  margin: 0px 150px 0px 90px;
+    float: left;
+    margin: 0px 150px 0px 90px;
 }
 
 body.ckan .resource-content .formatlabel-wrapper .last-modification {
-  position: absolute;
-  top: 0px;
-  right: 0px;
+    position: absolute;
+    top: 0px;
+    right: 0px;
 }
 
 body.ckan .resource-content .description {
-  margin-top: 16px;
+    margin-top: 16px;
 }
 
 body.ckan #content.showleftbar .resource-content h1 {
-  margin: 0px;
-  padding: 0px;
+    margin: 0px;
+    padding: 0px;
 }
 
 body.ckan section#dataset-resources ul.resource-list {
-  margin: 0px;
+    margin: 0px;
 }
 
 body.ckan span.formatlabel {
-  position: absolute;
-  left: 5px;
-  width: 80px;
-  display: block;
-  text-align: center;
-  background: #FFF;
+    position: absolute;
+    left: 5px;
+    width: 80px;
+    display: block;
+    text-align: center;
+    background: #FFF;
 }
 
-
 body.ckan section#dataset-resources ul.resource-list .resource-item div.btn-group {
-  position: absolute;
-  top: initial;
-  bottom: 0px;
-  right: 20px;
-  width: 120px;
+    position: absolute;
+    top: initial;
+    bottom: 0px;
+    right: 20px;
+    width: 120px;
 }
 
 body.ckan section#dataset-resources ul.resource-list .resource-item div.btn-group a.btn-primary {
-  background: #01689b;
-  width: 110px;
-  padding: 5px;
-  margin: 0px;
-  border-radius: 0px;
+    background: #01689b;
+    width: 110px;
+    padding: 5px;
+    margin: 0px;
+    border-radius: 0px;
 }
 
 body.ckan .dataset-item {
-  border-bottom: 0px;
-  padding-bottom: 0px;
-  margin-bottom: 0px;
+    border-bottom: 0px;
+    padding-bottom: 0px;
+    margin-bottom: 0px;
 }
 
 body.ckan #content.mainform ul.search_result li ul,
 body.ckan #content.mainform ul.search_result li ul li {
-  padding: 0px;
-  margin: 0px;
+    padding: 0px;
+    margin: 0px;
 }
 
 body.ckan #content.mainform ul.search_result li ul li {
-  border: none;
+    border: none;
 }
 
 body.ckan #content.mainform ul.search_result li ul li:before {
- display: none;
+    display: none;
 }
 
 body.ckan #content.mainform ul.search_result li h2 {
-  margin: 0 !important;
+    margin: 0 !important;
 }
 
 body.ckan .module-resource .actions {
-  top: 0px;
-  right: 0px;
+    top: 0px;
+    right: 0px;
 }
 
 body.ckan .module-resource .resource-header {
-  position: relative;
+    position: relative;
 }
 
 body.ckan .module-resource .resource-header .actions {
-  position: absolute;
+    position: absolute;
 }
 
 body.ckan .mainform fieldset p.extra,
 body.ckan .mainform fieldset p.filter-list span.facet-wrapper {
-  margin-left: 20px;
-  display: block;
+    margin-left: 20px;
+    display: block;
 }
 
 body.ckan .mainform fieldset p.filter-list span {
-  display: inline-block;
-  margin-left: 0px;
-  margin-right: 20px;
+    display: inline-block;
+    margin-left: 0px;
+    margin-right: 20px;
 }
 
 body.ckan .mainform fieldset p.filter-list span.filtered {
-  padding: 3px 10px;
+    padding: 3px 10px;
 }
 
 body.ckan .mainform fieldset p.filter-list span.filtered a.remove {
-  margin-right: 5px;
+    margin-right: 5px;
 }
 
 body.ckan #sub_form .module.resources ul {
-  background: none;
-  border: none;
-  padding: 0px;
-  margin: 0px;
+    background: none;
+    border: none;
+    padding: 0px;
+    margin: 0px;
 }
 
-body.ckan #sub_form .module.resources .nav>li>a {
-  margin-left: 40px;
+body.ckan #sub_form .module.resources .nav > li > a {
+    margin-left: 40px;
 }
 
 body.ckan #sub_form .module.resources .nav-item {
-  border: 0px;
+    border: 0px;
 }
 
 body.ckan #sub_form .module.resources .nav-item span.formatlabel {
-  text-align: left;
-  line-height: 20px;
-  padding: 7px 0px;
-  margin: -7px 0px 0px 0px;
+    text-align: left;
+    line-height: 20px;
+    padding: 7px 0px;
+    margin: -7px 0px 0px 0px;
 }
 
 body.ckan #sub_form .module.resources .nav-item span.formatlabel span {
-  padding: 0px 0px 0px 4px;
+    padding: 0px 0px 0px 4px;
 }
 
 body.ckan #sub_form .module.resources .nav-item.active {
-  background: none;
+    background: none;
 }
 
-body.ckan #sub_form .module.resources .nav>li>a:hover,
-body.ckan #sub_form .module.resources ul li.nav-item>a:hover,
-body.ckan #sub_form .module.resources ul li.nav-item.active>a {
-  background-color: #d9ebf7;
-  color: #000;
+body.ckan #sub_form .module.resources .nav > li > a:hover,
+body.ckan #sub_form .module.resources ul li.nav-item > a:hover,
+body.ckan #sub_form .module.resources ul li.nav-item.active > a {
+    background-color: #d9ebf7;
+    color: #000;
 }
 
-body.ckan #sub_form .module.resources ul li.nav-item.active>a:before {
-  background: none;
+body.ckan #sub_form .module.resources ul li.nav-item.active > a:before {
+    background: none;
 }
 
 body.ckan.organisaties ul.media-grid {
-  background: none;
-  border: 0px;
+    background: none;
+    border: 0px;
 }
 
 body.ckan.organisaties ul.media-grid li {
-  margin: 15px 0px 0px 25px;
+    margin: 15px 0px 0px 25px;
 }
 
 @media (min-width: 968px) {
-  body.ckan #content.showleftbar .content_section p {
-    width: 100%;
-    max-width: 45em;
-  }
+    body.ckan #content.showleftbar .content_section p {
+        width: 100%;
+        max-width: 45em;
+    }
+
+    .view-linkcheck2 table.views-table, .view-linkcheck table.views-table, .view-linkcheck-organisaties- table.views-table, .view-linkcheck-thema- table.views-table, .view-datakalender table.views-table {
+        width: 940px;
+    }
+}
+
+@media (min-width: 968px) {
+    body.ckan #content.showleftbar .content_section .activity p {
+        width: 90%;
+        float: right;
+        max-width: 45em;
+    }
+}
+
+.activity .item .actor .gravatar {
+    position: static;
 }
 
 body.ckan .media-grid {
-  background: none;
-  border: none;
+    background: none;
+    border: none;
+}
+
+body.ckan .media-heading,
+body.ckan .context-info h1.heading {
+    word-break: normal;
+    word-break: break-word;
+    word-wrap: break-word;
+    -webkit-hyphens: none;
+    -moz-hyphens: none;
+    -ms-hyphens: none;
+    hyphens: none;
+}
+
+/*dataset tabs*/
+li.resource-item {
+    margin: 10px;
+}
+
+.downloads-content,
+.metadata-content,
+.webservice-content,
+.documentatie-content,
+.link-content {
+    width: 400px;
+    float: left;
+    border-right: 0px dashed #154273;
+
+}
+
+.dataset-buttons,
+.metadata-buttons,
+.webservice-buttons,
+.documentatie-buttons,
+.link-buttons {
+    width: 195px;
+    float: right;
+}
+
+#dataset-tabs {
+    margin-top: 10px;
+
+}
+
+section.tab {
+    float: left;
+    margin-top: -1px;
+    padding: 10px;
+    border-top: 1px solid #ccc;
+    width: 100%;
+    background: #d9ebf7;
+    display: block;
+}
+
+section.tab li {
+    background: #f6f6f6 !important;
+}
+
+#dataset-tabs .tab li {
+    padding: 0px;
+    margin: 0px;
+    list-style: none;
+    display: inline;
+}
+
+#dataset-tabs .tab a {
+    padding: 5px 15px;
+    display: inline-block;
+    color: #154273;
+    background-color: #fff;
+    text-decoration: none;
+    border-left: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    border-radius: 4px 4px 0 0;
+    text-decoration: none;
+}
+
+#dataset-tabs .tab span.disabledTab {
+    padding: 5px 15px;
+    display: inline-block;
+    color: #bbb;
+    background-color: #f6f6f6;
+    text-decoration: none;
+    border-left: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    border-radius: 4px 4px 0 0;
+    cursor: default;
+}
+
+#dataset-tabs .tab a.active {
+    padding: 5px 15px;
+    display: inline-block;
+    color: #55565d;
+    background-color: #d9ebf7;
+    text-decoration: none;
+    border-left: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #d9ebf7;
+    border-radius: 4px 4px 0 0
+}
+
+#dataset-resources {
+    display: block;
+}
+
+#webservice {
+    display: none;
+}
+
+#documentatie {
+    display: none;
+}
+
+#link {
+    display: none;
+}
+
+#metadata {
+    display: none;
+}
+
+/* ALL TABS */
+.resource-link {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    width: 300px;
+    white-space: nowrap;
+}
+
+/* DOWNLOADS TAB */
+body.ckan .downloads-content div.dataset-qualtiy .dataset-quality-1:before {
+    content: 'link OK';
+    width: 80px;
+    text-align: center;
+    color: #FFF;
+}
+
+body.ckan .downloads-content div.dataset-qualtiy .dataset-quality-3:before {
+    content: 'link niet OK';
+    width: 80px;
+    text-align: center;
+    color: #FFF;
+}
+
+.downloads-content li.resource-item {
+    padding: 10px;
+}
+
+.downloads-content .resource-row {
+    display: table-row;
+}
+
+.downloads-content .resource-left {
+    width: 300px;
+    overflow:hidden;
+    display: block;
+}
+
+.downloads-content .resource-right {
+    width: 80px;
+    display: table-cell;
+}
+
+/* WEBSERVICES TAB */
+body.ckan .webservice-content div.dataset-qualtiy .dataset-quality-1:before {
+    content: 'link OK';
+    width: 80px;
+    text-align: center;
+    color: #FFF;
+}
+
+body.ckan .webservice-content div.dataset-qualtiy .dataset-quality-3:before {
+    content: 'link niet OK';
+    width: 80px;
+    text-align: center;
+    color: #FFF;
+}
+
+.webservice-content li.resource-item {
+    padding: 10px;
+}
+
+.webservice-content .resource-row {
+    display: table-row;
+}
+
+.webservice-content .resource-left {
+    width: 300px;
+    overflow:hidden;
+    display: block;
+}
+
+.webservice-content .resource-right {
+    width: 80px;
+    display: table-cell;
+}
+
+/* DOCUMENTATIE TABS */
+body.ckan .documentatie-content div.dataset-qualtiy .dataset-quality-1:before {
+    content: 'link OK';
+    width: 80px;
+    text-align: center;
+    color: #FFF;
+}
+
+body.ckan .documentatie-content div.dataset-qualtiy .dataset-quality-3:before {
+    content: 'link niet OK';
+    width: 80px;
+    text-align: center;
+    color: #FFF;
+}
+
+.documentatie-content li.resource-item {
+    padding: 10px;
+}
+
+.documentatie-content .resource-row {
+    display: table-row;
+}
+
+.documentatie-content .resource-left {
+    width: 300px;
+    overflow:hidden;
+    display: block;
+}
+
+.documentatie-content .resource-right {
+    width: 80px;
+    display: table-cell;
+}
+
+/* LINKS TABS */
+body.ckan .link-content div.dataset-qualtiy .dataset-quality-1:before {
+    content: 'link OK';
+    width: 80px;
+    text-align: center;
+    color: #FFF;
+}
+
+body.ckan .link-content div.dataset-qualtiy .dataset-quality-3:before {
+    content: 'link niet OK';
+    width: 80px;
+    text-align: center;
+    color: #FFF;
+}
+
+.link-content li.resource-item {
+    padding: 10px;
+}
+
+.link-content .resource-row {
+    display: table-row;
+}
+
+.link-content .resource-left {
+    width: 300px;
+    overflow:hidden;
+    display: block;
+}
+
+.link-content .resource-right {
+    width: 80px;
+    display: table-cell;
+}
+
+/* LINKS TABS */
+body.ckan .overige-content div.dataset-qualtiy .dataset-quality-1:before {
+    content: 'link OK';
+    width: 80px;
+    text-align: center;
+    color: #FFF;
+}
+
+body.ckan .overige-content div.dataset-qualtiy .dataset-quality-3:before {
+    content: 'link niet OK';
+    width: 80px;
+    text-align: center;
+    color: #FFF;
+}
+
+.overige-content li.resource-item {
+    padding: 10px;
+}
+
+.overige-content .resource-row {
+    display: table-row;
+}
+
+.overige-content .resource-left {
+    width: 300px;
+    overflow:hidden;
+    display: block;
+}
+
+.overige-content .resource-right {
+    width: 80px;
+    display: table-cell;
+}
+
+/* Deze heeft een !important, want dat heeft section.tab li zelf ook als, terwijl deze niet nodig is, we hebben nu een !important over een !important heen!) */
+section#downloads li.resource-item,
+section#webservice li.resource-item,
+section#documentatie li.resource-item,
+section#link li.resource-item,
+section#overige li.resource-item {
+    background: transparent !important;
+    border-bottom: solid 1px #000;
+    border-radius: 0px;
+}
+
+section#downloads li.resource-item:first-child,
+section#webservice li.resource-item:first-child,
+section#documentatie li.resource-item:first-child,
+section#link li.resource-item:first-child,
+section#overige li.resource-item:first-child {
+    border-top: solid 1px #000;
+    border-radius: 0px;
+}
+
+
+form.dataset-form label {
+    cursor:default;
+}
+
+
+/* Dataset aanmelden */
+
+#field-maintainer:-moz-read-only { /* For Firefox */
+    cursor: default;
+}
+
+#field-maintainer:read-only {
+    cursor: default;
+}
+
+#field-author:-moz-read-only { /* For Firefox */
+    cursor: default;
+}
+
+#field-author:read-only {
+    cursor: default;
+}
+
+#autocomplete{
+    background:white;
+    margin-left:9px;
+}
+#autocomplete li{
+    white-space: normal;
+    margin-left:0px!important;
+}
+
+a.tag{
+    border-radius:4px;
+}
+a.tag:hover{
+    background-color:#007BC7;
+}
+
+span.pill{
+    border-radius:4px;
+}
+span.pill:hover{
+    background-color:#007BC7;
+}
+.mainform fieldset.views-exposed-form label {
+    float:none;
+}
+
+#sub_form .context-info .module-content:first-child { margin-top : 0px;} 
+
+
+
+@media (min-width: 968px) {
+    body.dataset-aanmelden div.module-content {
+        border-left: 2px solid #eaebee;
+        padding-left: 20px;
+        padding-right: 25px;
+    }
+}
+
+
+
+#dataset-edit .select2-container,
+#dataset-edit .control-medium input, 
+#dataset-edit .control-medium select, 
+#dataset-edit .control-medium textarea,
+#dataset-edit .control-full input, 
+#dataset-edit .control-full select, 
+#dataset-edit select, 
+#dataset-edit .control-full textarea {
+    width: 92% !important;
+}
+
+
+#dataset-edit button       { margin-left : 7px; }
+#dataset-edit .extraTopPad { margin-top : 10px; }
+
+.select2-container div.description,
+.control-full div.description,
+.control-medium  div.description,
+.control-group div.description {
+    display: none;
+}
+div.description {
+    padding-top: 4px;
+}
+
+/* CKAN still loads main.css from fanstatic instead of Drupal, small fix for the button */
+.close { opacity:1.0!important; }
+
+body.page-node-add-dataverzoek .form-item .description {
+    /*min-width: 90%;*/
+    padding-left: 10.5em!important;
+}
+
+/*div.error-explanation { display : none; }*/
+
+.control-full div.error-block {
+    padding: 0px;
+    width:92%;
+}
+
+.control-full div.error-block div {
+    padding: 6px 0px 3px 6px;
+}
+
+/* Fix voor Firefox, zie assembla #422 */
+
+@-moz-document url-prefix() {
+    body.drupal .mainform .node-form .form-type-textfield label, .form-type-textarea label, .form-type-select label, .form-type-link-field label {
+        width: 13em;
+    }
+    
+    body.drupal .field-type-datetime fieldset legend {
+        width: 13em;
+    }
+    fieldset.date-combo .container-inline-date .date-padding {
+        padding-top: 10px;
+        padding-right: 0px;
+        padding-bottom: 10px;
+        padding-left: 0px;
+    }
+    body.drupal .field-name-field-dv-betreft-periode .end-date-wrapper {
+       width: 35%;
+    }
+    
+    body.page-node-add-dataverzoek .form-item .description {
+        /*min-width: 90%;  fix for I1610031 */
+        padding-left: 13em!important;
+    }
+
+}
+
+
+.license-container { vertical-align: text-top; }
+body.ckan div.license-icon { margin-top:-2px; padding-left:25px; }
+
+
+.poweredby { float:left; height:30px; width:89px; }
+
+.creative-commons-licentie { border-width:0px; float:left; margin:0px; padding:0px; position:relative; }
+
+
+/* Permalink popup */
+.module-content { position: relative; } 
+#permalink_popup { z-index:10000; position: absolute; left: 0px; top: 0px; padding: 10px; width: 610px; background-color: rgb(217, 235, 247); }
+
+.show { display : block; }
+.hidden { display : none; }
+
+article.module .content_section .module-content {
+    padding-top: 20px;
+}
+    
+    
+ 
+    
+.stages li.last, .stages li.last .highlight { border-radius : 0 0 0 0; }
+
+/* Voor de tekst onder de ? buttons op het dataset aanmeld formulier */
+.dataset-form .control-group .description { width:90%; }
+
+
+/* Drupal tabs dichter bij elkaar, assambla issue 474 */
+.tabs.primary li { margin-right: 0px; } 
+
+/* De tekst colour van een button moet altijd wit zijn, ook bij visited */
+a.btn-primary { color: #ffffff!important; }
+
+#edit-field-dv-content-wrapper-wrapper { width: 100%; }
+
+.ckan-donl-statistics { padding: 10px; }
+
+.ckan-donl-statistics .total_datasets {
+    font-size: 1.3em;
+    font-weight: bold;
+    display: block;
+}
+
+.ckan-donl-statistics .last-modification-date {
+    display: block;
+}
+
+.ckan-donl-statistics .status-datasets,
+.ckan-donl-statistics .features-datasets {
+    float: left;
+    margin-top: 20px;
+}
+
+.ckan-donl-statistics .status-datasets {
+    width: 25%;
+}
+
+.ckan-donl-statistics .features-datasets {
+    padding-left: 10px;
+    width: calc(75% - 10px);
+}
+
+.ckan-donl-statistics .features-datasets > span {
+    display: block;
+}
+
+.ckan-donl-statistics .features-datasets ul.left {
+    float: left;
+    width: 48%;
+}
+
+.ckan-donl-statistics .features-datasets ul.right {
+    float: right;
+    padding-left: 10px;
+    width: calc(52% - 10px);
+}
+
+.ckan-donl-statistics .status-datasets ul li,
+.ckan-donl-statistics .features-datasets ul li {
+    list-style-type: disc;
+    margin-left: 15px !important;
+    padding-left: 10px !important;
+}
+
+.ckan-donl-statistics .status-datasets ul li span,
+.ckan-donl-statistics .features-datasets ul li span {
+    font-size: 0.9167em;
+    margin-left: 10px;
+    color: #FFF;
+    padding: 1px 3px;
+    height: 16px;
+    overflow: hidden;
+    background-color: #154273;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
+    display: inline-block !important;
+    float: right;
+}
+
+.ckan-donl-statistics .actions {
+    display: block;
+    clear: both;
+}
+
+.ckan-donl-statistics .actions .more-statistics {
+    float: right;
+}
+
+@media (max-width: 650px) {
+    .ckan-donl-statistics .status-datasets,
+    .ckan-donl-statistics .features-datasets {
+        display: block;
+        margin-top: 20px;
+        width: 100%;
+        clear: both;
+    }
+
+    .ckan-donl-statistics .features-datasets {
+        padding-left: 0;
+    }
+}
+
+@media (max-width: 470px) {
+    .ckan-donl-statistics .features-datasets ul.left,
+    .ckan-donl-statistics .features-datasets ul.right {
+        width: 100%;
+        clear: both;
+    }
+}
+
+/*fixes for dataset page*/
+/*desperately needs to be structured. Like everything above.*/
+body.datasets .mainform .showleftbar #content{
+    border:1px solid #ddd;
+    margin-right:20px;
+}
+body.datasets .module-content.page-header{
+    border-right:1px solid #ddd;
+    border-top:1px solid #ddd;
+    margin-right:15px !important;
+
+}
+body.datasets .module-content:first-child{
+    margin-top:0px;
+    margin-bottom:0px;
+}
+body.datasets .nav-tabs>li{
+    margin-top:-1px;
+    margin-left:1px
+}
+body.datasets .nav-tabs>li>a:first-of-type{
+    margin-left:-1px;
+}
+body.datasets .nav-tabs>li>a{
+    border-radius:0;
+}
+
+body.datasets section.tab{
+    width:auto;
+    border:1px solid #ddd;
+    float:none;
+}
+body.datasets section.tab>div{
+    width:auto;
+    float:none;
+}
+body.datasets .resource-item{
+    border-top:1px solid #ddd;
+
+}
+
+body.datasets .resource-left{
+    width:auto!important;
+    overflow:visible;
+}
+body.datasets .resource-link{
+    text-overflow:initial;
+    width:auto
+}
+body.datasets .resource-right{
+
+    display:block!important;
+    width:auto!important;
+}
+body.datasets #dataset-resources-buttons{
+    float:none;
+    width:auto;
+}
+body.datasets #dataset-resources-buttons .well{
+    margin-bottom:0px;
+}
+body.datasets #dataset-resources-buttons .well li{
+    display:inline;
+}
+body.datasets .metadata-content thead th{
+
+    display:none;
+}
+body.datasets .table-striped tbody tr:nth-child(odd) td,body.datasets  .table-striped tbody tr:nth-child(odd) th{
+    background-color:#f9f9f9;
+}
+
+body.datasets .metadata-content table,body.datasets h3{
+    padding-left:20px
+}
+body.datasets .metadata-content .table-bordered{
+    border:none;
+    border-right: 1px solid #ddd;
+    border-radius:0;
+}
+body.datasets section,body.datasets .well,a.tag,a.tag:hover,.tab a,body.datasets .tab a.active,span.disabledTab{
+    border-radius:0px!important;
+    box-shadow:none;
+}
+body.datasets .content_section{
+    border-left:1px solid #ddd!important;
+    border-right:1px solid #ddd!important;
+    border-bottom:1px solid #ddd!important;
+    padding-bottom:20px;
+    margin-right:15px;
+    padding-right:20px!important;
+}
+body.datasets h1{
+    padding-top:20px;
+}
+body.datasets #permalink_popup{
+    width:100%;
+}
+body.datasets .table-bordered thead:last-child tr:last-child>th:last-child,body.datasets .table-bordered tbody:last-child tr:last-child>td:last-child,body.datasets .table-bordered tbody:last-child tr:last-child>th:last-child,body.datasets .table-bordered tfoot:last-child tr:last-child>td:last-child,body.datasets .table-bordered tfoot:last-child tr:last-child>th:last-child{
+    border-radius:0;
+}
+body.datasets section#downloads li.resource-item:first-child,body.datasets section#webservice li.resource-item:first-child,body.datasets section#documentatie li.resource-item:first-child,body.datasets section#link li.resource-item:first-child,body.datasets section#overige li.resource-item:first-child{
+    border:none;
+    background-color:#f9f9f9!important;
+}
+body.datasets section#downloads li.resource-item,body.datasets section#webservice li.resource-item,body.datasets section#documentatie li.resource-item,body.datasets section#link li.resource-item,body.datasets section#overige li.resource-item{
+    border:none;
+    background-color:#f9f9f9!important;
+}
+
+body.datasets #sub_form ul.facet_unselected li span{
+    float: right;
+    margin-right: 12px;
+    text-align: center;
+    line-height: 1.5em;
+}
+body.datasets #dataset-resources-buttons{
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+
+/*
+ * CKAN template specific styles
+ */
+
+li.ckan-resource-item div.resource-row {
+    display: inherit!important;
+}
+
+li.ckan-resource-item div.resource-row .resource-link {
+    white-space: normal;
+}
+
+li.ckan-resource-item .resource-item-webservice-warning {
+    margin-top: 5px;
+    margin-bottom: 5px;
 }

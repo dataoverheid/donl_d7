@@ -7,12 +7,14 @@ function content_taxonomy_form_field_ui_field_edit_form_alter(&$form, &$form_sta
   $field = $form['#field'];
   $instance = $form['#instance'];
 
-  // Add parent selector to term reference fields,
-  // except to the autocomplete widget, as it ignores the parent setting.
+  // Add parent selector to term reference fields, except to the autocomplete
+  // widget, as it ignores the parent setting.
   if ($field['type'] == 'taxonomy_term_reference'
-    && !($instance['widget']['type'] == 'taxonomy_autocomplete' || $instance['widget']['type'] == 'autocomplete_deluxe_taxonomy')) {
-
-    // add parent form.
+      && $instance['widget']['type'] != 'taxonomy_autocomplete'
+      && $instance['widget']['type'] != 'autocomplete_deluxe_taxonomy'
+      && $instance['widget']['type'] != 'entityreference_autocomplete'
+      && $instance['widget']['type'] != 'entityreference_autocomplete_tags') {
+    // Add parent form.
     foreach ($field['settings']['allowed_values'] as $delta => $tree) {
       $options[0] = '---';
       // todo this might break with huge vocs
@@ -76,7 +78,8 @@ function content_taxonomy_allowed_values($field) {
   foreach ($field['settings']['allowed_values'] as $tree) {
     if ($vocabulary = taxonomy_vocabulary_machine_name_load($tree['vocabulary'])) {
       $max_depth = (isset($tree['depth']) && !empty($tree['depth'])) ? $tree['depth'] : NULL;
-      if ($terms = taxonomy_get_tree($vocabulary->vid, $tree['parent'], $max_depth)) {
+      $terms = content_taxonomy_get_terms($field, $vocabulary, $tree['parent'], $max_depth);
+      if (!empty($terms) && is_array($terms)) {
         foreach ($terms as $term) {
           $options[$term->tid] = str_repeat('- ', $term->depth) . $term->name;
         }
@@ -84,6 +87,44 @@ function content_taxonomy_allowed_values($field) {
     }
   }
   return $options;
+}
+
+/**
+ * Returns an array of terms that can be used in an options list.
+ *
+ * By default taxonomy_get_tree is used to retrieve the list of terms, but an
+ * alteration via hook_content_taxonomy_tree_callback_alter() is possible. It
+ * is important that any provided tree callback must have the same function
+ * signature as hook_content_taxonomy_tree_callback_alter().
+ * For example this hook can be used to exchange the callback with a language
+ * specific tree function.
+ *
+ * Although we could change the options list callback via the field definitions,
+ * it is easier to do this via the alteration hook provided by this function.
+ *
+ * @param $field
+ *   The term reference field info array.
+ * @param $vocabulary
+ *   The vocabulary object for which the term list should be retrieved. One
+ *   field can have multiple vocabularies attached, which leads to multiple
+ *   invocations of this function.
+ * @param $parent
+ *   The parent term id. Use 0 for the root level.
+ * @param $max_depth
+ *   The maximum depth. Use NULL for non limitation.
+ *
+ * @return array
+ */
+function content_taxonomy_get_terms($field, $vocabulary, $parent, $max_depth) {
+  $terms = array();
+
+  $tree_callback = 'taxonomy_get_tree';
+  drupal_alter('content_taxonomy_tree_callback', $tree_callback, $field, $vocabulary);
+  if (function_exists($tree_callback)) {
+    $terms = $tree_callback($vocabulary->vid, $parent, $max_depth, FALSE);
+  }
+
+  return $terms;
 }
 
 /**
@@ -126,7 +167,8 @@ function content_taxonomy_allowed_values_opt_groups($field) {
   $options = array();
   foreach ($field['settings']['allowed_values'] as $tree) {
     if ($vocabulary = taxonomy_vocabulary_machine_name_load($tree['vocabulary'])) {
-      if ($terms = taxonomy_get_tree($vocabulary->vid, 0, 2)) {
+      $terms = content_taxonomy_get_terms($field, $vocabulary, 0, 2);
+      if (!empty($terms) && is_array($terms)) {
         $current_group_term = NULL;
         foreach ($terms as $term) {
           if ($term->depth == 0) {
